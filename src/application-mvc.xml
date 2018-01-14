@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http:chema/beans"
-	xmlns:xsi="http:001www.springframework.orgvc"
-	xmlns:context="http:chema/context"
-	xmlns:aop="http:chemawww.springframework.orgx"
-	xmlns:jdbc="http:chema/jdbc"
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
 
 	xsi:schemaLocation="
-		http:chemawww.springframework.orgeans/spring-beans-3.0.xsd
-		http:chemawww.springframework.orgvc/spring-mvc-3.0.xsd	
-		http:chemawww.springframework.orgontext/spring-context-3.0.xsd
-     http:chemawww.springframework.orgdbc/spring-jdbc-3.0.xsd
-     http:chemawww.springframework.orgx/spring-tx-3.0.xsd
-     http:chemawww.springframework.orgop/spring-aop-3.0.xsd">
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd	
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+     http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
 	<!-- 注解开发方式 -->
 	<mvc:annotation-driven />
@@ -30,20 +30,20 @@
         <!-- IP锁定验证拦截器 -->  
         <mvc:interceptor>
         <!--
-			<mvc:mapping path="
+			<mvc:mapping path="/**/ajax_*.action*"/>
 		-->  
-			<mvc:mapping path="
-			<mvc:mapping path="
-			<mvc:mapping path="
-			<mvc:mapping path="
-			<mvc:mapping path="
-			<mvc:mapping path="
+			<mvc:mapping path="/**/ajax_Login.action*"/>
+			<mvc:mapping path="/**/ajax_LoginOut.action*"/>
+			<mvc:mapping path="/**/ajax_guestAuth.action*"/>
+			<mvc:mapping path="/**/ajax_sms.action*"/>
+			<mvc:mapping path="/**/ajax_gzh.action*"/>
+			<mvc:mapping path="/**/ajax_weixin.action*"/>
 			
 			<bean class="com.leeson.common.interceptor.CheckIpLockInterceptor" />
 		</mvc:interceptor>
 		<!-- 权限验证拦截器 --> 
 		<mvc:interceptor>
-			<mvc:mapping path="
+			<mvc:mapping path="/**/*.action*"/>
 			<bean class="com.leeson.common.interceptor.PermissionInterceptorAdapter" />
 		</mvc:interceptor>
 	</mvc:interceptors>
@@ -60,17 +60,17 @@
 	<!-- jsp视图 -->
 	<bean id="jspViewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="prefix" value="sp/" />
+		<property name="prefix" value="/WEB-INF/jsp/" />
 		<property name="suffix" value=".jsp" />
 	</bean>
 
 	<!--避免IE执行AJAX时，返回JSON出现下载文件 <bean id="mappingJackson2HttpMessageConverter" 
 		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"> 
-		<property name="supportedMediaTypes"> <list> <value>textalue> 
-		<value>applicationalue> <roperty> </bean> -->
+		<property name="supportedMediaTypes"> <list> <value>text/json;charset=UTF-8</value> 
+		<value>application/json;charset=UTF-8</value> </list> </property> </bean> -->
 	<!-- 采用SpringMVC自带的JSON转换工具，支持@ResponseBody注解 <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"> 
 		<property name="messageConverters"> <list> <ref bean="mappingJackson2HttpMessageConverter" 
-		roperty> </bean> -->
+		/> </list> </property> </bean> -->
 
 
 	<!-- 配置文件上传，如果没有使用文件上传可以不用配置，当然如果不配，那么配置文件中也不必引入上传组件包 -->

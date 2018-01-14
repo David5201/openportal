@@ -192,61 +192,57 @@ public class AdvadvController {
 	}
 
 	@ResponseBody
-  @RequestMapping({"pload"})
-  public Map<String, String> uploadPreviewImage(HttpServletRequest request, HttpServletResponse response)
-  {
-    Map map = new HashMap();
-    try {
-      MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest)request;
-      MultipartFile image = multipartRequest.getFile("advimg");
+	@RequestMapping({ "pload" })
+	public Map<String, String> uploadPreviewImage(HttpServletRequest request, HttpServletResponse response) {
+		Map map = new HashMap();
+		try {
+			MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+			MultipartFile image = multipartRequest.getFile("advimg");
 
-      String imageName = image.getOriginalFilename();
-      String file_ext = imageName
-        .substring(imageName.lastIndexOf(".") + 1);
-      String tempImageName = UUID.randomUUID().toString() + "." + 
-        file_ext;
+			String imageName = image.getOriginalFilename();
+			String file_ext = imageName.substring(imageName.lastIndexOf(".") + 1);
+			String tempImageName = UUID.randomUUID().toString() + "." + file_ext;
 
-      SimpleDateFormat df = new SimpleDateFormat("yyyy-MM");
-      String filename = "/" + df.format(new Date()) + "/";
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM");
+			String filename = "/" + df.format(new Date()) + "/";
 
-      String filePath = request.getServletContext()
-        .getRealPath("/advPic") + filename;
-      File fileLocation = new File(filePath);
-      if (!fileLocation.exists()) {
-        fileLocation.mkdir();
-      }
-      filePath = filePath + tempImageName;
-      File file = new File(filePath);
-      byte[] advImageBytes = null;
-      InputStream advImageStream = null;
-      file.createNewFile();
-      advImageStream = image.getInputStream();
-      advImageBytes = FileCopyUtils.copyToByteArray(advImageStream);
-      FileCopyUtils.copy(advImageBytes, file);
-      advImageStream.close();
-      int result = ImageUtil.checkImgHW(filePath, 600, 150);
-      if (result == 0) {
-    	String tempPath = "/advPic/" + filename + tempImageName;
-        map.put("tempPath", tempPath);
-        map.put("ret", "0");
-        map.put("msg", "上传成功！！");
-      } else if (result == 1) {
-        map.put("ret", "1");
-        map.put("msg", "图片尺寸错误！！");
-      } else {
-        map.put("ret", "1");
-        map.put("msg", "图片格式错误！！");
-      }
-    } catch (Exception e) {
-      logger.error("==============ERROR Start=============");
-      logger.error(e);
-      logger.error("ERROR INFO ", e);
-      logger.error("==============ERROR End=============");
-      map.put("ret", "1");
-      map.put("msg", "发生错误！！");
-    }
-    return map;
-  }
+			String filePath = request.getServletContext().getRealPath("/advPic") + filename;
+			File fileLocation = new File(filePath);
+			if (!fileLocation.exists()) {
+				fileLocation.mkdir();
+			}
+			filePath = filePath + tempImageName;
+			File file = new File(filePath);
+			byte[] advImageBytes = null;
+			InputStream advImageStream = null;
+			file.createNewFile();
+			advImageStream = image.getInputStream();
+			advImageBytes = FileCopyUtils.copyToByteArray(advImageStream);
+			FileCopyUtils.copy(advImageBytes, file);
+			advImageStream.close();
+			int result = ImageUtil.checkImgHW(filePath, 600, 150);
+			if (result == 0) {
+				String tempPath = "/advPic/" + filename + tempImageName;
+				map.put("tempPath", tempPath);
+				map.put("ret", "0");
+				map.put("msg", "上传成功！！");
+			} else if (result == 1) {
+				map.put("ret", "1");
+				map.put("msg", "图片尺寸错误！！");
+			} else {
+				map.put("ret", "1");
+				map.put("msg", "图片格式错误！！");
+			}
+		} catch (Exception e) {
+			logger.error("==============ERROR Start=============");
+			logger.error(e);
+			logger.error("ERROR INFO ", e);
+			logger.error("==============ERROR End=============");
+			map.put("ret", "1");
+			map.put("msg", "发生错误！！");
+		}
+		return map;
+	}
 
 	@RequestMapping({ "ist.action" })
 	public String page(AdvadvQuery query, HttpServletRequest request, HttpServletResponse response, ModelMap model) {
@@ -302,7 +298,7 @@ public class AdvadvController {
 		return "advadv/save";
 	}
 
-	@RequestMapping(value = { "dd.action" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
+	@RequestMapping(value = { "dd1.action" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
 	public String add(Advadv e, String showDateS, String endDateS, ModelMap model, HttpServletRequest request) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		HttpSession session = request.getSession();
