@@ -1,0 +1,124 @@
+package ${action_p};
+
+import static com.leeson.common.page.SimplePage.cpn;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+
+import ${entity_p}.${Entity};
+import ${query_p}.${Entity}Query;
+import ${service_p}.${Entity}Service;
+import com.leeson.common.page.Pagination;
+import com.leeson.common.web.CookieUtils;
+
+/**
+ * ${Entity}Controller
+ * 控制层模板
+ * @author LeeSon
+ *
+ */
+@Controller
+public class ${Entity}Controller {
+	
+	@Autowired
+	private ${Entity}Service ${entity}Service;
+
+	//分页列表页面
+	@RequestMapping(value = "/${entity}/list.action")
+	public String page(${Entity}Query query,HttpServletRequest request,HttpServletResponse response, ModelMap model) {
+		Pagination pagination = ${entity}Service.get${Entity}ListWithPage(query);
+		model.addAttribute("pagination",pagination);
+		model.addAttribute("query", query);
+		return "${entity}/list";
+	}
+	
+	//请求添加页面
+	@RequestMapping(value = "/${entity}/add.action")
+	public String add(ModelMap model){
+		
+		return "${entity}/save";
+	}
+	
+	//添加到数据库
+	@RequestMapping(value = "/${entity}/add.action" ,method =RequestMethod.POST)
+	public String add(${Entity} e){
+		
+		${entity}Service.add${Entity}(e);
+		
+		return "redirect:/${entity}/list.action";
+	}
+	
+	 //请求编辑页面
+	@RequestMapping(value="/${entity}/edit.action")
+	public String edit(@RequestParam <@fieldType type=fields[0].fieldType/> id, ModelMap model){
+		${Entity} e = ${entity}Service.get${Entity}ByKey(id);
+		model.addAttribute("entity", e);
+		return "${entity}/save";
+	}
+	
+	 //修改到数据库
+	@RequestMapping(value="/${entity}/edit.action" ,method =RequestMethod.POST)
+	public String edit(${Entity} e){
+		${entity}Service.update${Entity}ByKey(e);
+		return "redirect:/${entity}/list.action";
+	}
+	
+	
+	
+	//单个删除
+	@RequestMapping(value="/${entity}/delete.action")
+	public String delete(@RequestParam <@fieldType type=fields[0].fieldType/> id){
+		${entity}Service.deleteByKey(id);
+		return "redirect:/${entity}/list.action";
+	}
+	
+	//删除多个
+	@RequestMapping(value = "/${entity}/deletes.action" ,method =RequestMethod.POST)
+	public String deletes(@RequestParam <@fieldType type=fields[0].fieldType/>[] ids){
+		//TODO 删除
+		List<Long> list = Arrays.asList(ids);
+		${entity}Service.deleteByKeys(list);
+		
+		return "redirect:/${entity}/list.action";
+	}
+	
+	//删除全部
+	@RequestMapping(value = "/${entity}/deletes.action" ,method = RequestMethod.GET)
+	public String deletes() {
+		${entity}Service.deleteAll();
+		return "redirect:/${entity}/list.action";
+	}
+	
+}
+
+<#macro fieldType type>
+	<#if type?contains("bigint")>
+	Long<#t/>
+	<#elseif type?contains("int")>
+	Integer<#t/>
+	<#elseif type?contains("datetime")>
+	Date<#t/>
+	<#elseif type?contains("binary") || type?contains("blob")>
+	Byte[]<#t/>
+	<#elseif type?contains("float")>
+	Float<#t/>
+	<#elseif type?contains("double")>
+	Double<#t/>
+	<#else>
+	String<#t/>
+	</#if>
+</#macro>

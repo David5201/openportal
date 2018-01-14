@@ -1,0 +1,89 @@
+﻿package ${dao_p};
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import ${entity_p}.${Entity};
+import ${query_p}.${Entity}Query;
+
+public interface ${Entity}Dao {
+
+	/**
+	 * 添加
+	 */
+	public <@fieldType type=fields[0].fieldType/> add${Entity}(${Entity} ${entity}) throws SQLException ;
+
+	/**
+	 * 根据主键查找
+	 */
+	public ${Entity} get${Entity}ByKey(<@fieldType type=fields[0].fieldType/> id) throws SQLException ;
+
+	/**
+	 * 根据主键批量查找
+	 */
+	public List<${Entity}> get${Entity}ByKeys(List<<@fieldType type=fields[0].fieldType/>> idList) throws SQLException ;
+
+	/**
+	 * 根据主键删除
+	 */
+	public Integer deleteByKey(<@fieldType type=fields[0].fieldType/> id) throws SQLException ;
+	
+	/**
+	 * 根据条件删除
+	 */
+	public Integer deleteByQuery(${Entity}Query ${entity}Query) throws SQLException ;
+
+	/**
+	 * 根据主键批量删除
+	 */
+	public Integer deleteByKeys(List<<@fieldType type=fields[0].fieldType/>> idList) throws SQLException ;
+
+	/**
+	 * 删除所有
+	 */
+	public Integer deleteAll() throws SQLException ;
+	
+	/**
+	 * 根据主键更新非空字段
+	 */
+	public Integer update${Entity}ByKey(${Entity} ${entity}) throws SQLException ;
+	/**
+	 * 根据主键更新所有字段
+	 */
+	public Integer update${Entity}ByKeyAll(${Entity} ${entity}) throws SQLException ;
+
+	/**
+	 * 分页查询
+	 */
+	public List<${Entity}> get${Entity}ListWithPage(${Entity}Query ${entity}Query) throws SQLException ;
+
+	/**
+	 * 集合查询
+	 */
+	public List<${Entity}> get${Entity}List(${Entity}Query ${entity}Query) throws SQLException ;
+	
+	/**
+	 * 总条数
+	 */
+	public Integer get${Entity}ListCount(${Entity}Query ${entity}Query) throws SQLException ;
+	
+}
+<#macro fieldType type>
+	<#if type?contains("bigint")>
+	Long<#t/>
+	<#elseif type?contains("int")>
+	Integer<#t/>
+	<#elseif type?contains("datetime")>
+	Date<#t/>
+	<#elseif type?contains("binary") || type?contains("blob")>
+	Byte[]<#t/>
+	<#elseif type?contains("float")>
+	Float<#t/>
+	<#elseif type?contains("double")>
+	Double<#t/>
+	<#else>
+	String<#t/>
+	</#if>
+</#macro>

@@ -1,0 +1,230 @@
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+    <title>微信认证</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+	<script src="dist/js/jquery-1.11.1.min.js"></script>
+	<script src="dist/js/encode.js"></script>
+    <link rel="shortcut icon" href="favicon.ico">
+	<script type="text/javascript">
+	
+		function checkWX(){
+		 var str="/check_weixin.action";
+			$.ajax({
+				type: "GET",
+				url: str,
+				success: checkWX_fun,
+				error: null,
+				timeout: 2000,
+				dataType: "json",
+				cache: false
+			});
+	}
+
+	function checkWX_fun(msg){
+			if(msg.ret==0){
+			var weburl="ok.html?u=微信认证&i="+GetIP();
+			window.location.replace(weburl);
+			}
+	}
+
+		 
+		function putNoResponse(ev){
+			 clearTimeout(noResponse);
+		}	
+		
+		 function errorJump()
+		 {
+			alert('跳转到微信进行认证\n如果已跳转请忽略此提示!');
+		 }
+		 
+		 myHandler = function(error) {
+			 errorJump();
+		 };
+		 
+		 function createIframe(){
+			 var iframe = document.createElement("iframe");
+		     iframe.style.cssText = "display:none;width:0px;height:0px;";
+		     document.body.appendChild(iframe);
+		     loadIframe = iframe;
+		 }
+
+		
+		
+		/**
+ * 微信连Wi-Fi协议3.1供运营商portal呼起微信浏览器使用
+ */
+ var loadIframe = null;
+ var noResponse = null;
+ function createIframe(){
+	 var iframe = document.createElement("iframe");
+     iframe.style.cssText = "display:none;width:0px;height:0px;";
+     document.body.appendChild(iframe);
+     loadIframe = iframe;
+ }
+//注册回调函数
+function jsonpCallback(result){
+	re=1;
+	if(result && result.success){
+		interval = setInterval(checkWX, 3000);
+		var ua=navigator.userAgent;              
+		if (ua.indexOf("iPhone") != -1 ||ua.indexOf("iPod")!=-1||ua.indexOf("iPad") != -1) {   //iPhone             
+			document.location = result.data;
+		}else{
+		    createIframe();
+		    loadIframe.src=result.data;
+			noResponse = setTimeout(function(){
+				errorJump();
+	      	},3000);
+		}
+	}else if(result && !result.success){
+		LoginOut();
+		alert("请联系管理员，错误代码: "+result.data);
+		var weburl="out.html";
+		window.location.replace(weburl);
+	}else{
+		LoginOut();
+		alert("网络暂时不可用，请联系管理员！！");
+		var weburl="out.html";
+		window.location.replace(weburl);
+	}
+}
+
+
+function LoginOut(){
+var str="/ajax_LoginOut.action";
+var data_str=encodeToUTF8(str);
+$.ajax({
+	type: "GET",
+	url: data_str,
+	success: loginOut_fun,
+	error: null,
+	timeout: 1000,
+	dataType: "json",
+	cache: false
+});
+}
+function loginOut_fun(msg){
+}
+
+
+function Wechat_GotoRedirect(appId, extend, timestamp, sign, shopId, authUrl, mac, ssid, bssid){
+	
+	//如果sign后面的参数有值，则是新3.1发起的流程
+	var url = "https://wifi.weixin.qq.com/operator/callWechat.xhtml?appId=" + appId 
+																		+ "&extend=" + extend 
+																		+ "&timestamp=" + timestamp 
+																		+ "&sign=" + sign
+																		+ "&shopId=" + shopId
+																		+ "&authUrl=" + encodeURIComponent(authUrl)
+																		+ "&mac=" + mac
+																		+ "&ssid=" + ssid
+																		+ "&bssid=" + bssid;			
+	
+	//通过dom操作创建script节点实现异步请求  
+	var script = document.createElement('script');  
+	script.setAttribute('src', url);  
+	document.getElementsByTagName('head')[0].appendChild(script);
+}
+	</script>
+    <link rel="stylesheet" href="weixin/style-simple-follow.css" type="text/css" >
+    <style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+<body class="mod-simple-follow">
+<div class="mod-simple-follow-page">
+    <div class="mod-simple-follow-page__banner">
+        <img class="mod-simple-follow-page__banner-bg" src="weixin/background.jpg" alt="">
+        <div class="mod-simple-follow-page__img-shadow"></div>
+        <div class="mod-simple-follow-page__logo">
+            <img class="mod-simple-follow-page__logo-img" src="weixin/logo.jpg" alt="">
+            <p class="mod-simple-follow-page__logo-name"></p>
+            <p class="mod-simple-follow-page__logo-welcome">欢迎您</p>
+        </div>
+    </div>
+    <div id="toWeixin" class="mod-simple-follow-page__attention">
+        <p class="mod-simple-follow-page__attention-txt">欢迎使用微信认证</p>
+        <p class="mod-simple-follow-page__attention-txt">请等待网络初始化...</p>
+    </div>
+</div>
+
+<script type="text/javascript">
+function GetIP()
+{
+     var s = extend;
+     var b = s.substring(0,s.lastIndexOf(":"));
+	 return  b;
+}
+
+function GetQueryString(name)
+{
+     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+     var r = window.location.search.substr(1).match(reg);
+     if(r!=null)return  unescape(r[2]); return null;
+}
+
+function GetQuerySSID()
+{
+     var r = window.location.search.substr(1);
+	 rs=r.split("&ssid=");
+	 var a=rs[1];
+	 as=a.split("&");
+	 return  as[0];
+}
+	
+
+$(function(){
+post_fun();
+});
+
+var appId;      
+var extend;    
+var timestamp; 
+var sign;     
+var shop_id;   
+var authUrl;   
+var mac;     
+var ssid;      
+var bssid;
+var re=0;
+
+function post_fun(){
+	appId=GetQueryString("appId");      
+	extend=GetQueryString("extend");     
+	timestamp=GetQueryString("timestamp");     
+	sign=GetQueryString("sign");       
+	shop_id=GetQueryString("shop_id");     
+	authUrl=GetQueryString("authUrl");     
+	mac=GetQueryString("mac");        
+	//ssid=GetQueryString("ssid");    
+	ssid=GetQuerySSID();
+	bssid=GetQueryString("bssid"); 
+	
+	//alert(appId+"==="+extend+"==="+timestamp+"==="+sign+"==="+shop_id+"==="+authUrl+"==="+mac+"==="+ssid+"==="+bssid);
+	//var trs = "<p class='mod-simple-follow-page__attention-txt'>欢迎使用微信认证</p><a class='mod-simple-follow-page__attention-btn' onclick='callWechatBrowser()'>打开微信连Wi-Fi</a>";  
+	var trs = "<p class='mod-simple-follow-page__attention-txt'>跳转到微信进行认证</p><a class='mod-simple-follow-page__attention-txt'>如果未跳转到微信,请更换浏览器重试!!</a>";  
+	callWechatBrowser();
+	setTimeout(function(){
+				$("#toWeixin").empty();
+				$("#toWeixin").append(trs);
+	      	},3000);
+	
+	setTimeout(function(){
+			if(re==0){
+			window.location.reload();
+			}
+	    	},4000);
+}
+
+function callWechatBrowser(){
+//alert('appId:' + appId + ' extend:' + extend + ' ssid:' + ssid + ' shop_id:' + shop_id + ' bssid:' + bssid + ' authUrl:' + authUrl + ' mac:' + mac + ' timestamp:' + timestamp + ' sign:' + sign);	
+Wechat_GotoRedirect(appId , extend , timestamp , sign , shop_id , authUrl , mac , ssid , bssid );
+}
+</script>
+
+<script type="text/javascript">
+	document.addEventListener('visibilitychange', putNoResponse, false);
+</script>
+</body></html>

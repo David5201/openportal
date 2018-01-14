@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.AdvstoresDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="advstores" type="Advstores">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="description" column="description" />
+		<result property="creatDate" column="creatDate" />
+		<result property="uid" column="uid" />
+		<result property="address" column="address" />
+		<result property="phone" column="phone" />
+		<result property="img" column="img" />
+		<result property="showInfo" column="showInfo" />
+		<result property="x" column="x" />
+		<result property="y" column="y" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="advstoresSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,name,description,creatDate,uid,address,phone,img,showInfo,x,y
+			</if>
+		
+		FROM adv_stores
+	</sql>
+	<sql id="advstoresListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="name != null">
+			 and 
+			<if test="nameLike == 0">
+				name=#{name}
+			</if>
+			<if test="nameLike == 1">
+				name like CONCAT('%','${name}','%')
+			</if>
+			</if>
+		    <if test="description != null">
+			 and 
+			<if test="descriptionLike == 0">
+				description=#{description}
+			</if>
+			<if test="descriptionLike == 1">
+				description like CONCAT('%','${description}','%')
+			</if>
+			</if>
+		    <if test="creatDate != null">
+			 and 
+				creatDate=#{creatDate}
+			</if>
+		    <if test="uid != null">
+			 and 
+				uid=#{uid}
+			</if>
+		    <if test="address != null">
+			 and 
+			<if test="addressLike == 0">
+				address=#{address}
+			</if>
+			<if test="addressLike == 1">
+				address like CONCAT('%','${address}','%')
+			</if>
+			</if>
+		    <if test="phone != null">
+			 and 
+			<if test="phoneLike == 0">
+				phone=#{phone}
+			</if>
+			<if test="phoneLike == 1">
+				phone like CONCAT('%','${phone}','%')
+			</if>
+			</if>
+		    <if test="img != null">
+			 and 
+			<if test="imgLike == 0">
+				img=#{img}
+			</if>
+			<if test="imgLike == 1">
+				img like CONCAT('%','${img}','%')
+			</if>
+			</if>
+		    <if test="showInfo != null">
+			 and 
+				showInfo=#{showInfo}
+			</if>
+		    <if test="x != null">
+			 and 
+			<if test="xLike == 0">
+				x=#{x}
+			</if>
+			<if test="xLike == 1">
+				x like CONCAT('%','${x}','%')
+			</if>
+			</if>
+		    <if test="y != null">
+			 and 
+			<if test="yLike == 0">
+				y=#{y}
+			</if>
+			<if test="yLike == 1">
+				y like CONCAT('%','${y}','%')
+			</if>
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="advstoresListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="advstoresListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getAdvstoresByKey" resultMap="advstores" parameterType="hashMap">
+		SELECT id,name,description,creatDate,uid,address,phone,img,showInfo,x,y FROM adv_stores
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getAdvstoresByKeys" resultMap="advstores"
+		parameterType="ArrayList">
+		SELECT id,name,description,creatDate,uid,address,phone,img,showInfo,x,y FROM adv_stores
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM adv_stores
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Advstores">
+		DELETE FROM adv_stores
+		<include refid="advstoresListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM adv_stores
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+	
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteAll">
+		DELETE FROM adv_stores
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updateAdvstoresByKey" parameterType="Advstores">
+		UPDATE adv_stores
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="name != null">
+			name = #{name},
+		</if>
+		<if test="description != null">
+			description = #{description},
+		</if>
+		<if test="creatDate != null">
+			creatDate = #{creatDate},
+		</if>
+		<if test="uid != null">
+			uid = #{uid},
+		</if>
+		<if test="address != null">
+			address = #{address},
+		</if>
+		<if test="phone != null">
+			phone = #{phone},
+		</if>
+		<if test="img != null">
+			img = #{img},
+		</if>
+		<if test="showInfo != null">
+			showInfo = #{showInfo},
+		</if>
+		<if test="x != null">
+			x = #{x},
+		</if>
+		<if test="y != null">
+			y = #{y},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updateAdvstoresByKeyAll" parameterType="Advstores">
+		UPDATE adv_stores
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			name = #{name},
+			description = #{description},
+			creatDate = #{creatDate},
+			uid = #{uid},
+			address = #{address},
+			phone = #{phone},
+			img = #{img},
+			showInfo = #{showInfo},
+			x = #{x},
+			y = #{y},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getAdvstoresListWithPage" parameterType="AdvstoresQuery"
+		resultMap="advstores">
+		<include refid="advstoresSelector" />
+		<include refid="advstoresListWhere" />
+		<include refid="advstoresListOrder" />
+		<include refid="advstoresListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getAdvstoresListCount" parameterType="AdvstoresQuery"
+		resultType="int">
+		SELECT count(1) FROM adv_stores
+		<include refid="advstoresListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getAdvstoresList" parameterType="AdvstoresQuery"
+		resultMap="advstores">
+		<include refid="advstoresSelector" />
+		<include refid="advstoresListWhere" />
+		<include refid="advstoresListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getAdvstoresListWithPageFields" parameterType="AdvstoresQuery"
+		resultType="Advstores">
+		<include refid="advstoresSelector" />
+		<include refid="advstoresListWhere" />
+		<include refid="advstoresListOrder" />
+		<include refid="advstoresListLimit" />
+	</select>
+	<select id="$getAdvstoresListFields" parameterType="AdvstoresQuery"
+		resultType="Advstores">
+		<include refid="advstoresSelector" />
+		<include refid="advstoresListWhere" />
+		<include refid="advstoresListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addAdvstores" parameterType="Advstores">
+		INSERT INTO adv_stores
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="name != null">
+					name,
+			</if>
+			<if test="description != null">
+					description,
+			</if>
+			<if test="creatDate != null">
+					creatDate,
+			</if>
+			<if test="uid != null">
+					uid,
+			</if>
+			<if test="address != null">
+					address,
+			</if>
+			<if test="phone != null">
+					phone,
+			</if>
+			<if test="img != null">
+					img,
+			</if>
+			<if test="showInfo != null">
+					showInfo,
+			</if>
+			<if test="x != null">
+					x,
+			</if>
+			<if test="y != null">
+					y,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="name != null">
+	 #{name},
+			</if>
+			<if test="description != null">
+	 #{description},
+			</if>
+			<if test="creatDate != null">
+	 #{creatDate},
+			</if>
+			<if test="uid != null">
+	 #{uid},
+			</if>
+			<if test="address != null">
+	 #{address},
+			</if>
+			<if test="phone != null">
+	 #{phone},
+			</if>
+			<if test="img != null">
+	 #{img},
+			</if>
+			<if test="showInfo != null">
+	 #{showInfo},
+			</if>
+			<if test="x != null">
+	 #{x},
+			</if>
+			<if test="y != null">
+	 #{y},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

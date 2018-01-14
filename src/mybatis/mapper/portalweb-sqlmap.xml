@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PortalwebDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="portalweb" type="Portalweb">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="description" column="description" />
+		<result property="countShow" column="countShow" />
+		<result property="countAuth" column="countAuth" />
+		<result property="adv" column="adv" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="portalwebSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,name,description,countShow,countAuth,adv
+			</if>
+		
+		FROM portal_web
+	</sql>
+	<sql id="portalwebListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="name != null">
+			 and 
+			<if test="nameLike == 0">
+				name=#{name}
+			</if>
+			<if test="nameLike == 1">
+				name like CONCAT('%','${name}','%')
+			</if>
+			</if>
+		    <if test="description != null">
+			 and 
+			<if test="descriptionLike == 0">
+				description=#{description}
+			</if>
+			<if test="descriptionLike == 1">
+				description like CONCAT('%','${description}','%')
+			</if>
+			</if>
+		    <if test="countShow != null">
+			 and 
+				countShow=#{countShow}
+			</if>
+		    <if test="countAuth != null">
+			 and 
+				countAuth=#{countAuth}
+			</if>
+		    <if test="adv != null">
+			 and 
+				adv=#{adv}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="portalwebListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="portalwebListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPortalwebByKey" resultMap="portalweb" parameterType="hashMap">
+		SELECT id,name,description,countShow,countAuth,adv FROM portal_web
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getPortalwebByKeys" resultMap="portalweb"
+		parameterType="ArrayList">
+		SELECT id,name,description,countShow,countAuth,adv FROM portal_web
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM portal_web
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Portalweb">
+		DELETE FROM portal_web
+		<include refid="portalwebListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM portal_web
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+	
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteAll">
+		DELETE FROM portal_web
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePortalwebByKey" parameterType="Portalweb">
+		UPDATE portal_web
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="name != null">
+			name = #{name},
+		</if>
+		<if test="description != null">
+			description = #{description},
+		</if>
+		<if test="countShow != null">
+			countShow = #{countShow},
+		</if>
+		<if test="countAuth != null">
+			countAuth = #{countAuth},
+		</if>
+		<if test="adv != null">
+			adv = #{adv},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePortalwebByKeyAll" parameterType="Portalweb">
+		UPDATE portal_web
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			name = #{name},
+			description = #{description},
+			countShow = #{countShow},
+			countAuth = #{countAuth},
+			adv = #{adv},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getPortalwebListWithPage" parameterType="PortalwebQuery"
+		resultMap="portalweb">
+		<include refid="portalwebSelector" />
+		<include refid="portalwebListWhere" />
+		<include refid="portalwebListOrder" />
+		<include refid="portalwebListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPortalwebListCount" parameterType="PortalwebQuery"
+		resultType="int">
+		SELECT count(1) FROM portal_web
+		<include refid="portalwebListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPortalwebList" parameterType="PortalwebQuery"
+		resultMap="portalweb">
+		<include refid="portalwebSelector" />
+		<include refid="portalwebListWhere" />
+		<include refid="portalwebListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPortalwebListWithPageFields" parameterType="PortalwebQuery"
+		resultType="Portalweb">
+		<include refid="portalwebSelector" />
+		<include refid="portalwebListWhere" />
+		<include refid="portalwebListOrder" />
+		<include refid="portalwebListLimit" />
+	</select>
+	<select id="$getPortalwebListFields" parameterType="PortalwebQuery"
+		resultType="Portalweb">
+		<include refid="portalwebSelector" />
+		<include refid="portalwebListWhere" />
+		<include refid="portalwebListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPortalweb" parameterType="Portalweb">
+		INSERT INTO portal_web
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="name != null">
+					name,
+			</if>
+			<if test="description != null">
+					description,
+			</if>
+			<if test="countShow != null">
+					countShow,
+			</if>
+			<if test="countAuth != null">
+					countAuth,
+			</if>
+			<if test="adv != null">
+					adv,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="name != null">
+	 #{name},
+			</if>
+			<if test="description != null">
+	 #{description},
+			</if>
+			<if test="countShow != null">
+	 #{countShow},
+			</if>
+			<if test="countAuth != null">
+	 #{countAuth},
+			</if>
+			<if test="adv != null">
+	 #{adv},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

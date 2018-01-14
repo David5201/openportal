@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.AdvpicDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="advpic" type="Advpic">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="uid" column="uid" />
+		<result property="sid" column="sid" />
+		<result property="aid" column="aid" />
+		<result property="pos" column="pos" />
+		<result property="img" column="img" />
+		<result property="url" column="url" />
+		<result property="showCount" column="showCount" />
+		<result property="clickCount" column="clickCount" />
+		<result property="imgW" column="imgW" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="advpicSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,name,uid,sid,aid,pos,img,url,showCount,clickCount,imgW
+			</if>
+		
+		FROM adv_pic
+	</sql>
+	<sql id="advpicListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="name != null">
+			 and 
+			<if test="nameLike == 0">
+				name=#{name}
+			</if>
+			<if test="nameLike == 1">
+				name like CONCAT('%','${name}','%')
+			</if>
+			</if>
+		    <if test="uid != null">
+			 and 
+				uid=#{uid}
+			</if>
+		    <if test="sid != null">
+			 and 
+				sid=#{sid}
+			</if>
+		    <if test="aid != null">
+			 and 
+				aid=#{aid}
+			</if>
+		    <if test="pos != null">
+			 and 
+				pos=#{pos}
+			</if>
+		    <if test="img != null">
+			 and 
+			<if test="imgLike == 0">
+				img=#{img}
+			</if>
+			<if test="imgLike == 1">
+				img like CONCAT('%','${img}','%')
+			</if>
+			</if>
+		    <if test="url != null">
+			 and 
+			<if test="urlLike == 0">
+				url=#{url}
+			</if>
+			<if test="urlLike == 1">
+				url like CONCAT('%','${url}','%')
+			</if>
+			</if>
+		    <if test="showCount != null">
+			 and 
+				showCount=#{showCount}
+			</if>
+		    <if test="clickCount != null">
+			 and 
+				clickCount=#{clickCount}
+			</if>
+		    <if test="imgW != null">
+			 and 
+			<if test="imgWLike == 0">
+				imgW=#{imgW}
+			</if>
+			<if test="imgWLike == 1">
+				imgW like CONCAT('%','${imgW}','%')
+			</if>
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="advpicListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="advpicListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getAdvpicByKey" resultMap="advpic" parameterType="hashMap">
+		SELECT id,name,uid,sid,aid,pos,img,url,showCount,clickCount,imgW FROM adv_pic
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getAdvpicByKeys" resultMap="advpic"
+		parameterType="ArrayList">
+		SELECT id,name,uid,sid,aid,pos,img,url,showCount,clickCount,imgW FROM adv_pic
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM adv_pic
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Advpic">
+		DELETE FROM adv_pic
+		<include refid="advpicListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM adv_pic
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+	
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteAll">
+		DELETE FROM adv_pic
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updateAdvpicByKey" parameterType="Advpic">
+		UPDATE adv_pic
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="name != null">
+			name = #{name},
+		</if>
+		<if test="uid != null">
+			uid = #{uid},
+		</if>
+		<if test="sid != null">
+			sid = #{sid},
+		</if>
+		<if test="aid != null">
+			aid = #{aid},
+		</if>
+		<if test="pos != null">
+			pos = #{pos},
+		</if>
+		<if test="img != null">
+			img = #{img},
+		</if>
+		<if test="url != null">
+			url = #{url},
+		</if>
+		<if test="showCount != null">
+			showCount = #{showCount},
+		</if>
+		<if test="clickCount != null">
+			clickCount = #{clickCount},
+		</if>
+		<if test="imgW != null">
+			imgW = #{imgW},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updateAdvpicByKeyAll" parameterType="Advpic">
+		UPDATE adv_pic
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			name = #{name},
+			uid = #{uid},
+			sid = #{sid},
+			aid = #{aid},
+			pos = #{pos},
+			img = #{img},
+			url = #{url},
+			showCount = #{showCount},
+			clickCount = #{clickCount},
+			imgW = #{imgW},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getAdvpicListWithPage" parameterType="AdvpicQuery"
+		resultMap="advpic">
+		<include refid="advpicSelector" />
+		<include refid="advpicListWhere" />
+		<include refid="advpicListOrder" />
+		<include refid="advpicListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getAdvpicListCount" parameterType="AdvpicQuery"
+		resultType="int">
+		SELECT count(1) FROM adv_pic
+		<include refid="advpicListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getAdvpicList" parameterType="AdvpicQuery"
+		resultMap="advpic">
+		<include refid="advpicSelector" />
+		<include refid="advpicListWhere" />
+		<include refid="advpicListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getAdvpicListWithPageFields" parameterType="AdvpicQuery"
+		resultType="Advpic">
+		<include refid="advpicSelector" />
+		<include refid="advpicListWhere" />
+		<include refid="advpicListOrder" />
+		<include refid="advpicListLimit" />
+	</select>
+	<select id="$getAdvpicListFields" parameterType="AdvpicQuery"
+		resultType="Advpic">
+		<include refid="advpicSelector" />
+		<include refid="advpicListWhere" />
+		<include refid="advpicListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addAdvpic" parameterType="Advpic">
+		INSERT INTO adv_pic
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="name != null">
+					name,
+			</if>
+			<if test="uid != null">
+					uid,
+			</if>
+			<if test="sid != null">
+					sid,
+			</if>
+			<if test="aid != null">
+					aid,
+			</if>
+			<if test="pos != null">
+					pos,
+			</if>
+			<if test="img != null">
+					img,
+			</if>
+			<if test="url != null">
+					url,
+			</if>
+			<if test="showCount != null">
+					showCount,
+			</if>
+			<if test="clickCount != null">
+					clickCount,
+			</if>
+			<if test="imgW != null">
+					imgW,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="name != null">
+	 #{name},
+			</if>
+			<if test="uid != null">
+	 #{uid},
+			</if>
+			<if test="sid != null">
+	 #{sid},
+			</if>
+			<if test="aid != null">
+	 #{aid},
+			</if>
+			<if test="pos != null">
+	 #{pos},
+			</if>
+			<if test="img != null">
+	 #{img},
+			</if>
+			<if test="url != null">
+	 #{url},
+			</if>
+			<if test="showCount != null">
+	 #{showCount},
+			</if>
+			<if test="clickCount != null">
+	 #{clickCount},
+			</if>
+			<if test="imgW != null">
+	 #{imgW},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

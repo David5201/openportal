@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PortallogrecordDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="portallogrecord" type="Portallogrecord">
+		<result property="id" column="id" />
+		<result property="info" column="info" />
+		<result property="recDate" column="rec_date" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="portallogrecordSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,info,rec_date
+			</if>
+		
+		FROM portal_logrecord
+	</sql>
+	<sql id="portallogrecordListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="info != null">
+			 and 
+			<if test="infoLike == 0">
+				info=#{info}
+			</if>
+			<if test="infoLike == 1">
+				info like CONCAT('%','${info}','%')
+			</if>
+			</if>
+		    <if test="recDate != null">
+			 and 
+				rec_date=#{recDate}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="portallogrecordListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="portallogrecordListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPortallogrecordByKey" resultMap="portallogrecord" parameterType="hashMap">
+		SELECT id,info,rec_date FROM portal_logrecord
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getPortallogrecordByKeys" resultMap="portallogrecord"
+		parameterType="ArrayList">
+		SELECT id,info,rec_date FROM portal_logrecord
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM portal_logrecord
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Portallogrecord">
+		DELETE FROM portal_logrecord
+		<include refid="portallogrecordListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM portal_logrecord
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+	
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteAll">
+		DELETE FROM portal_logrecord
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePortallogrecordByKey" parameterType="Portallogrecord">
+		UPDATE portal_logrecord
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="info != null">
+			info = #{info},
+		</if>
+		<if test="recDate != null">
+			rec_date = #{recDate},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePortallogrecordByKeyAll" parameterType="Portallogrecord">
+		UPDATE portal_logrecord
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			info = #{info},
+			rec_date = #{recDate},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getPortallogrecordListWithPage" parameterType="PortallogrecordQuery"
+		resultMap="portallogrecord">
+		<include refid="portallogrecordSelector" />
+		<include refid="portallogrecordListWhere" />
+		<include refid="portallogrecordListOrder" />
+		<include refid="portallogrecordListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPortallogrecordListCount" parameterType="PortallogrecordQuery"
+		resultType="int">
+		SELECT count(1) FROM portal_logrecord
+		<include refid="portallogrecordListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPortallogrecordList" parameterType="PortallogrecordQuery"
+		resultMap="portallogrecord">
+		<include refid="portallogrecordSelector" />
+		<include refid="portallogrecordListWhere" />
+		<include refid="portallogrecordListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPortallogrecordListWithPageFields" parameterType="PortallogrecordQuery"
+		resultType="Portallogrecord">
+		<include refid="portallogrecordSelector" />
+		<include refid="portallogrecordListWhere" />
+		<include refid="portallogrecordListOrder" />
+		<include refid="portallogrecordListLimit" />
+	</select>
+	<select id="$getPortallogrecordListFields" parameterType="PortallogrecordQuery"
+		resultType="Portallogrecord">
+		<include refid="portallogrecordSelector" />
+		<include refid="portallogrecordListWhere" />
+		<include refid="portallogrecordListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPortallogrecord" parameterType="Portallogrecord">
+		INSERT INTO portal_logrecord
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="info != null">
+					info,
+			</if>
+			<if test="recDate != null">
+					rec_date,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="info != null">
+	 #{info},
+			</if>
+			<if test="recDate != null">
+	 #{recDate},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

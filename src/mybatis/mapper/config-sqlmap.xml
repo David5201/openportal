@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.ConfigDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="config" type="Config">
+		<result property="id" column="id" />
+		<result property="portalPort" column="portalPort" />
+		<result property="isDebug" column="isDebug" />
+		<result property="radiusOn" column="radiusOn" />
+		<result property="checkTime" column="checkTime" />
+		<result property="accountAdd" column="accountAdd" />
+		<result property="shutdownKick" column="shutdownKick" />
+		<result property="domain" column="domain" />
+		<result property="countShow" column="countShow" />
+		<result property="countAuth" column="countAuth" />
+		<result property="useDomain" column="useDomain" />
+		<result property="authPort" column="authPort" />
+		<result property="acctPort" column="acctPort" />
+		<result property="smsAuthList" column="smsAuthList" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="configSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,portalPort,isDebug,radiusOn,checkTime,accountAdd,shutdownKick,domain,countShow,countAuth,useDomain,authPort,acctPort,smsAuthList
+			</if>
+		
+		FROM config
+	</sql>
+	<sql id="configListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="portalPort != null">
+			 and 
+				portalPort=#{portalPort}
+			</if>
+		    <if test="isDebug != null">
+			 and 
+				isDebug=#{isDebug}
+			</if>
+		    <if test="radiusOn != null">
+			 and 
+				radiusOn=#{radiusOn}
+			</if>
+		    <if test="checkTime != null">
+			 and 
+				checkTime=#{checkTime}
+			</if>
+		    <if test="accountAdd != null">
+			 and 
+				accountAdd=#{accountAdd}
+			</if>
+		    <if test="shutdownKick != null">
+			 and 
+				shutdownKick=#{shutdownKick}
+			</if>
+		    <if test="domain != null">
+			 and 
+			<if test="domainLike == 0">
+				domain=#{domain}
+			</if>
+			<if test="domainLike == 1">
+				domain like CONCAT('%','${domain}','%')
+			</if>
+			</if>
+		    <if test="countShow != null">
+			 and 
+				countShow=#{countShow}
+			</if>
+		    <if test="countAuth != null">
+			 and 
+				countAuth=#{countAuth}
+			</if>
+		    <if test="useDomain != null">
+			 and 
+				useDomain=#{useDomain}
+			</if>
+		    <if test="authPort != null">
+			 and 
+				authPort=#{authPort}
+			</if>
+		    <if test="acctPort != null">
+			 and 
+				acctPort=#{acctPort}
+			</if>
+		    <if test="smsAuthList != null">
+			 and 
+				smsAuthList=#{smsAuthList}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="configListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="configListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getConfigByKey" resultMap="config" parameterType="hashMap">
+		SELECT id,portalPort,isDebug,radiusOn,checkTime,accountAdd,shutdownKick,domain,countShow,countAuth,useDomain,authPort,acctPort,smsAuthList FROM config
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getConfigByKeys" resultMap="config"
+		parameterType="ArrayList">
+		SELECT id,portalPort,isDebug,radiusOn,checkTime,accountAdd,shutdownKick,domain,countShow,countAuth,useDomain,authPort,acctPort,smsAuthList FROM config
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM config
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Config">
+		DELETE FROM config
+		<include refid="configListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM config
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+	
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteAll">
+		DELETE FROM config
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updateConfigByKey" parameterType="Config">
+		UPDATE config
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="portalPort != null">
+			portalPort = #{portalPort},
+		</if>
+		<if test="isDebug != null">
+			isDebug = #{isDebug},
+		</if>
+		<if test="radiusOn != null">
+			radiusOn = #{radiusOn},
+		</if>
+		<if test="checkTime != null">
+			checkTime = #{checkTime},
+		</if>
+		<if test="accountAdd != null">
+			accountAdd = #{accountAdd},
+		</if>
+		<if test="shutdownKick != null">
+			shutdownKick = #{shutdownKick},
+		</if>
+		<if test="domain != null">
+			domain = #{domain},
+		</if>
+		<if test="countShow != null">
+			countShow = #{countShow},
+		</if>
+		<if test="countAuth != null">
+			countAuth = #{countAuth},
+		</if>
+		<if test="useDomain != null">
+			useDomain = #{useDomain},
+		</if>
+		<if test="authPort != null">
+			authPort = #{authPort},
+		</if>
+		<if test="acctPort != null">
+			acctPort = #{acctPort},
+		</if>
+		<if test="smsAuthList != null">
+			smsAuthList = #{smsAuthList},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updateConfigByKeyAll" parameterType="Config">
+		UPDATE config
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			portalPort = #{portalPort},
+			isDebug = #{isDebug},
+			radiusOn = #{radiusOn},
+			checkTime = #{checkTime},
+			accountAdd = #{accountAdd},
+			shutdownKick = #{shutdownKick},
+			domain = #{domain},
+			countShow = #{countShow},
+			countAuth = #{countAuth},
+			useDomain = #{useDomain},
+			authPort = #{authPort},
+			acctPort = #{acctPort},
+			smsAuthList = #{smsAuthList},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getConfigListWithPage" parameterType="ConfigQuery"
+		resultMap="config">
+		<include refid="configSelector" />
+		<include refid="configListWhere" />
+		<include refid="configListOrder" />
+		<include refid="configListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getConfigListCount" parameterType="ConfigQuery"
+		resultType="int">
+		SELECT count(1) FROM config
+		<include refid="configListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getConfigList" parameterType="ConfigQuery"
+		resultMap="config">
+		<include refid="configSelector" />
+		<include refid="configListWhere" />
+		<include refid="configListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getConfigListWithPageFields" parameterType="ConfigQuery"
+		resultType="Config">
+		<include refid="configSelector" />
+		<include refid="configListWhere" />
+		<include refid="configListOrder" />
+		<include refid="configListLimit" />
+	</select>
+	<select id="$getConfigListFields" parameterType="ConfigQuery"
+		resultType="Config">
+		<include refid="configSelector" />
+		<include refid="configListWhere" />
+		<include refid="configListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addConfig" parameterType="Config">
+		INSERT INTO config
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="portalPort != null">
+					portalPort,
+			</if>
+			<if test="isDebug != null">
+					isDebug,
+			</if>
+			<if test="radiusOn != null">
+					radiusOn,
+			</if>
+			<if test="checkTime != null">
+					checkTime,
+			</if>
+			<if test="accountAdd != null">
+					accountAdd,
+			</if>
+			<if test="shutdownKick != null">
+					shutdownKick,
+			</if>
+			<if test="domain != null">
+					domain,
+			</if>
+			<if test="countShow != null">
+					countShow,
+			</if>
+			<if test="countAuth != null">
+					countAuth,
+			</if>
+			<if test="useDomain != null">
+					useDomain,
+			</if>
+			<if test="authPort != null">
+					authPort,
+			</if>
+			<if test="acctPort != null">
+					acctPort,
+			</if>
+			<if test="smsAuthList != null">
+					smsAuthList,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="portalPort != null">
+	 #{portalPort},
+			</if>
+			<if test="isDebug != null">
+	 #{isDebug},
+			</if>
+			<if test="radiusOn != null">
+	 #{radiusOn},
+			</if>
+			<if test="checkTime != null">
+	 #{checkTime},
+			</if>
+			<if test="accountAdd != null">
+	 #{accountAdd},
+			</if>
+			<if test="shutdownKick != null">
+	 #{shutdownKick},
+			</if>
+			<if test="domain != null">
+	 #{domain},
+			</if>
+			<if test="countShow != null">
+	 #{countShow},
+			</if>
+			<if test="countAuth != null">
+	 #{countAuth},
+			</if>
+			<if test="useDomain != null">
+	 #{useDomain},
+			</if>
+			<if test="authPort != null">
+	 #{authPort},
+			</if>
+			<if test="acctPort != null">
+	 #{acctPort},
+			</if>
+			<if test="smsAuthList != null">
+	 #{smsAuthList},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

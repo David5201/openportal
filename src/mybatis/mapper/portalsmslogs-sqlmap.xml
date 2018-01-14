@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PortalsmslogsDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="portalsmslogs" type="Portalsmslogs">
+		<result property="id" column="id" />
+		<result property="info" column="info" />
+		<result property="sendDate" column="sendDate" />
+		<result property="phone" column="phone" />
+		<result property="sid" column="sid" />
+		<result property="type" column="type" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="portalsmslogsSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,info,sendDate,phone,sid,type
+			</if>
+		
+		FROM portal_smslogs
+	</sql>
+	<sql id="portalsmslogsListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="info != null">
+			 and 
+			<if test="infoLike == 0">
+				info=#{info}
+			</if>
+			<if test="infoLike == 1">
+				info like CONCAT('%','${info}','%')
+			</if>
+			</if>
+		    <if test="sendDate != null">
+			 and 
+				sendDate=#{sendDate}
+			</if>
+		    <if test="phone != null">
+			 and 
+			<if test="phoneLike == 0">
+				phone=#{phone}
+			</if>
+			<if test="phoneLike == 1">
+				phone like CONCAT('%','${phone}','%')
+			</if>
+			</if>
+		    <if test="sid != null">
+			 and 
+				sid=#{sid}
+			</if>
+		    <if test="type != null">
+			 and 
+			<if test="typeLike == 0">
+				type=#{type}
+			</if>
+			<if test="typeLike == 1">
+				type like CONCAT('%','${type}','%')
+			</if>
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="portalsmslogsListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="portalsmslogsListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPortalsmslogsByKey" resultMap="portalsmslogs" parameterType="hashMap">
+		SELECT id,info,sendDate,phone,sid,type FROM portal_smslogs
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getPortalsmslogsByKeys" resultMap="portalsmslogs"
+		parameterType="ArrayList">
+		SELECT id,info,sendDate,phone,sid,type FROM portal_smslogs
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM portal_smslogs
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Portalsmslogs">
+		DELETE FROM portal_smslogs
+		<include refid="portalsmslogsListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM portal_smslogs
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+	
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteAll">
+		DELETE FROM portal_smslogs
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePortalsmslogsByKey" parameterType="Portalsmslogs">
+		UPDATE portal_smslogs
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="info != null">
+			info = #{info},
+		</if>
+		<if test="sendDate != null">
+			sendDate = #{sendDate},
+		</if>
+		<if test="phone != null">
+			phone = #{phone},
+		</if>
+		<if test="sid != null">
+			sid = #{sid},
+		</if>
+		<if test="type != null">
+			type = #{type},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePortalsmslogsByKeyAll" parameterType="Portalsmslogs">
+		UPDATE portal_smslogs
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			info = #{info},
+			sendDate = #{sendDate},
+			phone = #{phone},
+			sid = #{sid},
+			type = #{type},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getPortalsmslogsListWithPage" parameterType="PortalsmslogsQuery"
+		resultMap="portalsmslogs">
+		<include refid="portalsmslogsSelector" />
+		<include refid="portalsmslogsListWhere" />
+		<include refid="portalsmslogsListOrder" />
+		<include refid="portalsmslogsListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPortalsmslogsListCount" parameterType="PortalsmslogsQuery"
+		resultType="int">
+		SELECT count(1) FROM portal_smslogs
+		<include refid="portalsmslogsListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPortalsmslogsList" parameterType="PortalsmslogsQuery"
+		resultMap="portalsmslogs">
+		<include refid="portalsmslogsSelector" />
+		<include refid="portalsmslogsListWhere" />
+		<include refid="portalsmslogsListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPortalsmslogsListWithPageFields" parameterType="PortalsmslogsQuery"
+		resultType="Portalsmslogs">
+		<include refid="portalsmslogsSelector" />
+		<include refid="portalsmslogsListWhere" />
+		<include refid="portalsmslogsListOrder" />
+		<include refid="portalsmslogsListLimit" />
+	</select>
+	<select id="$getPortalsmslogsListFields" parameterType="PortalsmslogsQuery"
+		resultType="Portalsmslogs">
+		<include refid="portalsmslogsSelector" />
+		<include refid="portalsmslogsListWhere" />
+		<include refid="portalsmslogsListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPortalsmslogs" parameterType="Portalsmslogs">
+		INSERT INTO portal_smslogs
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="info != null">
+					info,
+			</if>
+			<if test="sendDate != null">
+					sendDate,
+			</if>
+			<if test="phone != null">
+					phone,
+			</if>
+			<if test="sid != null">
+					sid,
+			</if>
+			<if test="type != null">
+					type,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="info != null">
+	 #{info},
+			</if>
+			<if test="sendDate != null">
+	 #{sendDate},
+			</if>
+			<if test="phone != null">
+	 #{phone},
+			</if>
+			<if test="sid != null">
+	 #{sid},
+			</if>
+			<if test="type != null">
+	 #{type},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

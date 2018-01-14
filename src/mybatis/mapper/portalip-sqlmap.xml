@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PortalipDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="portalip" type="Portalip">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="description" column="description" />
+		<result property="start" column="start" />
+		<result property="end" column="end" />
+		<result property="web" column="web" />
+		<result property="count" column="count" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="portalipSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,name,description,start,end,web,count
+			</if>
+		
+		FROM portal_ip
+	</sql>
+	<sql id="portalipListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="name != null">
+			 and 
+			<if test="nameLike == 0">
+				name=#{name}
+			</if>
+			<if test="nameLike == 1">
+				name like CONCAT('%','${name}','%')
+			</if>
+			</if>
+		    <if test="description != null">
+			 and 
+			<if test="descriptionLike == 0">
+				description=#{description}
+			</if>
+			<if test="descriptionLike == 1">
+				description like CONCAT('%','${description}','%')
+			</if>
+			</if>
+		    <if test="start != null">
+			 and 
+			<if test="startLike == 0">
+				start=#{start}
+			</if>
+			<if test="startLike == 1">
+				start like CONCAT('%','${start}','%')
+			</if>
+			</if>
+		    <if test="end != null">
+			 and 
+			<if test="endLike == 0">
+				end=#{end}
+			</if>
+			<if test="endLike == 1">
+				end like CONCAT('%','${end}','%')
+			</if>
+			</if>
+		    <if test="web != null">
+			 and 
+				web=#{web}
+			</if>
+		    <if test="count != null">
+			 and 
+				count=#{count}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="portalipListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="portalipListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPortalipByKey" resultMap="portalip" parameterType="hashMap">
+		SELECT id,name,description,start,end,web,count FROM portal_ip
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getPortalipByKeys" resultMap="portalip"
+		parameterType="ArrayList">
+		SELECT id,name,description,start,end,web,count FROM portal_ip
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM portal_ip
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Portalip">
+		DELETE FROM portal_ip
+		<include refid="portalipListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM portal_ip
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+	
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteAll">
+		DELETE FROM portal_ip
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePortalipByKey" parameterType="Portalip">
+		UPDATE portal_ip
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="name != null">
+			name = #{name},
+		</if>
+		<if test="description != null">
+			description = #{description},
+		</if>
+		<if test="start != null">
+			start = #{start},
+		</if>
+		<if test="end != null">
+			end = #{end},
+		</if>
+		<if test="web != null">
+			web = #{web},
+		</if>
+		<if test="count != null">
+			count = #{count},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePortalipByKeyAll" parameterType="Portalip">
+		UPDATE portal_ip
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			name = #{name},
+			description = #{description},
+			start = #{start},
+			end = #{end},
+			web = #{web},
+			count = #{count},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getPortalipListWithPage" parameterType="PortalipQuery"
+		resultMap="portalip">
+		<include refid="portalipSelector" />
+		<include refid="portalipListWhere" />
+		<include refid="portalipListOrder" />
+		<include refid="portalipListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPortalipListCount" parameterType="PortalipQuery"
+		resultType="int">
+		SELECT count(1) FROM portal_ip
+		<include refid="portalipListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPortalipList" parameterType="PortalipQuery"
+		resultMap="portalip">
+		<include refid="portalipSelector" />
+		<include refid="portalipListWhere" />
+		<include refid="portalipListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPortalipListWithPageFields" parameterType="PortalipQuery"
+		resultType="Portalip">
+		<include refid="portalipSelector" />
+		<include refid="portalipListWhere" />
+		<include refid="portalipListOrder" />
+		<include refid="portalipListLimit" />
+	</select>
+	<select id="$getPortalipListFields" parameterType="PortalipQuery"
+		resultType="Portalip">
+		<include refid="portalipSelector" />
+		<include refid="portalipListWhere" />
+		<include refid="portalipListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPortalip" parameterType="Portalip">
+		INSERT INTO portal_ip
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="name != null">
+					name,
+			</if>
+			<if test="description != null">
+					description,
+			</if>
+			<if test="start != null">
+					start,
+			</if>
+			<if test="end != null">
+					end,
+			</if>
+			<if test="web != null">
+					web,
+			</if>
+			<if test="count != null">
+					count,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="name != null">
+	 #{name},
+			</if>
+			<if test="description != null">
+	 #{description},
+			</if>
+			<if test="start != null">
+	 #{start},
+			</if>
+			<if test="end != null">
+	 #{end},
+			</if>
+			<if test="web != null">
+	 #{web},
+			</if>
+			<if test="count != null">
+	 #{count},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

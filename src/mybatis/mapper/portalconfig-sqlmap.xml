@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PortalconfigDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="portalconfig" type="Portalconfig">
+		<result property="id" column="id" />
+		<result property="bas" column="bas" />
+		<result property="basname" column="basname" />
+		<result property="basIp" column="bas_ip" />
+		<result property="basPort" column="bas_port" />
+		<result property="portalVer" column="portalVer" />
+		<result property="authType" column="authType" />
+		<result property="sharedSecret" column="sharedSecret" />
+		<result property="basUser" column="bas_user" />
+		<result property="basPwd" column="bas_pwd" />
+		<result property="timeoutSec" column="timeoutSec" />
+		<result property="isPortalCheck" column="isPortalCheck" />
+		<result property="isOut" column="isOut" />
+		<result property="authInterface" column="auth_interface" />
+		<result property="isComputer" column="isComputer" />
+		<result property="web" column="web" />
+		<result property="isdebug" column="isdebug" />
+		<result property="lateAuth" column="lateAuth" />
+		<result property="lateAuthTime" column="lateAuthTime" />
+		<result property="isNtf" column="isNtf" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="portalconfigSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,bas,basname,bas_ip,bas_port,portalVer,authType,sharedSecret,bas_user,bas_pwd,timeoutSec,isPortalCheck,isOut,auth_interface,isComputer,web,isdebug,lateAuth,lateAuthTime,isNtf
+			</if>
+		
+		FROM portal_config
+	</sql>
+	<sql id="portalconfigListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="bas != null">
+			 and 
+			<if test="basLike == 0">
+				bas=#{bas}
+			</if>
+			<if test="basLike == 1">
+				bas like CONCAT('%','${bas}','%')
+			</if>
+			</if>
+		    <if test="basname != null">
+			 and 
+			<if test="basnameLike == 0">
+				basname=#{basname}
+			</if>
+			<if test="basnameLike == 1">
+				basname like CONCAT('%','${basname}','%')
+			</if>
+			</if>
+		    <if test="basIp != null">
+			 and 
+			<if test="basIpLike == 0">
+				bas_ip=#{basIp}
+			</if>
+			<if test="basIpLike == 1">
+				bas_ip like CONCAT('%','${basIp}','%')
+			</if>
+			</if>
+		    <if test="basPort != null">
+			 and 
+			<if test="basPortLike == 0">
+				bas_port=#{basPort}
+			</if>
+			<if test="basPortLike == 1">
+				bas_port like CONCAT('%','${basPort}','%')
+			</if>
+			</if>
+		    <if test="portalVer != null">
+			 and 
+			<if test="portalVerLike == 0">
+				portalVer=#{portalVer}
+			</if>
+			<if test="portalVerLike == 1">
+				portalVer like CONCAT('%','${portalVer}','%')
+			</if>
+			</if>
+		    <if test="authType != null">
+			 and 
+			<if test="authTypeLike == 0">
+				authType=#{authType}
+			</if>
+			<if test="authTypeLike == 1">
+				authType like CONCAT('%','${authType}','%')
+			</if>
+			</if>
+		    <if test="sharedSecret != null">
+			 and 
+			<if test="sharedSecretLike == 0">
+				sharedSecret=#{sharedSecret}
+			</if>
+			<if test="sharedSecretLike == 1">
+				sharedSecret like CONCAT('%','${sharedSecret}','%')
+			</if>
+			</if>
+		    <if test="basUser != null">
+			 and 
+			<if test="basUserLike == 0">
+				bas_user=#{basUser}
+			</if>
+			<if test="basUserLike == 1">
+				bas_user like CONCAT('%','${basUser}','%')
+			</if>
+			</if>
+		    <if test="basPwd != null">
+			 and 
+			<if test="basPwdLike == 0">
+				bas_pwd=#{basPwd}
+			</if>
+			<if test="basPwdLike == 1">
+				bas_pwd like CONCAT('%','${basPwd}','%')
+			</if>
+			</if>
+		    <if test="timeoutSec != null">
+			 and 
+			<if test="timeoutSecLike == 0">
+				timeoutSec=#{timeoutSec}
+			</if>
+			<if test="timeoutSecLike == 1">
+				timeoutSec like CONCAT('%','${timeoutSec}','%')
+			</if>
+			</if>
+		    <if test="isPortalCheck != null">
+			 and 
+			<if test="isPortalCheckLike == 0">
+				isPortalCheck=#{isPortalCheck}
+			</if>
+			<if test="isPortalCheckLike == 1">
+				isPortalCheck like CONCAT('%','${isPortalCheck}','%')
+			</if>
+			</if>
+		    <if test="isOut != null">
+			 and 
+			<if test="isOutLike == 0">
+				isOut=#{isOut}
+			</if>
+			<if test="isOutLike == 1">
+				isOut like CONCAT('%','${isOut}','%')
+			</if>
+			</if>
+		    <if test="authInterface != null">
+			 and 
+			<if test="authInterfaceLike == 0">
+				auth_interface=#{authInterface}
+			</if>
+			<if test="authInterfaceLike == 1">
+				auth_interface like CONCAT('%','${authInterface}','%')
+			</if>
+			</if>
+		    <if test="isComputer != null">
+			 and 
+			<if test="isComputerLike == 0">
+				isComputer=#{isComputer}
+			</if>
+			<if test="isComputerLike == 1">
+				isComputer like CONCAT('%','${isComputer}','%')
+			</if>
+			</if>
+		    <if test="web != null">
+			 and 
+				web=#{web}
+			</if>
+		    <if test="isdebug != null">
+			 and 
+			<if test="isdebugLike == 0">
+				isdebug=#{isdebug}
+			</if>
+			<if test="isdebugLike == 1">
+				isdebug like CONCAT('%','${isdebug}','%')
+			</if>
+			</if>
+		    <if test="lateAuth != null">
+			 and 
+				lateAuth=#{lateAuth}
+			</if>
+		    <if test="lateAuthTime != null">
+			 and 
+				lateAuthTime=#{lateAuthTime}
+			</if>
+		    <if test="isNtf != null">
+			 and 
+				isNtf=#{isNtf}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="portalconfigListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="portalconfigListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPortalconfigByKey" resultMap="portalconfig" parameterType="hashMap">
+		SELECT id,bas,basname,bas_ip,bas_port,portalVer,authType,sharedSecret,bas_user,bas_pwd,timeoutSec,isPortalCheck,isOut,auth_interface,isComputer,web,isdebug,lateAuth,lateAuthTime,isNtf FROM portal_config
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getPortalconfigByKeys" resultMap="portalconfig"
+		parameterType="ArrayList">
+		SELECT id,bas,basname,bas_ip,bas_port,portalVer,authType,sharedSecret,bas_user,bas_pwd,timeoutSec,isPortalCheck,isOut,auth_interface,isComputer,web,isdebug,lateAuth,lateAuthTime,isNtf FROM portal_config
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM portal_config
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Portalconfig">
+		DELETE FROM portal_config
+		<include refid="portalconfigListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM portal_config
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+	
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteAll">
+		DELETE FROM portal_config
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePortalconfigByKey" parameterType="Portalconfig">
+		UPDATE portal_config
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="bas != null">
+			bas = #{bas},
+		</if>
+		<if test="basname != null">
+			basname = #{basname},
+		</if>
+		<if test="basIp != null">
+			bas_ip = #{basIp},
+		</if>
+		<if test="basPort != null">
+			bas_port = #{basPort},
+		</if>
+		<if test="portalVer != null">
+			portalVer = #{portalVer},
+		</if>
+		<if test="authType != null">
+			authType = #{authType},
+		</if>
+		<if test="sharedSecret != null">
+			sharedSecret = #{sharedSecret},
+		</if>
+		<if test="basUser != null">
+			bas_user = #{basUser},
+		</if>
+		<if test="basPwd != null">
+			bas_pwd = #{basPwd},
+		</if>
+		<if test="timeoutSec != null">
+			timeoutSec = #{timeoutSec},
+		</if>
+		<if test="isPortalCheck != null">
+			isPortalCheck = #{isPortalCheck},
+		</if>
+		<if test="isOut != null">
+			isOut = #{isOut},
+		</if>
+		<if test="authInterface != null">
+			auth_interface = #{authInterface},
+		</if>
+		<if test="isComputer != null">
+			isComputer = #{isComputer},
+		</if>
+		<if test="web != null">
+			web = #{web},
+		</if>
+		<if test="isdebug != null">
+			isdebug = #{isdebug},
+		</if>
+		<if test="lateAuth != null">
+			lateAuth = #{lateAuth},
+		</if>
+		<if test="lateAuthTime != null">
+			lateAuthTime = #{lateAuthTime},
+		</if>
+		<if test="isNtf != null">
+			isNtf = #{isNtf},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePortalconfigByKeyAll" parameterType="Portalconfig">
+		UPDATE portal_config
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			bas = #{bas},
+			basname = #{basname},
+			bas_ip = #{basIp},
+			bas_port = #{basPort},
+			portalVer = #{portalVer},
+			authType = #{authType},
+			sharedSecret = #{sharedSecret},
+			bas_user = #{basUser},
+			bas_pwd = #{basPwd},
+			timeoutSec = #{timeoutSec},
+			isPortalCheck = #{isPortalCheck},
+			isOut = #{isOut},
+			auth_interface = #{authInterface},
+			isComputer = #{isComputer},
+			web = #{web},
+			isdebug = #{isdebug},
+			lateAuth = #{lateAuth},
+			lateAuthTime = #{lateAuthTime},
+			isNtf = #{isNtf},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getPortalconfigListWithPage" parameterType="PortalconfigQuery"
+		resultMap="portalconfig">
+		<include refid="portalconfigSelector" />
+		<include refid="portalconfigListWhere" />
+		<include refid="portalconfigListOrder" />
+		<include refid="portalconfigListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPortalconfigListCount" parameterType="PortalconfigQuery"
+		resultType="int">
+		SELECT count(1) FROM portal_config
+		<include refid="portalconfigListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPortalconfigList" parameterType="PortalconfigQuery"
+		resultMap="portalconfig">
+		<include refid="portalconfigSelector" />
+		<include refid="portalconfigListWhere" />
+		<include refid="portalconfigListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPortalconfigListWithPageFields" parameterType="PortalconfigQuery"
+		resultType="Portalconfig">
+		<include refid="portalconfigSelector" />
+		<include refid="portalconfigListWhere" />
+		<include refid="portalconfigListOrder" />
+		<include refid="portalconfigListLimit" />
+	</select>
+	<select id="$getPortalconfigListFields" parameterType="PortalconfigQuery"
+		resultType="Portalconfig">
+		<include refid="portalconfigSelector" />
+		<include refid="portalconfigListWhere" />
+		<include refid="portalconfigListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPortalconfig" parameterType="Portalconfig">
+		INSERT INTO portal_config
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="bas != null">
+					bas,
+			</if>
+			<if test="basname != null">
+					basname,
+			</if>
+			<if test="basIp != null">
+					bas_ip,
+			</if>
+			<if test="basPort != null">
+					bas_port,
+			</if>
+			<if test="portalVer != null">
+					portalVer,
+			</if>
+			<if test="authType != null">
+					authType,
+			</if>
+			<if test="sharedSecret != null">
+					sharedSecret,
+			</if>
+			<if test="basUser != null">
+					bas_user,
+			</if>
+			<if test="basPwd != null">
+					bas_pwd,
+			</if>
+			<if test="timeoutSec != null">
+					timeoutSec,
+			</if>
+			<if test="isPortalCheck != null">
+					isPortalCheck,
+			</if>
+			<if test="isOut != null">
+					isOut,
+			</if>
+			<if test="authInterface != null">
+					auth_interface,
+			</if>
+			<if test="isComputer != null">
+					isComputer,
+			</if>
+			<if test="web != null">
+					web,
+			</if>
+			<if test="isdebug != null">
+					isdebug,
+			</if>
+			<if test="lateAuth != null">
+					lateAuth,
+			</if>
+			<if test="lateAuthTime != null">
+					lateAuthTime,
+			</if>
+			<if test="isNtf != null">
+					isNtf,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="bas != null">
+	 #{bas},
+			</if>
+			<if test="basname != null">
+	 #{basname},
+			</if>
+			<if test="basIp != null">
+	 #{basIp},
+			</if>
+			<if test="basPort != null">
+	 #{basPort},
+			</if>
+			<if test="portalVer != null">
+	 #{portalVer},
+			</if>
+			<if test="authType != null">
+	 #{authType},
+			</if>
+			<if test="sharedSecret != null">
+	 #{sharedSecret},
+			</if>
+			<if test="basUser != null">
+	 #{basUser},
+			</if>
+			<if test="basPwd != null">
+	 #{basPwd},
+			</if>
+			<if test="timeoutSec != null">
+	 #{timeoutSec},
+			</if>
+			<if test="isPortalCheck != null">
+	 #{isPortalCheck},
+			</if>
+			<if test="isOut != null">
+	 #{isOut},
+			</if>
+			<if test="authInterface != null">
+	 #{authInterface},
+			</if>
+			<if test="isComputer != null">
+	 #{isComputer},
+			</if>
+			<if test="web != null">
+	 #{web},
+			</if>
+			<if test="isdebug != null">
+	 #{isdebug},
+			</if>
+			<if test="lateAuth != null">
+	 #{lateAuth},
+			</if>
+			<if test="lateAuthTime != null">
+	 #{lateAuthTime},
+			</if>
+			<if test="isNtf != null">
+	 #{isNtf},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

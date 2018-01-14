@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PortalapDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="portalap" type="Portalap">
+		<result property="id" column="id" />
+		<result property="basid" column="basid" />
+		<result property="ip" column="ip" />
+		<result property="mac" column="mac" />
+		<result property="address" column="address" />
+		<result property="basip" column="basip" />
+		<result property="x" column="x" />
+		<result property="y" column="y" />
+		<result property="des" column="des" />
+		<result property="name" column="name" />
+		<result property="web" column="web" />
+		<result property="count" column="count" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="portalapSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,basid,ip,mac,address,basip,x,y,des,name,web,count
+			</if>
+		
+		FROM portal_ap
+	</sql>
+	<sql id="portalapListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="basid != null">
+			 and 
+				basid=#{basid}
+			</if>
+		    <if test="ip != null">
+			 and 
+			<if test="ipLike == 0">
+				ip=#{ip}
+			</if>
+			<if test="ipLike == 1">
+				ip like CONCAT('%','${ip}','%')
+			</if>
+			</if>
+		    <if test="mac != null">
+			 and 
+			<if test="macLike == 0">
+				mac=#{mac}
+			</if>
+			<if test="macLike == 1">
+				mac like CONCAT('%','${mac}','%')
+			</if>
+			</if>
+		    <if test="address != null">
+			 and 
+			<if test="addressLike == 0">
+				address=#{address}
+			</if>
+			<if test="addressLike == 1">
+				address like CONCAT('%','${address}','%')
+			</if>
+			</if>
+		    <if test="basip != null">
+			 and 
+			<if test="basipLike == 0">
+				basip=#{basip}
+			</if>
+			<if test="basipLike == 1">
+				basip like CONCAT('%','${basip}','%')
+			</if>
+			</if>
+		    <if test="x != null">
+			 and 
+			<if test="xLike == 0">
+				x=#{x}
+			</if>
+			<if test="xLike == 1">
+				x like CONCAT('%','${x}','%')
+			</if>
+			</if>
+		    <if test="y != null">
+			 and 
+			<if test="yLike == 0">
+				y=#{y}
+			</if>
+			<if test="yLike == 1">
+				y like CONCAT('%','${y}','%')
+			</if>
+			</if>
+		    <if test="des != null">
+			 and 
+			<if test="desLike == 0">
+				des=#{des}
+			</if>
+			<if test="desLike == 1">
+				des like CONCAT('%','${des}','%')
+			</if>
+			</if>
+		    <if test="name != null">
+			 and 
+			<if test="nameLike == 0">
+				name=#{name}
+			</if>
+			<if test="nameLike == 1">
+				name like CONCAT('%','${name}','%')
+			</if>
+			</if>
+		    <if test="web != null">
+			 and 
+				web=#{web}
+			</if>
+		    <if test="count != null">
+			 and 
+				count=#{count}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="portalapListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="portalapListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPortalapByKey" resultMap="portalap" parameterType="hashMap">
+		SELECT id,basid,ip,mac,address,basip,x,y,des,name,web,count FROM portal_ap
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getPortalapByKeys" resultMap="portalap"
+		parameterType="ArrayList">
+		SELECT id,basid,ip,mac,address,basip,x,y,des,name,web,count FROM portal_ap
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM portal_ap
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Portalap">
+		DELETE FROM portal_ap
+		<include refid="portalapListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM portal_ap
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePortalapByKey" parameterType="Portalap">
+		UPDATE portal_ap
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="basid != null">
+			basid = #{basid},
+		</if>
+		<if test="ip != null">
+			ip = #{ip},
+		</if>
+		<if test="mac != null">
+			mac = #{mac},
+		</if>
+		<if test="address != null">
+			address = #{address},
+		</if>
+		<if test="basip != null">
+			basip = #{basip},
+		</if>
+		<if test="x != null">
+			x = #{x},
+		</if>
+		<if test="y != null">
+			y = #{y},
+		</if>
+		<if test="des != null">
+			des = #{des},
+		</if>
+		<if test="name != null">
+			name = #{name},
+		</if>
+		<if test="web != null">
+			web = #{web},
+		</if>
+		<if test="count != null">
+			count = #{count},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePortalapByKeyAll" parameterType="Portalap">
+		UPDATE portal_ap
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			basid = #{basid},
+			ip = #{ip},
+			mac = #{mac},
+			address = #{address},
+			basip = #{basip},
+			x = #{x},
+			y = #{y},
+			des = #{des},
+			name = #{name},
+			web = #{web},
+			count = #{count},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getPortalapListWithPage" parameterType="PortalapQuery"
+		resultMap="portalap">
+		<include refid="portalapSelector" />
+		<include refid="portalapListWhere" />
+		<include refid="portalapListOrder" />
+		<include refid="portalapListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPortalapListCount" parameterType="PortalapQuery"
+		resultType="int">
+		SELECT count(1) FROM portal_ap
+		<include refid="portalapListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPortalapList" parameterType="PortalapQuery"
+		resultMap="portalap">
+		<include refid="portalapSelector" />
+		<include refid="portalapListWhere" />
+		<include refid="portalapListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPortalapListWithPageFields" parameterType="PortalapQuery"
+		resultType="Portalap">
+		<include refid="portalapSelector" />
+		<include refid="portalapListWhere" />
+		<include refid="portalapListOrder" />
+		<include refid="portalapListLimit" />
+	</select>
+	<select id="$getPortalapListFields" parameterType="PortalapQuery"
+		resultType="Portalap">
+		<include refid="portalapSelector" />
+		<include refid="portalapListWhere" />
+		<include refid="portalapListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPortalap" parameterType="Portalap">
+		INSERT INTO portal_ap
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="basid != null">
+					basid,
+			</if>
+			<if test="ip != null">
+					ip,
+			</if>
+			<if test="mac != null">
+					mac,
+			</if>
+			<if test="address != null">
+					address,
+			</if>
+			<if test="basip != null">
+					basip,
+			</if>
+			<if test="x != null">
+					x,
+			</if>
+			<if test="y != null">
+					y,
+			</if>
+			<if test="des != null">
+					des,
+			</if>
+			<if test="name != null">
+					name,
+			</if>
+			<if test="web != null">
+					web,
+			</if>
+			<if test="count != null">
+					count,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="basid != null">
+	 #{basid},
+			</if>
+			<if test="ip != null">
+	 #{ip},
+			</if>
+			<if test="mac != null">
+	 #{mac},
+			</if>
+			<if test="address != null">
+	 #{address},
+			</if>
+			<if test="basip != null">
+	 #{basip},
+			</if>
+			<if test="x != null">
+	 #{x},
+			</if>
+			<if test="y != null">
+	 #{y},
+			</if>
+			<if test="des != null">
+	 #{des},
+			</if>
+			<if test="name != null">
+	 #{name},
+			</if>
+			<if test="web != null">
+	 #{web},
+			</if>
+			<if test="count != null">
+	 #{count},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

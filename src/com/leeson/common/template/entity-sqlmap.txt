@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="${dao_p}.${Entity}Dao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="${entity}" type="${Entity}">
+	<#list fields as field>
+		<result property="<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>" column="${field.name}" />
+	</#list>
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="${entity}Selector">
+		SELECT
+			<if test="fields != null">
+				<@SEl 'fields'/>
+			</if>
+			<if test="fields == null">
+			<#list fields as field><#if field_has_next>${field.name},<#else>${field.name}</#if></#list>
+			</if>
+		
+		FROM ${table}
+	</sql>
+	<sql id="${entity}ListWhere">
+		<where>
+		<#list fields as field>
+		    <if test="<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list> != null">
+			 and 
+			<#if field.fieldType?contains("bigint") || field.fieldType?contains("int") || field.fieldType?contains("datetime") || field.fieldType?contains("binary") || field.fieldType?contains("blob") || field.fieldType?contains("float") || field.fieldType?contains("double")>
+				${field.name}=${r'#{'}<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>}
+			<#else>
+			<if test="<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>Like == 0">
+				${field.name}=${r'#{'}<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>}
+			</if>
+			<if test="<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>Like == 1">
+				${field.name} like CONCAT('%','${r'${'}<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>}','%')
+			</if>
+			</#if>
+			</if>
+		</#list>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="${entity}ListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				<@SEl 'orderField.fieldName'/> <@SEl 'orderField.order'/>
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="${entity}ListLimit">
+		<if test="startRow != null">
+			limit <@JEl 'startRow'/>,<@JEl 'pageSize'/>
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="get${Entity}ByKey" resultMap="${entity}" parameterType="hashMap">
+		SELECT <#list fields as field><#if field_has_next>${field.name},<#else>${field.name}</#if></#list> FROM ${table}
+		WHERE
+		${fields[0].name}=<@JEl 'id'/>
+	</select>
+	<select id="get${Entity}ByKeys" resultMap="${entity}"
+		parameterType="ArrayList">
+		SELECT <#list fields as field><#if field_has_next>${field.name},<#else>${field.name}</#if></#list> FROM ${table}
+		WHERE
+		${fields[0].name} in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+			<@JEl 'id'/>
+		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM ${table}
+		WHERE
+		${fields[0].name}=<@JEl 'id'/>
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="${Entity}">
+		DELETE FROM ${table}
+		<include refid="${entity}ListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM ${table}
+		WHERE
+		${fields[0].name} in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+			<@JEl 'id'/>
+		</foreach>
+	</delete>
+	
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteAll">
+		DELETE FROM ${table}
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="update${Entity}ByKey" parameterType="${Entity}">
+		UPDATE ${table}
+		<set>
+		<trim suffixOverrides=",">
+		<#list fields as field>
+		<if test="<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list> != null">
+			${field.name} = ${r'#{'}<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>},
+		</if>
+		</#list>
+		</trim>
+		</set>
+		WHERE
+		${fields[0].name}=${r'#{'}<#list fields[0].name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="update${Entity}ByKeyAll" parameterType="${Entity}">
+		UPDATE ${table}
+		<set>
+		<trim suffixOverrides=",">
+		<#list fields as field>
+			${field.name} = ${r'#{'}<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>},
+		</#list>
+		</trim>
+		</set>
+		WHERE
+		${fields[0].name}=${r'#{'}<#list fields[0].name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>}
+	</update>
+	<!-- 分页 -->
+	<select id="get${Entity}ListWithPage" parameterType="${Entity}Query"
+		resultMap="${entity}">
+		<include refid="${entity}Selector" />
+		<include refid="${entity}ListWhere" />
+		<include refid="${entity}ListOrder" />
+		<include refid="${entity}ListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="get${Entity}ListCount" parameterType="${Entity}Query"
+		resultType="int">
+		SELECT count(1) FROM ${table}
+		<include refid="${entity}ListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="get${Entity}List" parameterType="${Entity}Query"
+		resultMap="${entity}">
+		<include refid="${entity}Selector" />
+		<include refid="${entity}ListWhere" />
+		<include refid="${entity}ListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="get${Entity}ListWithPageFields" parameterType="${Entity}Query"
+		resultType="${Entity}">
+		<include refid="${entity}Selector" />
+		<include refid="${entity}ListWhere" />
+		<include refid="${entity}ListOrder" />
+		<include refid="${entity}ListLimit" />
+	</select>
+	<select id="$get${Entity}ListFields" parameterType="${Entity}Query"
+		resultType="${Entity}">
+		<include refid="${entity}Selector" />
+		<include refid="${entity}ListWhere" />
+		<include refid="${entity}ListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="add${Entity}" parameterType="${Entity}">
+		INSERT INTO ${table}
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		<#list fields as field>
+			<if test="<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list> != null">
+					${field.name},
+			</if>
+		</#list>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		<#list fields as field>
+			<if test="<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list> != null">
+	 ${r'#{'}<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>},
+			</if>
+		</#list>
+		</trim>
+		<selectKey resultType="<@fieldType type=fields[0].fieldType/>" keyProperty="<#list fields[0].name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>">
+			SELECT LAST_INSERT_ID() AS ${fields[0].name?upper_case}
+		</selectKey>
+	</insert>
+</mapper>
+<#macro fieldType type>
+	<#if type?contains("bigint")>
+	Long<#t/>
+	<#elseif type?contains("int")>
+	Integer<#t/>
+	<#elseif type?contains("datetime")>
+	Date<#t/>
+	<#elseif type?contains("binary") || type?contains("blob")>
+	Byte[]<#t/>
+	<#elseif type?contains("float")>
+	Float<#t/>
+	<#elseif type?contains("double")>
+	Double<#t/>
+	<#else>
+	String<#t/>
+	</#if>
+</#macro>
+<#macro JEl value>${r"#{"}${value}}</#macro>
+<#macro SEl value>${r"${"}${value}}</#macro>

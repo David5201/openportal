@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PortalorderDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="portalorder" type="Portalorder">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="description" column="description" />
+		<result property="payTime" column="payTime" />
+		<result property="payType" column="payType" />
+		<result property="state" column="state" />
+		<result property="cdKey" column="cdKey" />
+		<result property="categoryType" column="categoryType" />
+		<result property="accountName" column="accountName" />
+		<result property="accountId" column="accountId" />
+		<result property="payDate" column="payDate" />
+		<result property="userDel" column="userDel" />
+		<result property="accountDel" column="accountDel" />
+		<result property="money" column="money" />
+		<result property="buyDate" column="buyDate" />
+		<result property="payby" column="payby" />
+		<result property="tradeno" column="tradeno" />
+		<result property="buyer" column="buyer" />
+		<result property="seller" column="seller" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="portalorderSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,name,description,payTime,payType,state,cdKey,categoryType,accountName,accountId,payDate,userDel,accountDel,money,buyDate,payby,tradeno,buyer,seller
+			</if>
+		
+		FROM portal_order
+	</sql>
+	<sql id="portalorderListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="name != null">
+			 and 
+			<if test="nameLike == 0">
+				name=#{name}
+			</if>
+			<if test="nameLike == 1">
+				name like CONCAT('%','${name}','%')
+			</if>
+			</if>
+		    <if test="description != null">
+			 and 
+			<if test="descriptionLike == 0">
+				description=#{description}
+			</if>
+			<if test="descriptionLike == 1">
+				description like CONCAT('%','${description}','%')
+			</if>
+			</if>
+		    <if test="payTime != null">
+			 and 
+				payTime=#{payTime}
+			</if>
+		    <if test="payType != null">
+			 and 
+			<if test="payTypeLike == 0">
+				payType=#{payType}
+			</if>
+			<if test="payTypeLike == 1">
+				payType like CONCAT('%','${payType}','%')
+			</if>
+			</if>
+		    <if test="state != null">
+			 and 
+			<if test="stateLike == 0">
+				state=#{state}
+			</if>
+			<if test="stateLike == 1">
+				state like CONCAT('%','${state}','%')
+			</if>
+			</if>
+		    <if test="cdKey != null">
+			 and 
+			<if test="cdKeyLike == 0">
+				cdKey=#{cdKey}
+			</if>
+			<if test="cdKeyLike == 1">
+				cdKey like CONCAT('%','${cdKey}','%')
+			</if>
+			</if>
+		    <if test="categoryType != null">
+			 and 
+			<if test="categoryTypeLike == 0">
+				categoryType=#{categoryType}
+			</if>
+			<if test="categoryTypeLike == 1">
+				categoryType like CONCAT('%','${categoryType}','%')
+			</if>
+			</if>
+		    <if test="accountName != null">
+			 and 
+			<if test="accountNameLike == 0">
+				accountName=#{accountName}
+			</if>
+			<if test="accountNameLike == 1">
+				accountName like CONCAT('%','${accountName}','%')
+			</if>
+			</if>
+		    <if test="accountId != null">
+			 and 
+				accountId=#{accountId}
+			</if>
+		    <if test="payDate != null">
+			 and 
+				payDate=#{payDate}
+			</if>
+		    <if test="userDel != null">
+			 and 
+				userDel=#{userDel}
+			</if>
+		    <if test="accountDel != null">
+			 and 
+				accountDel=#{accountDel}
+			</if>
+		    <if test="money != null">
+			 and 
+				money=#{money}
+			</if>
+		    <if test="buyDate != null">
+			 and 
+				buyDate=#{buyDate}
+			</if>
+		    <if test="payby != null">
+			 and 
+				payby=#{payby}
+			</if>
+		    <if test="tradeno != null">
+			 and 
+			<if test="tradenoLike == 0">
+				tradeno=#{tradeno}
+			</if>
+			<if test="tradenoLike == 1">
+				tradeno like CONCAT('%','${tradeno}','%')
+			</if>
+			</if>
+		    <if test="buyer != null">
+			 and 
+			<if test="buyerLike == 0">
+				buyer=#{buyer}
+			</if>
+			<if test="buyerLike == 1">
+				buyer like CONCAT('%','${buyer}','%')
+			</if>
+			</if>
+		    <if test="seller != null">
+			 and 
+			<if test="sellerLike == 0">
+				seller=#{seller}
+			</if>
+			<if test="sellerLike == 1">
+				seller like CONCAT('%','${seller}','%')
+			</if>
+			</if>
+			
+			<if test="begin_time != null">
+			 and 
+				payDate &gt;= #{begin_time}
+			</if>
+		    <if test="end_time != null">
+			 and 
+				payDate &lt;= #{end_time}
+			</if>
+			
+			<if test="begin_time1 != null">
+			 and 
+				buyDate &gt;= #{begin_time1}
+			</if>
+		    <if test="end_time1 != null">
+			 and 
+				buyDate &lt;= #{end_time1}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="portalorderListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="portalorderListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPortalorderByKey" resultMap="portalorder" parameterType="hashMap">
+		SELECT id,name,description,payTime,payType,state,cdKey,categoryType,accountName,accountId,payDate,userDel,accountDel,money,buyDate,payby,tradeno,buyer,seller FROM portal_order
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getPortalorderByKeys" resultMap="portalorder"
+		parameterType="ArrayList">
+		SELECT id,name,description,payTime,payType,state,cdKey,categoryType,accountName,accountId,payDate,userDel,accountDel,money,buyDate,payby,tradeno,buyer,seller FROM portal_order
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM portal_order
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Portalorder">
+		DELETE FROM portal_order
+		<include refid="portalorderListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM portal_order
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+	
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteAll">
+		DELETE FROM portal_order
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePortalorderByKey" parameterType="Portalorder">
+		UPDATE portal_order
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="name != null">
+			name = #{name},
+		</if>
+		<if test="description != null">
+			description = #{description},
+		</if>
+		<if test="payTime != null">
+			payTime = #{payTime},
+		</if>
+		<if test="payType != null">
+			payType = #{payType},
+		</if>
+		<if test="state != null">
+			state = #{state},
+		</if>
+		<if test="cdKey != null">
+			cdKey = #{cdKey},
+		</if>
+		<if test="categoryType != null">
+			categoryType = #{categoryType},
+		</if>
+		<if test="accountName != null">
+			accountName = #{accountName},
+		</if>
+		<if test="accountId != null">
+			accountId = #{accountId},
+		</if>
+		<if test="payDate != null">
+			payDate = #{payDate},
+		</if>
+		<if test="userDel != null">
+			userDel = #{userDel},
+		</if>
+		<if test="accountDel != null">
+			accountDel = #{accountDel},
+		</if>
+		<if test="money != null">
+			money = #{money},
+		</if>
+		<if test="buyDate != null">
+			buyDate = #{buyDate},
+		</if>
+		<if test="payby != null">
+			payby = #{payby},
+		</if>
+		<if test="tradeno != null">
+			tradeno = #{tradeno},
+		</if>
+		<if test="buyer != null">
+			buyer = #{buyer},
+		</if>
+		<if test="seller != null">
+			seller = #{seller},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePortalorderByKeyAll" parameterType="Portalorder">
+		UPDATE portal_order
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			name = #{name},
+			description = #{description},
+			payTime = #{payTime},
+			payType = #{payType},
+			state = #{state},
+			cdKey = #{cdKey},
+			categoryType = #{categoryType},
+			accountName = #{accountName},
+			accountId = #{accountId},
+			payDate = #{payDate},
+			userDel = #{userDel},
+			accountDel = #{accountDel},
+			money = #{money},
+			buyDate = #{buyDate},
+			payby = #{payby},
+			tradeno = #{tradeno},
+			buyer = #{buyer},
+			seller = #{seller},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getPortalorderListWithPage" parameterType="PortalorderQuery"
+		resultMap="portalorder">
+		<include refid="portalorderSelector" />
+		<include refid="portalorderListWhere" />
+		<include refid="portalorderListOrder" />
+		<include refid="portalorderListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPortalorderListCount" parameterType="PortalorderQuery"
+		resultType="int">
+		SELECT count(1) FROM portal_order
+		<include refid="portalorderListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPortalorderList" parameterType="PortalorderQuery"
+		resultMap="portalorder">
+		<include refid="portalorderSelector" />
+		<include refid="portalorderListWhere" />
+		<include refid="portalorderListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPortalorderListWithPageFields" parameterType="PortalorderQuery"
+		resultType="Portalorder">
+		<include refid="portalorderSelector" />
+		<include refid="portalorderListWhere" />
+		<include refid="portalorderListOrder" />
+		<include refid="portalorderListLimit" />
+	</select>
+	<select id="$getPortalorderListFields" parameterType="PortalorderQuery"
+		resultType="Portalorder">
+		<include refid="portalorderSelector" />
+		<include refid="portalorderListWhere" />
+		<include refid="portalorderListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPortalorder" parameterType="Portalorder">
+		INSERT INTO portal_order
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="name != null">
+					name,
+			</if>
+			<if test="description != null">
+					description,
+			</if>
+			<if test="payTime != null">
+					payTime,
+			</if>
+			<if test="payType != null">
+					payType,
+			</if>
+			<if test="state != null">
+					state,
+			</if>
+			<if test="cdKey != null">
+					cdKey,
+			</if>
+			<if test="categoryType != null">
+					categoryType,
+			</if>
+			<if test="accountName != null">
+					accountName,
+			</if>
+			<if test="accountId != null">
+					accountId,
+			</if>
+			<if test="payDate != null">
+					payDate,
+			</if>
+			<if test="userDel != null">
+					userDel,
+			</if>
+			<if test="accountDel != null">
+					accountDel,
+			</if>
+			<if test="money != null">
+					money,
+			</if>
+			<if test="buyDate != null">
+					buyDate,
+			</if>
+			<if test="payby != null">
+					payby,
+			</if>
+			<if test="tradeno != null">
+					tradeno,
+			</if>
+			<if test="buyer != null">
+					buyer,
+			</if>
+			<if test="seller != null">
+					seller,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="name != null">
+	 #{name},
+			</if>
+			<if test="description != null">
+	 #{description},
+			</if>
+			<if test="payTime != null">
+	 #{payTime},
+			</if>
+			<if test="payType != null">
+	 #{payType},
+			</if>
+			<if test="state != null">
+	 #{state},
+			</if>
+			<if test="cdKey != null">
+	 #{cdKey},
+			</if>
+			<if test="categoryType != null">
+	 #{categoryType},
+			</if>
+			<if test="accountName != null">
+	 #{accountName},
+			</if>
+			<if test="accountId != null">
+	 #{accountId},
+			</if>
+			<if test="payDate != null">
+	 #{payDate},
+			</if>
+			<if test="userDel != null">
+	 #{userDel},
+			</if>
+			<if test="accountDel != null">
+	 #{accountDel},
+			</if>
+			<if test="money != null">
+	 #{money},
+			</if>
+			<if test="buyDate != null">
+	 #{buyDate},
+			</if>
+			<if test="payby != null">
+	 #{payby},
+			</if>
+			<if test="tradeno != null">
+	 #{tradeno},
+			</if>
+			<if test="buyer != null">
+	 #{buyer},
+			</if>
+			<if test="seller != null">
+	 #{seller},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.HistoryonlineDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="historyonline" type="Historyonline">
+		<result property="id" column="id" />
+		<result property="counts" column="counts" />
+		<result property="recDate" column="recDate" />
+		<result property="recYear" column="recYear" />
+		<result property="recMonth" column="recMonth" />
+		<result property="recDay" column="recDay" />
+		<result property="recWeek" column="recWeek" />
+		<result property="recTime" column="recTime" />
+		<result property="ex1" column="ex1" />
+		<result property="ex2" column="ex2" />
+		<result property="ex3" column="ex3" />
+		<result property="ex4" column="ex4" />
+		<result property="ex5" column="ex5" />
+		<result property="ex6" column="ex6" />
+		<result property="ex7" column="ex7" />
+		<result property="ex8" column="ex8" />
+		<result property="ex9" column="ex9" />
+		<result property="ex10" column="ex10" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="historyonlineSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,counts,recDate,recYear,recMonth,recDay,recWeek,recTime,ex1,ex2,ex3,ex4,ex5,ex6,ex7,ex8,ex9,ex10
+			</if>
+		
+		FROM historyonline
+	</sql>
+	<sql id="historyonlineListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="counts != null">
+			 and 
+				counts=#{counts}
+			</if>
+		    <if test="recDate != null">
+			 and 
+				recDate=#{recDate}
+			</if>
+		    <if test="recYear != null">
+			 and 
+				recYear=#{recYear}
+			</if>
+		    <if test="recMonth != null">
+			 and 
+				recMonth=#{recMonth}
+			</if>
+		    <if test="recDay != null">
+			 and 
+				recDay=#{recDay}
+			</if>
+		    <if test="recWeek != null">
+			 and 
+				recWeek=#{recWeek}
+			</if>
+		    <if test="recTime != null">
+			 and 
+				recTime=#{recTime}
+			</if>
+		    <if test="ex1 != null">
+			 and 
+			<if test="ex1Like == 0">
+				ex1=#{ex1}
+			</if>
+			<if test="ex1Like == 1">
+				ex1 like CONCAT('%','${ex1}','%')
+			</if>
+			</if>
+		    <if test="ex2 != null">
+			 and 
+			<if test="ex2Like == 0">
+				ex2=#{ex2}
+			</if>
+			<if test="ex2Like == 1">
+				ex2 like CONCAT('%','${ex2}','%')
+			</if>
+			</if>
+		    <if test="ex3 != null">
+			 and 
+			<if test="ex3Like == 0">
+				ex3=#{ex3}
+			</if>
+			<if test="ex3Like == 1">
+				ex3 like CONCAT('%','${ex3}','%')
+			</if>
+			</if>
+		    <if test="ex4 != null">
+			 and 
+			<if test="ex4Like == 0">
+				ex4=#{ex4}
+			</if>
+			<if test="ex4Like == 1">
+				ex4 like CONCAT('%','${ex4}','%')
+			</if>
+			</if>
+		    <if test="ex5 != null">
+			 and 
+			<if test="ex5Like == 0">
+				ex5=#{ex5}
+			</if>
+			<if test="ex5Like == 1">
+				ex5 like CONCAT('%','${ex5}','%')
+			</if>
+			</if>
+		    <if test="ex6 != null">
+			 and 
+			<if test="ex6Like == 0">
+				ex6=#{ex6}
+			</if>
+			<if test="ex6Like == 1">
+				ex6 like CONCAT('%','${ex6}','%')
+			</if>
+			</if>
+		    <if test="ex7 != null">
+			 and 
+			<if test="ex7Like == 0">
+				ex7=#{ex7}
+			</if>
+			<if test="ex7Like == 1">
+				ex7 like CONCAT('%','${ex7}','%')
+			</if>
+			</if>
+		    <if test="ex8 != null">
+			 and 
+			<if test="ex8Like == 0">
+				ex8=#{ex8}
+			</if>
+			<if test="ex8Like == 1">
+				ex8 like CONCAT('%','${ex8}','%')
+			</if>
+			</if>
+		    <if test="ex9 != null">
+			 and 
+			<if test="ex9Like == 0">
+				ex9=#{ex9}
+			</if>
+			<if test="ex9Like == 1">
+				ex9 like CONCAT('%','${ex9}','%')
+			</if>
+			</if>
+		    <if test="ex10 != null">
+			 and 
+			<if test="ex10Like == 0">
+				ex10=#{ex10}
+			</if>
+			<if test="ex10Like == 1">
+				ex10 like CONCAT('%','${ex10}','%')
+			</if>
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="historyonlineListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="historyonlineListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getHistoryonlineByKey" resultMap="historyonline" parameterType="hashMap">
+		SELECT id,counts,recDate,recYear,recMonth,recDay,recWeek,recTime,ex1,ex2,ex3,ex4,ex5,ex6,ex7,ex8,ex9,ex10 FROM historyonline
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getHistoryonlineByKeys" resultMap="historyonline"
+		parameterType="ArrayList">
+		SELECT id,counts,recDate,recYear,recMonth,recDay,recWeek,recTime,ex1,ex2,ex3,ex4,ex5,ex6,ex7,ex8,ex9,ex10 FROM historyonline
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM historyonline
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Historyonline">
+		DELETE FROM historyonline
+		<include refid="historyonlineListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM historyonline
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+	
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteAll">
+		DELETE FROM historyonline
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updateHistoryonlineByKey" parameterType="Historyonline">
+		UPDATE historyonline
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="counts != null">
+			counts = #{counts},
+		</if>
+		<if test="recDate != null">
+			recDate = #{recDate},
+		</if>
+		<if test="recYear != null">
+			recYear = #{recYear},
+		</if>
+		<if test="recMonth != null">
+			recMonth = #{recMonth},
+		</if>
+		<if test="recDay != null">
+			recDay = #{recDay},
+		</if>
+		<if test="recWeek != null">
+			recWeek = #{recWeek},
+		</if>
+		<if test="recTime != null">
+			recTime = #{recTime},
+		</if>
+		<if test="ex1 != null">
+			ex1 = #{ex1},
+		</if>
+		<if test="ex2 != null">
+			ex2 = #{ex2},
+		</if>
+		<if test="ex3 != null">
+			ex3 = #{ex3},
+		</if>
+		<if test="ex4 != null">
+			ex4 = #{ex4},
+		</if>
+		<if test="ex5 != null">
+			ex5 = #{ex5},
+		</if>
+		<if test="ex6 != null">
+			ex6 = #{ex6},
+		</if>
+		<if test="ex7 != null">
+			ex7 = #{ex7},
+		</if>
+		<if test="ex8 != null">
+			ex8 = #{ex8},
+		</if>
+		<if test="ex9 != null">
+			ex9 = #{ex9},
+		</if>
+		<if test="ex10 != null">
+			ex10 = #{ex10},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updateHistoryonlineByKeyAll" parameterType="Historyonline">
+		UPDATE historyonline
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			counts = #{counts},
+			recDate = #{recDate},
+			recYear = #{recYear},
+			recMonth = #{recMonth},
+			recDay = #{recDay},
+			recWeek = #{recWeek},
+			recTime = #{recTime},
+			ex1 = #{ex1},
+			ex2 = #{ex2},
+			ex3 = #{ex3},
+			ex4 = #{ex4},
+			ex5 = #{ex5},
+			ex6 = #{ex6},
+			ex7 = #{ex7},
+			ex8 = #{ex8},
+			ex9 = #{ex9},
+			ex10 = #{ex10},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getHistoryonlineListWithPage" parameterType="HistoryonlineQuery"
+		resultMap="historyonline">
+		<include refid="historyonlineSelector" />
+		<include refid="historyonlineListWhere" />
+		<include refid="historyonlineListOrder" />
+		<include refid="historyonlineListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getHistoryonlineListCount" parameterType="HistoryonlineQuery"
+		resultType="int">
+		SELECT count(1) FROM historyonline
+		<include refid="historyonlineListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getHistoryonlineList" parameterType="HistoryonlineQuery"
+		resultMap="historyonline">
+		<include refid="historyonlineSelector" />
+		<include refid="historyonlineListWhere" />
+		<include refid="historyonlineListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getHistoryonlineListWithPageFields" parameterType="HistoryonlineQuery"
+		resultType="Historyonline">
+		<include refid="historyonlineSelector" />
+		<include refid="historyonlineListWhere" />
+		<include refid="historyonlineListOrder" />
+		<include refid="historyonlineListLimit" />
+	</select>
+	<select id="$getHistoryonlineListFields" parameterType="HistoryonlineQuery"
+		resultType="Historyonline">
+		<include refid="historyonlineSelector" />
+		<include refid="historyonlineListWhere" />
+		<include refid="historyonlineListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addHistoryonline" parameterType="Historyonline">
+		INSERT INTO historyonline
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="counts != null">
+					counts,
+			</if>
+			<if test="recDate != null">
+					recDate,
+			</if>
+			<if test="recYear != null">
+					recYear,
+			</if>
+			<if test="recMonth != null">
+					recMonth,
+			</if>
+			<if test="recDay != null">
+					recDay,
+			</if>
+			<if test="recWeek != null">
+					recWeek,
+			</if>
+			<if test="recTime != null">
+					recTime,
+			</if>
+			<if test="ex1 != null">
+					ex1,
+			</if>
+			<if test="ex2 != null">
+					ex2,
+			</if>
+			<if test="ex3 != null">
+					ex3,
+			</if>
+			<if test="ex4 != null">
+					ex4,
+			</if>
+			<if test="ex5 != null">
+					ex5,
+			</if>
+			<if test="ex6 != null">
+					ex6,
+			</if>
+			<if test="ex7 != null">
+					ex7,
+			</if>
+			<if test="ex8 != null">
+					ex8,
+			</if>
+			<if test="ex9 != null">
+					ex9,
+			</if>
+			<if test="ex10 != null">
+					ex10,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="counts != null">
+	 #{counts},
+			</if>
+			<if test="recDate != null">
+	 #{recDate},
+			</if>
+			<if test="recYear != null">
+	 #{recYear},
+			</if>
+			<if test="recMonth != null">
+	 #{recMonth},
+			</if>
+			<if test="recDay != null">
+	 #{recDay},
+			</if>
+			<if test="recWeek != null">
+	 #{recWeek},
+			</if>
+			<if test="recTime != null">
+	 #{recTime},
+			</if>
+			<if test="ex1 != null">
+	 #{ex1},
+			</if>
+			<if test="ex2 != null">
+	 #{ex2},
+			</if>
+			<if test="ex3 != null">
+	 #{ex3},
+			</if>
+			<if test="ex4 != null">
+	 #{ex4},
+			</if>
+			<if test="ex5 != null">
+	 #{ex5},
+			</if>
+			<if test="ex6 != null">
+	 #{ex6},
+			</if>
+			<if test="ex7 != null">
+	 #{ex7},
+			</if>
+			<if test="ex8 != null">
+	 #{ex8},
+			</if>
+			<if test="ex9 != null">
+	 #{ex9},
+			</if>
+			<if test="ex10 != null">
+	 #{ex10},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

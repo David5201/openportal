@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PortaldepartmentDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="portaldepartment" type="Portaldepartment">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="description" column="description" />
+		<result property="parentId" column="parentId" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="portaldepartmentSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,name,description,parentId
+			</if>
+		
+		FROM portal_department
+	</sql>
+	<sql id="portaldepartmentListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="name != null">
+			 and 
+			<if test="nameLike == 0">
+				name=#{name}
+			</if>
+			<if test="nameLike == 1">
+				name like CONCAT('%','${name}','%')
+			</if>
+			</if>
+		    <if test="description != null">
+			 and 
+			<if test="descriptionLike == 0">
+				description=#{description}
+			</if>
+			<if test="descriptionLike == 1">
+				description like CONCAT('%','${description}','%')
+			</if>
+			</if>
+		    <if test="parentId != null">
+			 and 
+				parentId=#{parentId}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="portaldepartmentListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="portaldepartmentListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPortaldepartmentByKey" resultMap="portaldepartment" parameterType="hashMap">
+		SELECT id,name,description,parentId FROM portal_department
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getPortaldepartmentByKeys" resultMap="portaldepartment"
+		parameterType="ArrayList">
+		SELECT id,name,description,parentId FROM portal_department
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM portal_department
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Portaldepartment">
+		DELETE FROM portal_department
+		<include refid="portaldepartmentListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM portal_department
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePortaldepartmentByKey" parameterType="Portaldepartment">
+		UPDATE portal_department
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="name != null">
+			name = #{name},
+		</if>
+		<if test="description != null">
+			description = #{description},
+		</if>
+		<if test="parentId != null">
+			parentId = #{parentId},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePortaldepartmentByKeyAll" parameterType="Portaldepartment">
+		UPDATE portal_department
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			name = #{name},
+			description = #{description},
+			parentId = #{parentId},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getPortaldepartmentListWithPage" parameterType="PortaldepartmentQuery"
+		resultMap="portaldepartment">
+		<include refid="portaldepartmentSelector" />
+		<include refid="portaldepartmentListWhere" />
+		<include refid="portaldepartmentListOrder" />
+		<include refid="portaldepartmentListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPortaldepartmentListCount" parameterType="PortaldepartmentQuery"
+		resultType="int">
+		SELECT count(1) FROM portal_department
+		<include refid="portaldepartmentListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPortaldepartmentList" parameterType="PortaldepartmentQuery"
+		resultMap="portaldepartment">
+		<include refid="portaldepartmentSelector" />
+		<include refid="portaldepartmentListWhere" />
+		<include refid="portaldepartmentListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPortaldepartmentListWithPageFields" parameterType="PortaldepartmentQuery"
+		resultType="Portaldepartment">
+		<include refid="portaldepartmentSelector" />
+		<include refid="portaldepartmentListWhere" />
+		<include refid="portaldepartmentListOrder" />
+		<include refid="portaldepartmentListLimit" />
+	</select>
+	<select id="$getPortaldepartmentListFields" parameterType="PortaldepartmentQuery"
+		resultType="Portaldepartment">
+		<include refid="portaldepartmentSelector" />
+		<include refid="portaldepartmentListWhere" />
+		<include refid="portaldepartmentListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPortaldepartment" parameterType="Portaldepartment">
+		INSERT INTO portal_department
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="name != null">
+					name,
+			</if>
+			<if test="description != null">
+					description,
+			</if>
+			<if test="parentId != null">
+					parentId,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="name != null">
+	 #{name},
+			</if>
+			<if test="description != null">
+	 #{description},
+			</if>
+			<if test="parentId != null">
+	 #{parentId},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

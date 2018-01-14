@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html class="portal-html">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<title>欢迎使用OpenPortal网络接入认证系统</title>
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="renderer" content="webkit">
+<link href="dist/css/portal_login.css" rel="stylesheet" type="text/css" />
+<script src="dist/js/jquery-1.11.1.min.js"></script>
+<script src="dist/js/script.js"></script>
+<script src="dist/js/site.js"></script>
+<script src="dist/js/auth.js"></script>
+<script src="dist/js/encode.js"></script>
+<script src="dist/js/utils.js"></script>
+</head>
+<body class="portal-body">
+<div class="portal-page-layout ">
+  <div class="portal-page-loading"></div>
+  <img name='logo' src="img/logo.png" class="portal-logo J-portal-logo" alt="OpenPortal" />
+  <div class="portal-banners">
+    <div id="sliderContainer">
+      <div id="prev" class="arrow"></div>
+      <div id="slider">
+        <div class="slide"> <img src="img/1.jpg"> </div>
+        <div class="slide"> <img src="img/2.jpg"> </div>
+        <div class="slide"> <img src="img/3.jpg"> </div>
+      </div>
+      <div id="pagination"></div>
+      <div id="next" class="arrow"></div>
+    </div>
+  </div>
+  <div class="portal-content-wrap J-portal-content-wrap ">
+    <div id="portalContext" class="portal-content">
+		<div class="tips">
+            <div id="portal-login-tip"></div>
+        </div>
+		<form id="login_form" role="form">
+		<p class="attr">
+			<input type="text" id="InputAccount" name="usr" class="portal-input" required placeholder="输入帐号">
+        </p>
+		<p class="attr">
+			<input type="password" id="InputPassword" name="pwd" class="portal-input" required placeholder="输入密码">
+        </p>
+		<input id="userAuthbasip" type="hidden" name="basip">
+		<input id="userAuthip" type="hidden" name="ip">
+		<input id="userAuthumac" type="hidden" name="umac">
+		<input id="userAuthapmac" type="hidden" name="apmac">
+		<input id="userAuthssid" type="hidden" name="ssid">
+      <button id="btnAcpassword" class="button button-highlight button-block">登录</button>
+	  </form>
+	  <button id="userCenter" class="button button-primary button-block">用户中心</button>
+    </div>
+	<div class="portal-auth clearfix">
+        <a href="#" id="goWeixinAuth" class="portal-auth-btn" title="微信认证"><i class="icon-weixin-auth"></i></a>
+        <a href="#" id="goGuestAuth" class="portal-auth-btn" title="访客认证"><i class="icon-guest-auth"></i></a>
+		<a href="#" id="goSmsAuth" class="portal-auth-btn" title="短信认证"><i class="icon-sms-auth"></i></a>
+		<a href="#" id="goAppAuth" class="portal-auth-btn" title="APP认证"><i class="icon-app-auth"></i></a>
+		<a href="#" id="goOnekeyAuth" class="portal-auth-btn" title="一键认证"><i class="icon-onekey-auth"></i></a>
+        <label for="protocol" class="portal-term-link"><input type="checkbox" checked id="protocol-checkbox">同意<a href="protocol.html"  title="上网协议" target="_blank">上网协议</a></label>
+    </div>
+    <div class="portal-power">
+      <p>网络技术架构由 OpenPortal 提供</p>
+    </div>
+  </div>
+</div>
+</body>
+<script type="text/javascript">
+$("#userAuthbasip").val(basip);
+$("#userAuthip").val(ip);
+$("#userAuthumac").val(umac);
+$("#userAuthapmac").val(apmac);
+$("#userAuthssid").val(ssid);
+</script>
+<script type="text/javascript">
+function autoAuth_fun(msg){
+if(msg.ret==0){
+	var	weburl="ok.html?u="+msg.u+"&i="+msg.i+"&w="+msg.w;
+	window.location.replace(weburl);
+}
+}
+
+var str="/ajax_autoAuth.action?basip="+basip+"&ip="+ip+"&umac="+umac+"&apmac="+apmac+"&ssid="+ssid;
+var data_str=encodeToUTF8(str);
+$.ajax({
+	type: "GET",
+	url: data_str,
+	success: autoAuth_fun,
+	error: null,
+	timeout: 5000,
+	dataType: "json",
+	cache: false,
+	complete : function(XMLHttpRequest,status){ //请求完成后最终执行参数
+		if(status=='timeout'){//超时,status还有success,error等值的情况
+		}
+		}
+});
+</script>
+</html>

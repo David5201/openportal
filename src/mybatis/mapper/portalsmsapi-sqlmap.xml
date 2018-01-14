@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PortalsmsapiDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="portalsmsapi" type="Portalsmsapi">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="url" column="url" />
+		<result property="count" column="count" />
+		<result property="state" column="state" />
+		<result property="type" column="type" />
+		<result property="more" column="more" />
+		<result property="time" column="time" />
+		<result property="text" column="text" />
+		<result property="appkey" column="appkey" />
+		<result property="appsecret" column="appsecret" />
+		<result property="smssign" column="smssign" />
+		<result property="smstemplate" column="smstemplate" />
+		<result property="company" column="company" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="portalsmsapiSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,name,url,count,state,type,more,time,text,appkey,appsecret,smssign,smstemplate,company
+			</if>
+		
+		FROM portal_smsapi
+	</sql>
+	<sql id="portalsmsapiListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="name != null">
+			 and 
+			<if test="nameLike == 0">
+				name=#{name}
+			</if>
+			<if test="nameLike == 1">
+				name like CONCAT('%','${name}','%')
+			</if>
+			</if>
+		    <if test="url != null">
+			 and 
+			<if test="urlLike == 0">
+				url=#{url}
+			</if>
+			<if test="urlLike == 1">
+				url like CONCAT('%','${url}','%')
+			</if>
+			</if>
+		    <if test="count != null">
+			 and 
+				count=#{count}
+			</if>
+		    <if test="state != null">
+			 and 
+			<if test="stateLike == 0">
+				state=#{state}
+			</if>
+			<if test="stateLike == 1">
+				state like CONCAT('%','${state}','%')
+			</if>
+			</if>
+		    <if test="type != null">
+			 and 
+			<if test="typeLike == 0">
+				type=#{type}
+			</if>
+			<if test="typeLike == 1">
+				type like CONCAT('%','${type}','%')
+			</if>
+			</if>
+		    <if test="more != null">
+			 and 
+			<if test="moreLike == 0">
+				more=#{more}
+			</if>
+			<if test="moreLike == 1">
+				more like CONCAT('%','${more}','%')
+			</if>
+			</if>
+		    <if test="time != null">
+			 and 
+				time=#{time}
+			</if>
+		    <if test="text != null">
+			 and 
+			<if test="textLike == 0">
+				text=#{text}
+			</if>
+			<if test="textLike == 1">
+				text like CONCAT('%','${text}','%')
+			</if>
+			</if>
+		    <if test="appkey != null">
+			 and 
+			<if test="appkeyLike == 0">
+				appkey=#{appkey}
+			</if>
+			<if test="appkeyLike == 1">
+				appkey like CONCAT('%','${appkey}','%')
+			</if>
+			</if>
+		    <if test="appsecret != null">
+			 and 
+			<if test="appsecretLike == 0">
+				appsecret=#{appsecret}
+			</if>
+			<if test="appsecretLike == 1">
+				appsecret like CONCAT('%','${appsecret}','%')
+			</if>
+			</if>
+		    <if test="smssign != null">
+			 and 
+			<if test="smssignLike == 0">
+				smssign=#{smssign}
+			</if>
+			<if test="smssignLike == 1">
+				smssign like CONCAT('%','${smssign}','%')
+			</if>
+			</if>
+		    <if test="smstemplate != null">
+			 and 
+			<if test="smstemplateLike == 0">
+				smstemplate=#{smstemplate}
+			</if>
+			<if test="smstemplateLike == 1">
+				smstemplate like CONCAT('%','${smstemplate}','%')
+			</if>
+			</if>
+		    <if test="company != null">
+			 and 
+			<if test="companyLike == 0">
+				company=#{company}
+			</if>
+			<if test="companyLike == 1">
+				company like CONCAT('%','${company}','%')
+			</if>
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="portalsmsapiListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="portalsmsapiListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPortalsmsapiByKey" resultMap="portalsmsapi" parameterType="hashMap">
+		SELECT id,name,url,count,state,type,more,time,text,appkey,appsecret,smssign,smstemplate,company FROM portal_smsapi
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getPortalsmsapiByKeys" resultMap="portalsmsapi"
+		parameterType="ArrayList">
+		SELECT id,name,url,count,state,type,more,time,text,appkey,appsecret,smssign,smstemplate,company FROM portal_smsapi
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM portal_smsapi
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Portalsmsapi">
+		DELETE FROM portal_smsapi
+		<include refid="portalsmsapiListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM portal_smsapi
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePortalsmsapiByKey" parameterType="Portalsmsapi">
+		UPDATE portal_smsapi
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="name != null">
+			name = #{name},
+		</if>
+		<if test="url != null">
+			url = #{url},
+		</if>
+		<if test="count != null">
+			count = #{count},
+		</if>
+		<if test="state != null">
+			state = #{state},
+		</if>
+		<if test="type != null">
+			type = #{type},
+		</if>
+		<if test="more != null">
+			more = #{more},
+		</if>
+		<if test="time != null">
+			time = #{time},
+		</if>
+		<if test="text != null">
+			text = #{text},
+		</if>
+		<if test="appkey != null">
+			appkey = #{appkey},
+		</if>
+		<if test="appsecret != null">
+			appsecret = #{appsecret},
+		</if>
+		<if test="smssign != null">
+			smssign = #{smssign},
+		</if>
+		<if test="smstemplate != null">
+			smstemplate = #{smstemplate},
+		</if>
+		<if test="company != null">
+			company = #{company},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePortalsmsapiByKeyAll" parameterType="Portalsmsapi">
+		UPDATE portal_smsapi
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			name = #{name},
+			url = #{url},
+			count = #{count},
+			state = #{state},
+			type = #{type},
+			more = #{more},
+			time = #{time},
+			text = #{text},
+			appkey = #{appkey},
+			appsecret = #{appsecret},
+			smssign = #{smssign},
+			smstemplate = #{smstemplate},
+			company = #{company},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getPortalsmsapiListWithPage" parameterType="PortalsmsapiQuery"
+		resultMap="portalsmsapi">
+		<include refid="portalsmsapiSelector" />
+		<include refid="portalsmsapiListWhere" />
+		<include refid="portalsmsapiListOrder" />
+		<include refid="portalsmsapiListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPortalsmsapiListCount" parameterType="PortalsmsapiQuery"
+		resultType="int">
+		SELECT count(1) FROM portal_smsapi
+		<include refid="portalsmsapiListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPortalsmsapiList" parameterType="PortalsmsapiQuery"
+		resultMap="portalsmsapi">
+		<include refid="portalsmsapiSelector" />
+		<include refid="portalsmsapiListWhere" />
+		<include refid="portalsmsapiListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPortalsmsapiListWithPageFields" parameterType="PortalsmsapiQuery"
+		resultType="Portalsmsapi">
+		<include refid="portalsmsapiSelector" />
+		<include refid="portalsmsapiListWhere" />
+		<include refid="portalsmsapiListOrder" />
+		<include refid="portalsmsapiListLimit" />
+	</select>
+	<select id="$getPortalsmsapiListFields" parameterType="PortalsmsapiQuery"
+		resultType="Portalsmsapi">
+		<include refid="portalsmsapiSelector" />
+		<include refid="portalsmsapiListWhere" />
+		<include refid="portalsmsapiListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPortalsmsapi" parameterType="Portalsmsapi">
+		INSERT INTO portal_smsapi
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="name != null">
+					name,
+			</if>
+			<if test="url != null">
+					url,
+			</if>
+			<if test="count != null">
+					count,
+			</if>
+			<if test="state != null">
+					state,
+			</if>
+			<if test="type != null">
+					type,
+			</if>
+			<if test="more != null">
+					more,
+			</if>
+			<if test="time != null">
+					time,
+			</if>
+			<if test="text != null">
+					text,
+			</if>
+			<if test="appkey != null">
+					appkey,
+			</if>
+			<if test="appsecret != null">
+					appsecret,
+			</if>
+			<if test="smssign != null">
+					smssign,
+			</if>
+			<if test="smstemplate != null">
+					smstemplate,
+			</if>
+			<if test="company != null">
+					company,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="name != null">
+	 #{name},
+			</if>
+			<if test="url != null">
+	 #{url},
+			</if>
+			<if test="count != null">
+	 #{count},
+			</if>
+			<if test="state != null">
+	 #{state},
+			</if>
+			<if test="type != null">
+	 #{type},
+			</if>
+			<if test="more != null">
+	 #{more},
+			</if>
+			<if test="time != null">
+	 #{time},
+			</if>
+			<if test="text != null">
+	 #{text},
+			</if>
+			<if test="appkey != null">
+	 #{appkey},
+			</if>
+			<if test="appsecret != null">
+	 #{appsecret},
+			</if>
+			<if test="smssign != null">
+	 #{smssign},
+			</if>
+			<if test="smstemplate != null">
+	 #{smstemplate},
+			</if>
+			<if test="company != null">
+	 #{company},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

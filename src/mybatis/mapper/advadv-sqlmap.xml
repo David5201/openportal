@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.AdvadvDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="advadv" type="Advadv">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="description" column="description" />
+		<result property="creatDate" column="creatDate" />
+		<result property="state" column="state" />
+		<result property="showDate" column="showDate" />
+		<result property="endDate" column="endDate" />
+		<result property="uid" column="uid" />
+		<result property="sid" column="sid" />
+		<result property="pos" column="pos" />
+		<result property="img" column="img" />
+		<result property="showName" column="showName" />
+		<result property="showInfo" column="showInfo" />
+		<result property="showImg" column="showImg" />
+		<result property="showCount" column="showCount" />
+		<result property="clickCount" column="clickCount" />
+		<result property="url" column="url" />
+		<result property="lockTime" column="lockTime" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="advadvSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,name,description,creatDate,state,showDate,endDate,uid,sid,pos,img,showName,showInfo,showImg,showCount,clickCount,url,lockTime
+			</if>
+		
+		FROM adv_adv
+	</sql>
+	<sql id="advadvListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="name != null">
+			 and 
+			<if test="nameLike == 0">
+				name=#{name}
+			</if>
+			<if test="nameLike == 1">
+				name like CONCAT('%','${name}','%')
+			</if>
+			</if>
+		    <if test="description != null">
+			 and 
+			<if test="descriptionLike == 0">
+				description=#{description}
+			</if>
+			<if test="descriptionLike == 1">
+				description like CONCAT('%','${description}','%')
+			</if>
+			</if>
+		    <if test="creatDate != null">
+			 and 
+				creatDate=#{creatDate}
+			</if>
+		    <if test="state != null">
+			 and 
+				state=#{state}
+			</if>
+		    <if test="showDate != null">
+			 and 
+				showDate=#{showDate}
+			</if>
+		    <if test="endDate != null">
+			 and 
+				endDate=#{endDate}
+			</if>
+		    <if test="uid != null">
+			 and 
+				uid=#{uid}
+			</if>
+		    <if test="sid != null">
+			 and 
+				sid=#{sid}
+			</if>
+		    <if test="pos != null">
+			 and 
+				pos=#{pos}
+			</if>
+		    <if test="img != null">
+			 and 
+			<if test="imgLike == 0">
+				img=#{img}
+			</if>
+			<if test="imgLike == 1">
+				img like CONCAT('%','${img}','%')
+			</if>
+			</if>
+		    <if test="showName != null">
+			 and 
+				showName=#{showName}
+			</if>
+		    <if test="showInfo != null">
+			 and 
+				showInfo=#{showInfo}
+			</if>
+		    <if test="showImg != null">
+			 and 
+				showImg=#{showImg}
+			</if>
+		    <if test="showCount != null">
+			 and 
+				showCount=#{showCount}
+			</if>
+		    <if test="clickCount != null">
+			 and 
+				clickCount=#{clickCount}
+			</if>
+		    <if test="url != null">
+			 and 
+			<if test="urlLike == 0">
+				url=#{url}
+			</if>
+			<if test="urlLike == 1">
+				url like CONCAT('%','${url}','%')
+			</if>
+			</if>
+		    <if test="lockTime != null">
+			 and 
+				lockTime=#{lockTime}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="advadvListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="advadvListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getAdvadvByKey" resultMap="advadv" parameterType="hashMap">
+		SELECT id,name,description,creatDate,state,showDate,endDate,uid,sid,pos,img,showName,showInfo,showImg,showCount,clickCount,url,lockTime FROM adv_adv
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getAdvadvByKeys" resultMap="advadv"
+		parameterType="ArrayList">
+		SELECT id,name,description,creatDate,state,showDate,endDate,uid,sid,pos,img,showName,showInfo,showImg,showCount,clickCount,url,lockTime FROM adv_adv
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM adv_adv
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Advadv">
+		DELETE FROM adv_adv
+		<include refid="advadvListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM adv_adv
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+	
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteAll">
+		DELETE FROM adv_adv
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updateAdvadvByKey" parameterType="Advadv">
+		UPDATE adv_adv
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="name != null">
+			name = #{name},
+		</if>
+		<if test="description != null">
+			description = #{description},
+		</if>
+		<if test="creatDate != null">
+			creatDate = #{creatDate},
+		</if>
+		<if test="state != null">
+			state = #{state},
+		</if>
+		<if test="showDate != null">
+			showDate = #{showDate},
+		</if>
+		<if test="endDate != null">
+			endDate = #{endDate},
+		</if>
+		<if test="uid != null">
+			uid = #{uid},
+		</if>
+		<if test="sid != null">
+			sid = #{sid},
+		</if>
+		<if test="pos != null">
+			pos = #{pos},
+		</if>
+		<if test="img != null">
+			img = #{img},
+		</if>
+		<if test="showName != null">
+			showName = #{showName},
+		</if>
+		<if test="showInfo != null">
+			showInfo = #{showInfo},
+		</if>
+		<if test="showImg != null">
+			showImg = #{showImg},
+		</if>
+		<if test="showCount != null">
+			showCount = #{showCount},
+		</if>
+		<if test="clickCount != null">
+			clickCount = #{clickCount},
+		</if>
+		<if test="url != null">
+			url = #{url},
+		</if>
+		<if test="lockTime != null">
+			lockTime = #{lockTime},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updateAdvadvByKeyAll" parameterType="Advadv">
+		UPDATE adv_adv
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			name = #{name},
+			description = #{description},
+			creatDate = #{creatDate},
+			state = #{state},
+			showDate = #{showDate},
+			endDate = #{endDate},
+			uid = #{uid},
+			sid = #{sid},
+			pos = #{pos},
+			img = #{img},
+			showName = #{showName},
+			showInfo = #{showInfo},
+			showImg = #{showImg},
+			showCount = #{showCount},
+			clickCount = #{clickCount},
+			url = #{url},
+			lockTime = #{lockTime},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getAdvadvListWithPage" parameterType="AdvadvQuery"
+		resultMap="advadv">
+		<include refid="advadvSelector" />
+		<include refid="advadvListWhere" />
+		<include refid="advadvListOrder" />
+		<include refid="advadvListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getAdvadvListCount" parameterType="AdvadvQuery"
+		resultType="int">
+		SELECT count(1) FROM adv_adv
+		<include refid="advadvListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getAdvadvList" parameterType="AdvadvQuery"
+		resultMap="advadv">
+		<include refid="advadvSelector" />
+		<include refid="advadvListWhere" />
+		<include refid="advadvListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getAdvadvListWithPageFields" parameterType="AdvadvQuery"
+		resultType="Advadv">
+		<include refid="advadvSelector" />
+		<include refid="advadvListWhere" />
+		<include refid="advadvListOrder" />
+		<include refid="advadvListLimit" />
+	</select>
+	<select id="$getAdvadvListFields" parameterType="AdvadvQuery"
+		resultType="Advadv">
+		<include refid="advadvSelector" />
+		<include refid="advadvListWhere" />
+		<include refid="advadvListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addAdvadv" parameterType="Advadv">
+		INSERT INTO adv_adv
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="name != null">
+					name,
+			</if>
+			<if test="description != null">
+					description,
+			</if>
+			<if test="creatDate != null">
+					creatDate,
+			</if>
+			<if test="state != null">
+					state,
+			</if>
+			<if test="showDate != null">
+					showDate,
+			</if>
+			<if test="endDate != null">
+					endDate,
+			</if>
+			<if test="uid != null">
+					uid,
+			</if>
+			<if test="sid != null">
+					sid,
+			</if>
+			<if test="pos != null">
+					pos,
+			</if>
+			<if test="img != null">
+					img,
+			</if>
+			<if test="showName != null">
+					showName,
+			</if>
+			<if test="showInfo != null">
+					showInfo,
+			</if>
+			<if test="showImg != null">
+					showImg,
+			</if>
+			<if test="showCount != null">
+					showCount,
+			</if>
+			<if test="clickCount != null">
+					clickCount,
+			</if>
+			<if test="url != null">
+					url,
+			</if>
+			<if test="lockTime != null">
+					lockTime,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="name != null">
+	 #{name},
+			</if>
+			<if test="description != null">
+	 #{description},
+			</if>
+			<if test="creatDate != null">
+	 #{creatDate},
+			</if>
+			<if test="state != null">
+	 #{state},
+			</if>
+			<if test="showDate != null">
+	 #{showDate},
+			</if>
+			<if test="endDate != null">
+	 #{endDate},
+			</if>
+			<if test="uid != null">
+	 #{uid},
+			</if>
+			<if test="sid != null">
+	 #{sid},
+			</if>
+			<if test="pos != null">
+	 #{pos},
+			</if>
+			<if test="img != null">
+	 #{img},
+			</if>
+			<if test="showName != null">
+	 #{showName},
+			</if>
+			<if test="showInfo != null">
+	 #{showInfo},
+			</if>
+			<if test="showImg != null">
+	 #{showImg},
+			</if>
+			<if test="showCount != null">
+	 #{showCount},
+			</if>
+			<if test="clickCount != null">
+	 #{clickCount},
+			</if>
+			<if test="url != null">
+	 #{url},
+			</if>
+			<if test="lockTime != null">
+	 #{lockTime},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

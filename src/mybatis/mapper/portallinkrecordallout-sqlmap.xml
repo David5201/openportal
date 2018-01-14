@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PortallinkrecordalloutDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="portallinkrecordallout" type="Portallinkrecordallout">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="creatDate" column="creatDate" />
+		<result property="url" column="url" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="portallinkrecordalloutSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,name,creatDate,url
+			</if>
+		
+		FROM portal_linkrecordallout
+	</sql>
+	<sql id="portallinkrecordalloutListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="name != null">
+			 and 
+			<if test="nameLike == 0">
+				name=#{name}
+			</if>
+			<if test="nameLike == 1">
+				name like CONCAT('%','${name}','%')
+			</if>
+			</if>
+		    <if test="creatDate != null">
+			 and 
+				creatDate=#{creatDate}
+			</if>
+		    <if test="url != null">
+			 and 
+			<if test="urlLike == 0">
+				url=#{url}
+			</if>
+			<if test="urlLike == 1">
+				url like CONCAT('%','${url}','%')
+			</if>
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="portallinkrecordalloutListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="portallinkrecordalloutListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPortallinkrecordalloutByKey" resultMap="portallinkrecordallout" parameterType="hashMap">
+		SELECT id,name,creatDate,url FROM portal_linkrecordallout
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getPortallinkrecordalloutByKeys" resultMap="portallinkrecordallout"
+		parameterType="ArrayList">
+		SELECT id,name,creatDate,url FROM portal_linkrecordallout
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM portal_linkrecordallout
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Portallinkrecordallout">
+		DELETE FROM portal_linkrecordallout
+		<include refid="portallinkrecordalloutListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM portal_linkrecordallout
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+	
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteAll">
+		DELETE FROM portal_linkrecordallout
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePortallinkrecordalloutByKey" parameterType="Portallinkrecordallout">
+		UPDATE portal_linkrecordallout
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="name != null">
+			name = #{name},
+		</if>
+		<if test="creatDate != null">
+			creatDate = #{creatDate},
+		</if>
+		<if test="url != null">
+			url = #{url},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePortallinkrecordalloutByKeyAll" parameterType="Portallinkrecordallout">
+		UPDATE portal_linkrecordallout
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			name = #{name},
+			creatDate = #{creatDate},
+			url = #{url},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getPortallinkrecordalloutListWithPage" parameterType="PortallinkrecordalloutQuery"
+		resultMap="portallinkrecordallout">
+		<include refid="portallinkrecordalloutSelector" />
+		<include refid="portallinkrecordalloutListWhere" />
+		<include refid="portallinkrecordalloutListOrder" />
+		<include refid="portallinkrecordalloutListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPortallinkrecordalloutListCount" parameterType="PortallinkrecordalloutQuery"
+		resultType="int">
+		SELECT count(1) FROM portal_linkrecordallout
+		<include refid="portallinkrecordalloutListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPortallinkrecordalloutList" parameterType="PortallinkrecordalloutQuery"
+		resultMap="portallinkrecordallout">
+		<include refid="portallinkrecordalloutSelector" />
+		<include refid="portallinkrecordalloutListWhere" />
+		<include refid="portallinkrecordalloutListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPortallinkrecordalloutListWithPageFields" parameterType="PortallinkrecordalloutQuery"
+		resultType="Portallinkrecordallout">
+		<include refid="portallinkrecordalloutSelector" />
+		<include refid="portallinkrecordalloutListWhere" />
+		<include refid="portallinkrecordalloutListOrder" />
+		<include refid="portallinkrecordalloutListLimit" />
+	</select>
+	<select id="$getPortallinkrecordalloutListFields" parameterType="PortallinkrecordalloutQuery"
+		resultType="Portallinkrecordallout">
+		<include refid="portallinkrecordalloutSelector" />
+		<include refid="portallinkrecordalloutListWhere" />
+		<include refid="portallinkrecordalloutListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPortallinkrecordallout" parameterType="Portallinkrecordallout">
+		INSERT INTO portal_linkrecordallout
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="name != null">
+					name,
+			</if>
+			<if test="creatDate != null">
+					creatDate,
+			</if>
+			<if test="url != null">
+					url,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="name != null">
+	 #{name},
+			</if>
+			<if test="creatDate != null">
+	 #{creatDate},
+			</if>
+			<if test="url != null">
+	 #{url},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

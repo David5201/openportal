@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PortalautologinDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="portalautologin" type="Portalautologin">
+		<result property="id" column="id" />
+		<result property="time" column="time" />
+		<result property="type" column="type" />
+		<result property="state" column="state" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="portalautologinSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,time,type,state
+			</if>
+		
+		FROM portal_autologin
+	</sql>
+	<sql id="portalautologinListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="time != null">
+			 and 
+				time=#{time}
+			</if>
+		    <if test="type != null">
+			 and 
+				type=#{type}
+			</if>
+		    <if test="state != null">
+			 and 
+				state=#{state}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="portalautologinListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="portalautologinListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPortalautologinByKey" resultMap="portalautologin" parameterType="hashMap">
+		SELECT id,time,type,state FROM portal_autologin
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getPortalautologinByKeys" resultMap="portalautologin"
+		parameterType="ArrayList">
+		SELECT id,time,type,state FROM portal_autologin
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM portal_autologin
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Portalautologin">
+		DELETE FROM portal_autologin
+		<include refid="portalautologinListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM portal_autologin
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePortalautologinByKey" parameterType="Portalautologin">
+		UPDATE portal_autologin
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="time != null">
+			time = #{time},
+		</if>
+		<if test="type != null">
+			type = #{type},
+		</if>
+		<if test="state != null">
+			state = #{state},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePortalautologinByKeyAll" parameterType="Portalautologin">
+		UPDATE portal_autologin
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			time = #{time},
+			type = #{type},
+			state = #{state},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getPortalautologinListWithPage" parameterType="PortalautologinQuery"
+		resultMap="portalautologin">
+		<include refid="portalautologinSelector" />
+		<include refid="portalautologinListWhere" />
+		<include refid="portalautologinListOrder" />
+		<include refid="portalautologinListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPortalautologinListCount" parameterType="PortalautologinQuery"
+		resultType="int">
+		SELECT count(1) FROM portal_autologin
+		<include refid="portalautologinListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPortalautologinList" parameterType="PortalautologinQuery"
+		resultMap="portalautologin">
+		<include refid="portalautologinSelector" />
+		<include refid="portalautologinListWhere" />
+		<include refid="portalautologinListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPortalautologinListWithPageFields" parameterType="PortalautologinQuery"
+		resultType="Portalautologin">
+		<include refid="portalautologinSelector" />
+		<include refid="portalautologinListWhere" />
+		<include refid="portalautologinListOrder" />
+		<include refid="portalautologinListLimit" />
+	</select>
+	<select id="$getPortalautologinListFields" parameterType="PortalautologinQuery"
+		resultType="Portalautologin">
+		<include refid="portalautologinSelector" />
+		<include refid="portalautologinListWhere" />
+		<include refid="portalautologinListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPortalautologin" parameterType="Portalautologin">
+		INSERT INTO portal_autologin
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="time != null">
+					time,
+			</if>
+			<if test="type != null">
+					type,
+			</if>
+			<if test="state != null">
+					state,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="time != null">
+	 #{time},
+			</if>
+			<if test="type != null">
+	 #{type},
+			</if>
+			<if test="state != null">
+	 #{state},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

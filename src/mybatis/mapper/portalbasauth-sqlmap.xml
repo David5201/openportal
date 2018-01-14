@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PortalbasauthDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="portalbasauth" type="Portalbasauth">
+		<result property="id" column="id" />
+		<result property="basid" column="basid" />
+		<result property="type" column="type" />
+		<result property="username" column="username" />
+		<result property="password" column="password" />
+		<result property="basip" column="basip" />
+		<result property="url" column="url" />
+		<result property="sessiontime" column="sessiontime" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="portalbasauthSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,basid,type,username,password,basip,url,sessiontime
+			</if>
+		
+		FROM portal_basauth
+	</sql>
+	<sql id="portalbasauthListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="basid != null">
+			 and 
+				basid=#{basid}
+			</if>
+		    <if test="type != null">
+			 and 
+				type=#{type}
+			</if>
+		    <if test="username != null">
+			 and 
+			<if test="usernameLike == 0">
+				username=#{username}
+			</if>
+			<if test="usernameLike == 1">
+				username like CONCAT('%','${username}','%')
+			</if>
+			</if>
+		    <if test="password != null">
+			 and 
+			<if test="passwordLike == 0">
+				password=#{password}
+			</if>
+			<if test="passwordLike == 1">
+				password like CONCAT('%','${password}','%')
+			</if>
+			</if>
+		    <if test="basip != null">
+			 and 
+			<if test="basipLike == 0">
+				basip=#{basip}
+			</if>
+			<if test="basipLike == 1">
+				basip like CONCAT('%','${basip}','%')
+			</if>
+			</if>
+		    <if test="url != null">
+			 and 
+			<if test="urlLike == 0">
+				url=#{url}
+			</if>
+			<if test="urlLike == 1">
+				url like CONCAT('%','${url}','%')
+			</if>
+			</if>
+		    <if test="sessiontime != null">
+			 and 
+				sessiontime=#{sessiontime}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="portalbasauthListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="portalbasauthListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPortalbasauthByKey" resultMap="portalbasauth" parameterType="hashMap">
+		SELECT id,basid,type,username,password,basip,url,sessiontime FROM portal_basauth
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getPortalbasauthByKeys" resultMap="portalbasauth"
+		parameterType="ArrayList">
+		SELECT id,basid,type,username,password,basip,url,sessiontime FROM portal_basauth
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM portal_basauth
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Portalbasauth">
+		DELETE FROM portal_basauth
+		<include refid="portalbasauthListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM portal_basauth
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePortalbasauthByKey" parameterType="Portalbasauth">
+		UPDATE portal_basauth
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="basid != null">
+			basid = #{basid},
+		</if>
+		<if test="type != null">
+			type = #{type},
+		</if>
+		<if test="username != null">
+			username = #{username},
+		</if>
+		<if test="password != null">
+			password = #{password},
+		</if>
+		<if test="basip != null">
+			basip = #{basip},
+		</if>
+		<if test="url != null">
+			url = #{url},
+		</if>
+		<if test="sessiontime != null">
+			sessiontime = #{sessiontime},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePortalbasauthByKeyAll" parameterType="Portalbasauth">
+		UPDATE portal_basauth
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			basid = #{basid},
+			type = #{type},
+			username = #{username},
+			password = #{password},
+			basip = #{basip},
+			url = #{url},
+			sessiontime = #{sessiontime},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getPortalbasauthListWithPage" parameterType="PortalbasauthQuery"
+		resultMap="portalbasauth">
+		<include refid="portalbasauthSelector" />
+		<include refid="portalbasauthListWhere" />
+		<include refid="portalbasauthListOrder" />
+		<include refid="portalbasauthListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPortalbasauthListCount" parameterType="PortalbasauthQuery"
+		resultType="int">
+		SELECT count(1) FROM portal_basauth
+		<include refid="portalbasauthListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPortalbasauthList" parameterType="PortalbasauthQuery"
+		resultMap="portalbasauth">
+		<include refid="portalbasauthSelector" />
+		<include refid="portalbasauthListWhere" />
+		<include refid="portalbasauthListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPortalbasauthListWithPageFields" parameterType="PortalbasauthQuery"
+		resultType="Portalbasauth">
+		<include refid="portalbasauthSelector" />
+		<include refid="portalbasauthListWhere" />
+		<include refid="portalbasauthListOrder" />
+		<include refid="portalbasauthListLimit" />
+	</select>
+	<select id="$getPortalbasauthListFields" parameterType="PortalbasauthQuery"
+		resultType="Portalbasauth">
+		<include refid="portalbasauthSelector" />
+		<include refid="portalbasauthListWhere" />
+		<include refid="portalbasauthListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPortalbasauth" parameterType="Portalbasauth">
+		INSERT INTO portal_basauth
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="basid != null">
+					basid,
+			</if>
+			<if test="type != null">
+					type,
+			</if>
+			<if test="username != null">
+					username,
+			</if>
+			<if test="password != null">
+					password,
+			</if>
+			<if test="basip != null">
+					basip,
+			</if>
+			<if test="url != null">
+					url,
+			</if>
+			<if test="sessiontime != null">
+					sessiontime,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="basid != null">
+	 #{basid},
+			</if>
+			<if test="type != null">
+	 #{type},
+			</if>
+			<if test="username != null">
+	 #{username},
+			</if>
+			<if test="password != null">
+	 #{password},
+			</if>
+			<if test="basip != null">
+	 #{basip},
+			</if>
+			<if test="url != null">
+	 #{url},
+			</if>
+			<if test="sessiontime != null">
+	 #{sessiontime},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

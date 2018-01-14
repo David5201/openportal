@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PortalurlparameterDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="portalurlparameter" type="Portalurlparameter">
+		<result property="id" column="id" />
+		<result property="basname" column="basname" />
+		<result property="userip" column="userip" />
+		<result property="usermac" column="usermac" />
+		<result property="url" column="url" />
+		<result property="basip" column="basip" />
+		<result property="ssid" column="ssid" />
+		<result property="apmac" column="apmac" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="portalurlparameterSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,basname,userip,usermac,url,basip,ssid,apmac
+			</if>
+		
+		FROM portal_urlparameter
+	</sql>
+	<sql id="portalurlparameterListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="basname != null">
+			 and 
+			<if test="basnameLike == 0">
+				basname=#{basname}
+			</if>
+			<if test="basnameLike == 1">
+				basname like CONCAT('%','${basname}','%')
+			</if>
+			</if>
+		    <if test="userip != null">
+			 and 
+			<if test="useripLike == 0">
+				userip=#{userip}
+			</if>
+			<if test="useripLike == 1">
+				userip like CONCAT('%','${userip}','%')
+			</if>
+			</if>
+		    <if test="usermac != null">
+			 and 
+			<if test="usermacLike == 0">
+				usermac=#{usermac}
+			</if>
+			<if test="usermacLike == 1">
+				usermac like CONCAT('%','${usermac}','%')
+			</if>
+			</if>
+		    <if test="url != null">
+			 and 
+			<if test="urlLike == 0">
+				url=#{url}
+			</if>
+			<if test="urlLike == 1">
+				url like CONCAT('%','${url}','%')
+			</if>
+			</if>
+		    <if test="basip != null">
+			 and 
+			<if test="basipLike == 0">
+				basip=#{basip}
+			</if>
+			<if test="basipLike == 1">
+				basip like CONCAT('%','${basip}','%')
+			</if>
+			</if>
+		    <if test="ssid != null">
+			 and 
+			<if test="ssidLike == 0">
+				ssid=#{ssid}
+			</if>
+			<if test="ssidLike == 1">
+				ssid like CONCAT('%','${ssid}','%')
+			</if>
+			</if>
+		    <if test="apmac != null">
+			 and 
+			<if test="apmacLike == 0">
+				apmac=#{apmac}
+			</if>
+			<if test="apmacLike == 1">
+				apmac like CONCAT('%','${apmac}','%')
+			</if>
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="portalurlparameterListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="portalurlparameterListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPortalurlparameterByKey" resultMap="portalurlparameter" parameterType="hashMap">
+		SELECT id,basname,userip,usermac,url,basip,ssid,apmac FROM portal_urlparameter
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getPortalurlparameterByKeys" resultMap="portalurlparameter"
+		parameterType="ArrayList">
+		SELECT id,basname,userip,usermac,url,basip,ssid,apmac FROM portal_urlparameter
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM portal_urlparameter
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Portalurlparameter">
+		DELETE FROM portal_urlparameter
+		<include refid="portalurlparameterListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM portal_urlparameter
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePortalurlparameterByKey" parameterType="Portalurlparameter">
+		UPDATE portal_urlparameter
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="basname != null">
+			basname = #{basname},
+		</if>
+		<if test="userip != null">
+			userip = #{userip},
+		</if>
+		<if test="usermac != null">
+			usermac = #{usermac},
+		</if>
+		<if test="url != null">
+			url = #{url},
+		</if>
+		<if test="basip != null">
+			basip = #{basip},
+		</if>
+		<if test="ssid != null">
+			ssid = #{ssid},
+		</if>
+		<if test="apmac != null">
+			apmac = #{apmac},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePortalurlparameterByKeyAll" parameterType="Portalurlparameter">
+		UPDATE portal_urlparameter
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			basname = #{basname},
+			userip = #{userip},
+			usermac = #{usermac},
+			url = #{url},
+			basip = #{basip},
+			ssid = #{ssid},
+			apmac = #{apmac},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getPortalurlparameterListWithPage" parameterType="PortalurlparameterQuery"
+		resultMap="portalurlparameter">
+		<include refid="portalurlparameterSelector" />
+		<include refid="portalurlparameterListWhere" />
+		<include refid="portalurlparameterListOrder" />
+		<include refid="portalurlparameterListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPortalurlparameterListCount" parameterType="PortalurlparameterQuery"
+		resultType="int">
+		SELECT count(1) FROM portal_urlparameter
+		<include refid="portalurlparameterListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPortalurlparameterList" parameterType="PortalurlparameterQuery"
+		resultMap="portalurlparameter">
+		<include refid="portalurlparameterSelector" />
+		<include refid="portalurlparameterListWhere" />
+		<include refid="portalurlparameterListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPortalurlparameterListWithPageFields" parameterType="PortalurlparameterQuery"
+		resultType="Portalurlparameter">
+		<include refid="portalurlparameterSelector" />
+		<include refid="portalurlparameterListWhere" />
+		<include refid="portalurlparameterListOrder" />
+		<include refid="portalurlparameterListLimit" />
+	</select>
+	<select id="$getPortalurlparameterListFields" parameterType="PortalurlparameterQuery"
+		resultType="Portalurlparameter">
+		<include refid="portalurlparameterSelector" />
+		<include refid="portalurlparameterListWhere" />
+		<include refid="portalurlparameterListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPortalurlparameter" parameterType="Portalurlparameter">
+		INSERT INTO portal_urlparameter
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="basname != null">
+					basname,
+			</if>
+			<if test="userip != null">
+					userip,
+			</if>
+			<if test="usermac != null">
+					usermac,
+			</if>
+			<if test="url != null">
+					url,
+			</if>
+			<if test="basip != null">
+					basip,
+			</if>
+			<if test="ssid != null">
+					ssid,
+			</if>
+			<if test="apmac != null">
+					apmac,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="basname != null">
+	 #{basname},
+			</if>
+			<if test="userip != null">
+	 #{userip},
+			</if>
+			<if test="usermac != null">
+	 #{usermac},
+			</if>
+			<if test="url != null">
+	 #{url},
+			</if>
+			<if test="basip != null">
+	 #{basip},
+			</if>
+			<if test="ssid != null">
+	 #{ssid},
+			</if>
+			<if test="apmac != null">
+	 #{apmac},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PortalweixinwifiDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="portalweixinwifi" type="Portalweixinwifi">
+		<result property="id" column="id" />
+		<result property="appId" column="appId" />
+		<result property="shopId" column="shopId" />
+		<result property="ssid" column="ssid" />
+		<result property="domain" column="domain" />
+		<result property="bssid" column="bssid" />
+		<result property="secretKey" column="secretKey" />
+		<result property="outTime" column="outTime" />
+		<result property="basip" column="basip" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="portalweixinwifiSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,appId,shopId,ssid,domain,bssid,secretKey,outTime,basip
+			</if>
+		
+		FROM portal_weixin_wifi
+	</sql>
+	<sql id="portalweixinwifiListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="appId != null">
+			 and 
+			<if test="appIdLike == 0">
+				appId=#{appId}
+			</if>
+			<if test="appIdLike == 1">
+				appId like CONCAT('%','${appId}','%')
+			</if>
+			</if>
+		    <if test="shopId != null">
+			 and 
+			<if test="shopIdLike == 0">
+				shopId=#{shopId}
+			</if>
+			<if test="shopIdLike == 1">
+				shopId like CONCAT('%','${shopId}','%')
+			</if>
+			</if>
+		    <if test="ssid != null">
+			 and 
+			<if test="ssidLike == 0">
+				ssid=#{ssid}
+			</if>
+			<if test="ssidLike == 1">
+				ssid like CONCAT('%','${ssid}','%')
+			</if>
+			</if>
+		    <if test="domain != null">
+			 and 
+			<if test="domainLike == 0">
+				domain=#{domain}
+			</if>
+			<if test="domainLike == 1">
+				domain like CONCAT('%','${domain}','%')
+			</if>
+			</if>
+		    <if test="bssid != null">
+			 and 
+			<if test="bssidLike == 0">
+				bssid=#{bssid}
+			</if>
+			<if test="bssidLike == 1">
+				bssid like CONCAT('%','${bssid}','%')
+			</if>
+			</if>
+		    <if test="secretKey != null">
+			 and 
+			<if test="secretKeyLike == 0">
+				secretKey=#{secretKey}
+			</if>
+			<if test="secretKeyLike == 1">
+				secretKey like CONCAT('%','${secretKey}','%')
+			</if>
+			</if>
+		    <if test="outTime != null">
+			 and 
+				outTime=#{outTime}
+			</if>
+		    <if test="basip != null">
+			 and 
+			<if test="basipLike == 0">
+				basip=#{basip}
+			</if>
+			<if test="basipLike == 1">
+				basip like CONCAT('%','${basip}','%')
+			</if>
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="portalweixinwifiListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="portalweixinwifiListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPortalweixinwifiByKey" resultMap="portalweixinwifi" parameterType="hashMap">
+		SELECT id,appId,shopId,ssid,domain,bssid,secretKey,outTime,basip FROM portal_weixin_wifi
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getPortalweixinwifiByKeys" resultMap="portalweixinwifi"
+		parameterType="ArrayList">
+		SELECT id,appId,shopId,ssid,domain,bssid,secretKey,outTime,basip FROM portal_weixin_wifi
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM portal_weixin_wifi
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Portalweixinwifi">
+		DELETE FROM portal_weixin_wifi
+		<include refid="portalweixinwifiListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM portal_weixin_wifi
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePortalweixinwifiByKey" parameterType="Portalweixinwifi">
+		UPDATE portal_weixin_wifi
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="appId != null">
+			appId = #{appId},
+		</if>
+		<if test="shopId != null">
+			shopId = #{shopId},
+		</if>
+		<if test="ssid != null">
+			ssid = #{ssid},
+		</if>
+		<if test="domain != null">
+			domain = #{domain},
+		</if>
+		<if test="bssid != null">
+			bssid = #{bssid},
+		</if>
+		<if test="secretKey != null">
+			secretKey = #{secretKey},
+		</if>
+		<if test="outTime != null">
+			outTime = #{outTime},
+		</if>
+		<if test="basip != null">
+			basip = #{basip},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePortalweixinwifiByKeyAll" parameterType="Portalweixinwifi">
+		UPDATE portal_weixin_wifi
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			appId = #{appId},
+			shopId = #{shopId},
+			ssid = #{ssid},
+			domain = #{domain},
+			bssid = #{bssid},
+			secretKey = #{secretKey},
+			outTime = #{outTime},
+			basip = #{basip},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getPortalweixinwifiListWithPage" parameterType="PortalweixinwifiQuery"
+		resultMap="portalweixinwifi">
+		<include refid="portalweixinwifiSelector" />
+		<include refid="portalweixinwifiListWhere" />
+		<include refid="portalweixinwifiListOrder" />
+		<include refid="portalweixinwifiListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPortalweixinwifiListCount" parameterType="PortalweixinwifiQuery"
+		resultType="int">
+		SELECT count(1) FROM portal_weixin_wifi
+		<include refid="portalweixinwifiListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPortalweixinwifiList" parameterType="PortalweixinwifiQuery"
+		resultMap="portalweixinwifi">
+		<include refid="portalweixinwifiSelector" />
+		<include refid="portalweixinwifiListWhere" />
+		<include refid="portalweixinwifiListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPortalweixinwifiListWithPageFields" parameterType="PortalweixinwifiQuery"
+		resultType="Portalweixinwifi">
+		<include refid="portalweixinwifiSelector" />
+		<include refid="portalweixinwifiListWhere" />
+		<include refid="portalweixinwifiListOrder" />
+		<include refid="portalweixinwifiListLimit" />
+	</select>
+	<select id="$getPortalweixinwifiListFields" parameterType="PortalweixinwifiQuery"
+		resultType="Portalweixinwifi">
+		<include refid="portalweixinwifiSelector" />
+		<include refid="portalweixinwifiListWhere" />
+		<include refid="portalweixinwifiListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPortalweixinwifi" parameterType="Portalweixinwifi">
+		INSERT INTO portal_weixin_wifi
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="appId != null">
+					appId,
+			</if>
+			<if test="shopId != null">
+					shopId,
+			</if>
+			<if test="ssid != null">
+					ssid,
+			</if>
+			<if test="domain != null">
+					domain,
+			</if>
+			<if test="bssid != null">
+					bssid,
+			</if>
+			<if test="secretKey != null">
+					secretKey,
+			</if>
+			<if test="outTime != null">
+					outTime,
+			</if>
+			<if test="basip != null">
+					basip,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="appId != null">
+	 #{appId},
+			</if>
+			<if test="shopId != null">
+	 #{shopId},
+			</if>
+			<if test="ssid != null">
+	 #{ssid},
+			</if>
+			<if test="domain != null">
+	 #{domain},
+			</if>
+			<if test="bssid != null">
+	 #{bssid},
+			</if>
+			<if test="secretKey != null">
+	 #{secretKey},
+			</if>
+			<if test="outTime != null">
+	 #{outTime},
+			</if>
+			<if test="basip != null">
+	 #{basip},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

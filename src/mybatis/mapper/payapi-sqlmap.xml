@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PayapiDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="payapi" type="Payapi">
+		<result property="id" column="id" />
+		<result property="alipayPartner" column="alipayPartner" />
+		<result property="alipayKey" column="alipayKey" />
+		<result property="weixinAppId" column="weixinAppId" />
+		<result property="weixinAppSecret" column="weixinAppSecret" />
+		<result property="weixinPartner" column="weixinPartner" />
+		<result property="weixinKey" column="weixinKey" />
+		<result property="weixinPartnerExd" column="weixinPartnerExd" />
+		<result property="alipay" column="alipay" />
+		<result property="weixin" column="weixin" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="payapiSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,alipayPartner,alipayKey,weixinAppId,weixinAppSecret,weixinPartner,weixinKey,weixinPartnerExd,alipay,weixin
+			</if>
+		
+		FROM payapi
+	</sql>
+	<sql id="payapiListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="alipayPartner != null">
+			 and 
+			<if test="alipayPartnerLike == 0">
+				alipayPartner=#{alipayPartner}
+			</if>
+			<if test="alipayPartnerLike == 1">
+				alipayPartner like CONCAT('%','${alipayPartner}','%')
+			</if>
+			</if>
+		    <if test="alipayKey != null">
+			 and 
+			<if test="alipayKeyLike == 0">
+				alipayKey=#{alipayKey}
+			</if>
+			<if test="alipayKeyLike == 1">
+				alipayKey like CONCAT('%','${alipayKey}','%')
+			</if>
+			</if>
+		    <if test="weixinAppId != null">
+			 and 
+			<if test="weixinAppIdLike == 0">
+				weixinAppId=#{weixinAppId}
+			</if>
+			<if test="weixinAppIdLike == 1">
+				weixinAppId like CONCAT('%','${weixinAppId}','%')
+			</if>
+			</if>
+		    <if test="weixinAppSecret != null">
+			 and 
+			<if test="weixinAppSecretLike == 0">
+				weixinAppSecret=#{weixinAppSecret}
+			</if>
+			<if test="weixinAppSecretLike == 1">
+				weixinAppSecret like CONCAT('%','${weixinAppSecret}','%')
+			</if>
+			</if>
+		    <if test="weixinPartner != null">
+			 and 
+			<if test="weixinPartnerLike == 0">
+				weixinPartner=#{weixinPartner}
+			</if>
+			<if test="weixinPartnerLike == 1">
+				weixinPartner like CONCAT('%','${weixinPartner}','%')
+			</if>
+			</if>
+		    <if test="weixinKey != null">
+			 and 
+			<if test="weixinKeyLike == 0">
+				weixinKey=#{weixinKey}
+			</if>
+			<if test="weixinKeyLike == 1">
+				weixinKey like CONCAT('%','${weixinKey}','%')
+			</if>
+			</if>
+		    <if test="weixinPartnerExd != null">
+			 and 
+			<if test="weixinPartnerExdLike == 0">
+				weixinPartnerExd=#{weixinPartnerExd}
+			</if>
+			<if test="weixinPartnerExdLike == 1">
+				weixinPartnerExd like CONCAT('%','${weixinPartnerExd}','%')
+			</if>
+			</if>
+		    <if test="alipay != null">
+			 and 
+				alipay=#{alipay}
+			</if>
+		    <if test="weixin != null">
+			 and 
+				weixin=#{weixin}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="payapiListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="payapiListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPayapiByKey" resultMap="payapi" parameterType="hashMap">
+		SELECT id,alipayPartner,alipayKey,weixinAppId,weixinAppSecret,weixinPartner,weixinKey,weixinPartnerExd,alipay,weixin FROM payapi
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getPayapiByKeys" resultMap="payapi"
+		parameterType="ArrayList">
+		SELECT id,alipayPartner,alipayKey,weixinAppId,weixinAppSecret,weixinPartner,weixinKey,weixinPartnerExd,alipay,weixin FROM payapi
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM payapi
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Payapi">
+		DELETE FROM payapi
+		<include refid="payapiListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM payapi
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+	
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteAll">
+		DELETE FROM payapi
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePayapiByKey" parameterType="Payapi">
+		UPDATE payapi
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="alipayPartner != null">
+			alipayPartner = #{alipayPartner},
+		</if>
+		<if test="alipayKey != null">
+			alipayKey = #{alipayKey},
+		</if>
+		<if test="weixinAppId != null">
+			weixinAppId = #{weixinAppId},
+		</if>
+		<if test="weixinAppSecret != null">
+			weixinAppSecret = #{weixinAppSecret},
+		</if>
+		<if test="weixinPartner != null">
+			weixinPartner = #{weixinPartner},
+		</if>
+		<if test="weixinKey != null">
+			weixinKey = #{weixinKey},
+		</if>
+		<if test="weixinPartnerExd != null">
+			weixinPartnerExd = #{weixinPartnerExd},
+		</if>
+		<if test="alipay != null">
+			alipay = #{alipay},
+		</if>
+		<if test="weixin != null">
+			weixin = #{weixin},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePayapiByKeyAll" parameterType="Payapi">
+		UPDATE payapi
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			alipayPartner = #{alipayPartner},
+			alipayKey = #{alipayKey},
+			weixinAppId = #{weixinAppId},
+			weixinAppSecret = #{weixinAppSecret},
+			weixinPartner = #{weixinPartner},
+			weixinKey = #{weixinKey},
+			weixinPartnerExd = #{weixinPartnerExd},
+			alipay = #{alipay},
+			weixin = #{weixin},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getPayapiListWithPage" parameterType="PayapiQuery"
+		resultMap="payapi">
+		<include refid="payapiSelector" />
+		<include refid="payapiListWhere" />
+		<include refid="payapiListOrder" />
+		<include refid="payapiListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPayapiListCount" parameterType="PayapiQuery"
+		resultType="int">
+		SELECT count(1) FROM payapi
+		<include refid="payapiListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPayapiList" parameterType="PayapiQuery"
+		resultMap="payapi">
+		<include refid="payapiSelector" />
+		<include refid="payapiListWhere" />
+		<include refid="payapiListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPayapiListWithPageFields" parameterType="PayapiQuery"
+		resultType="Payapi">
+		<include refid="payapiSelector" />
+		<include refid="payapiListWhere" />
+		<include refid="payapiListOrder" />
+		<include refid="payapiListLimit" />
+	</select>
+	<select id="$getPayapiListFields" parameterType="PayapiQuery"
+		resultType="Payapi">
+		<include refid="payapiSelector" />
+		<include refid="payapiListWhere" />
+		<include refid="payapiListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPayapi" parameterType="Payapi">
+		INSERT INTO payapi
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="alipayPartner != null">
+					alipayPartner,
+			</if>
+			<if test="alipayKey != null">
+					alipayKey,
+			</if>
+			<if test="weixinAppId != null">
+					weixinAppId,
+			</if>
+			<if test="weixinAppSecret != null">
+					weixinAppSecret,
+			</if>
+			<if test="weixinPartner != null">
+					weixinPartner,
+			</if>
+			<if test="weixinKey != null">
+					weixinKey,
+			</if>
+			<if test="weixinPartnerExd != null">
+					weixinPartnerExd,
+			</if>
+			<if test="alipay != null">
+					alipay,
+			</if>
+			<if test="weixin != null">
+					weixin,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="alipayPartner != null">
+	 #{alipayPartner},
+			</if>
+			<if test="alipayKey != null">
+	 #{alipayKey},
+			</if>
+			<if test="weixinAppId != null">
+	 #{weixinAppId},
+			</if>
+			<if test="weixinAppSecret != null">
+	 #{weixinAppSecret},
+			</if>
+			<if test="weixinPartner != null">
+	 #{weixinPartner},
+			</if>
+			<if test="weixinKey != null">
+	 #{weixinKey},
+			</if>
+			<if test="weixinPartnerExd != null">
+	 #{weixinPartnerExd},
+			</if>
+			<if test="alipay != null">
+	 #{alipay},
+			</if>
+			<if test="weixin != null">
+	 #{weixin},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

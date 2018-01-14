@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PortalssidDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="portalssid" type="Portalssid">
+		<result property="id" column="id" />
+		<result property="basid" column="basid" />
+		<result property="ip" column="ip" />
+		<result property="ssid" column="ssid" />
+		<result property="address" column="address" />
+		<result property="basip" column="basip" />
+		<result property="x" column="x" />
+		<result property="y" column="y" />
+		<result property="des" column="des" />
+		<result property="name" column="name" />
+		<result property="web" column="web" />
+		<result property="count" column="count" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="portalssidSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,basid,ip,ssid,address,basip,x,y,des,name,web,count
+			</if>
+		
+		FROM portal_ssid
+	</sql>
+	<sql id="portalssidListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="basid != null">
+			 and 
+				basid=#{basid}
+			</if>
+		    <if test="ip != null">
+			 and 
+			<if test="ipLike == 0">
+				ip=#{ip}
+			</if>
+			<if test="ipLike == 1">
+				ip like CONCAT('%','${ip}','%')
+			</if>
+			</if>
+		    <if test="ssid != null">
+			 and 
+			<if test="ssidLike == 0">
+				ssid=#{ssid}
+			</if>
+			<if test="ssidLike == 1">
+				ssid like CONCAT('%','${ssid}','%')
+			</if>
+			</if>
+		    <if test="address != null">
+			 and 
+			<if test="addressLike == 0">
+				address=#{address}
+			</if>
+			<if test="addressLike == 1">
+				address like CONCAT('%','${address}','%')
+			</if>
+			</if>
+		    <if test="basip != null">
+			 and 
+			<if test="basipLike == 0">
+				basip=#{basip}
+			</if>
+			<if test="basipLike == 1">
+				basip like CONCAT('%','${basip}','%')
+			</if>
+			</if>
+		    <if test="x != null">
+			 and 
+			<if test="xLike == 0">
+				x=#{x}
+			</if>
+			<if test="xLike == 1">
+				x like CONCAT('%','${x}','%')
+			</if>
+			</if>
+		    <if test="y != null">
+			 and 
+			<if test="yLike == 0">
+				y=#{y}
+			</if>
+			<if test="yLike == 1">
+				y like CONCAT('%','${y}','%')
+			</if>
+			</if>
+		    <if test="des != null">
+			 and 
+			<if test="desLike == 0">
+				des=#{des}
+			</if>
+			<if test="desLike == 1">
+				des like CONCAT('%','${des}','%')
+			</if>
+			</if>
+		    <if test="name != null">
+			 and 
+			<if test="nameLike == 0">
+				name=#{name}
+			</if>
+			<if test="nameLike == 1">
+				name like CONCAT('%','${name}','%')
+			</if>
+			</if>
+		    <if test="web != null">
+			 and 
+				web=#{web}
+			</if>
+		    <if test="count != null">
+			 and 
+				count=#{count}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="portalssidListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="portalssidListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPortalssidByKey" resultMap="portalssid" parameterType="hashMap">
+		SELECT id,basid,ip,ssid,address,basip,x,y,des,name,web,count FROM portal_ssid
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getPortalssidByKeys" resultMap="portalssid"
+		parameterType="ArrayList">
+		SELECT id,basid,ip,ssid,address,basip,x,y,des,name,web,count FROM portal_ssid
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM portal_ssid
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Portalssid">
+		DELETE FROM portal_ssid
+		<include refid="portalssidListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM portal_ssid
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePortalssidByKey" parameterType="Portalssid">
+		UPDATE portal_ssid
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="basid != null">
+			basid = #{basid},
+		</if>
+		<if test="ip != null">
+			ip = #{ip},
+		</if>
+		<if test="ssid != null">
+			ssid = #{ssid},
+		</if>
+		<if test="address != null">
+			address = #{address},
+		</if>
+		<if test="basip != null">
+			basip = #{basip},
+		</if>
+		<if test="x != null">
+			x = #{x},
+		</if>
+		<if test="y != null">
+			y = #{y},
+		</if>
+		<if test="des != null">
+			des = #{des},
+		</if>
+		<if test="name != null">
+			name = #{name},
+		</if>
+		<if test="web != null">
+			web = #{web},
+		</if>
+		<if test="count != null">
+			count = #{count},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePortalssidByKeyAll" parameterType="Portalssid">
+		UPDATE portal_ssid
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			basid = #{basid},
+			ip = #{ip},
+			ssid = #{ssid},
+			address = #{address},
+			basip = #{basip},
+			x = #{x},
+			y = #{y},
+			des = #{des},
+			name = #{name},
+			web = #{web},
+			count = #{count},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getPortalssidListWithPage" parameterType="PortalssidQuery"
+		resultMap="portalssid">
+		<include refid="portalssidSelector" />
+		<include refid="portalssidListWhere" />
+		<include refid="portalssidListOrder" />
+		<include refid="portalssidListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPortalssidListCount" parameterType="PortalssidQuery"
+		resultType="int">
+		SELECT count(1) FROM portal_ssid
+		<include refid="portalssidListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPortalssidList" parameterType="PortalssidQuery"
+		resultMap="portalssid">
+		<include refid="portalssidSelector" />
+		<include refid="portalssidListWhere" />
+		<include refid="portalssidListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPortalssidListWithPageFields" parameterType="PortalssidQuery"
+		resultType="Portalssid">
+		<include refid="portalssidSelector" />
+		<include refid="portalssidListWhere" />
+		<include refid="portalssidListOrder" />
+		<include refid="portalssidListLimit" />
+	</select>
+	<select id="$getPortalssidListFields" parameterType="PortalssidQuery"
+		resultType="Portalssid">
+		<include refid="portalssidSelector" />
+		<include refid="portalssidListWhere" />
+		<include refid="portalssidListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPortalssid" parameterType="Portalssid">
+		INSERT INTO portal_ssid
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="basid != null">
+					basid,
+			</if>
+			<if test="ip != null">
+					ip,
+			</if>
+			<if test="ssid != null">
+					ssid,
+			</if>
+			<if test="address != null">
+					address,
+			</if>
+			<if test="basip != null">
+					basip,
+			</if>
+			<if test="x != null">
+					x,
+			</if>
+			<if test="y != null">
+					y,
+			</if>
+			<if test="des != null">
+					des,
+			</if>
+			<if test="name != null">
+					name,
+			</if>
+			<if test="web != null">
+					web,
+			</if>
+			<if test="count != null">
+					count,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="basid != null">
+	 #{basid},
+			</if>
+			<if test="ip != null">
+	 #{ip},
+			</if>
+			<if test="ssid != null">
+	 #{ssid},
+			</if>
+			<if test="address != null">
+	 #{address},
+			</if>
+			<if test="basip != null">
+	 #{basip},
+			</if>
+			<if test="x != null">
+	 #{x},
+			</if>
+			<if test="y != null">
+	 #{y},
+			</if>
+			<if test="des != null">
+	 #{des},
+			</if>
+			<if test="name != null">
+	 #{name},
+			</if>
+			<if test="web != null">
+	 #{web},
+			</if>
+			<if test="count != null">
+	 #{count},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

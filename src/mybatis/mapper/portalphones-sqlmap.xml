@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PortalphonesDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="portalphones" type="Portalphones">
+		<result property="id" column="id" />
+		<result property="did" column="did" />
+		<result property="uid" column="uid" />
+		<result property="name" column="name" />
+		<result property="phone" column="phone" />
+		<result property="description" column="description" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="portalphonesSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,did,uid,name,phone,description
+			</if>
+		
+		FROM portal_phones
+	</sql>
+	<sql id="portalphonesListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="did != null">
+			 and 
+				did=#{did}
+			</if>
+		    <if test="uid != null">
+			 and 
+				uid=#{uid}
+			</if>
+		    <if test="name != null">
+			 and 
+			<if test="nameLike == 0">
+				name=#{name}
+			</if>
+			<if test="nameLike == 1">
+				name like CONCAT('%','${name}','%')
+			</if>
+			</if>
+		    <if test="phone != null">
+			 and 
+			<if test="phoneLike == 0">
+				phone=#{phone}
+			</if>
+			<if test="phoneLike == 1">
+				phone like CONCAT('%','${phone}','%')
+			</if>
+			</if>
+		    <if test="description != null">
+			 and 
+			<if test="descriptionLike == 0">
+				description=#{description}
+			</if>
+			<if test="descriptionLike == 1">
+				description like CONCAT('%','${description}','%')
+			</if>
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="portalphonesListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="portalphonesListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPortalphonesByKey" resultMap="portalphones" parameterType="hashMap">
+		SELECT id,did,uid,name,phone,description FROM portal_phones
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getPortalphonesByKeys" resultMap="portalphones"
+		parameterType="ArrayList">
+		SELECT id,did,uid,name,phone,description FROM portal_phones
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM portal_phones
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Portalphones">
+		DELETE FROM portal_phones
+		<include refid="portalphonesListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM portal_phones
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+	
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteAll">
+		DELETE FROM portal_phones
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePortalphonesByKey" parameterType="Portalphones">
+		UPDATE portal_phones
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="did != null">
+			did = #{did},
+		</if>
+		<if test="uid != null">
+			uid = #{uid},
+		</if>
+		<if test="name != null">
+			name = #{name},
+		</if>
+		<if test="phone != null">
+			phone = #{phone},
+		</if>
+		<if test="description != null">
+			description = #{description},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePortalphonesByKeyAll" parameterType="Portalphones">
+		UPDATE portal_phones
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			did = #{did},
+			uid = #{uid},
+			name = #{name},
+			phone = #{phone},
+			description = #{description},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getPortalphonesListWithPage" parameterType="PortalphonesQuery"
+		resultMap="portalphones">
+		<include refid="portalphonesSelector" />
+		<include refid="portalphonesListWhere" />
+		<include refid="portalphonesListOrder" />
+		<include refid="portalphonesListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPortalphonesListCount" parameterType="PortalphonesQuery"
+		resultType="int">
+		SELECT count(1) FROM portal_phones
+		<include refid="portalphonesListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPortalphonesList" parameterType="PortalphonesQuery"
+		resultMap="portalphones">
+		<include refid="portalphonesSelector" />
+		<include refid="portalphonesListWhere" />
+		<include refid="portalphonesListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPortalphonesListWithPageFields" parameterType="PortalphonesQuery"
+		resultType="Portalphones">
+		<include refid="portalphonesSelector" />
+		<include refid="portalphonesListWhere" />
+		<include refid="portalphonesListOrder" />
+		<include refid="portalphonesListLimit" />
+	</select>
+	<select id="$getPortalphonesListFields" parameterType="PortalphonesQuery"
+		resultType="Portalphones">
+		<include refid="portalphonesSelector" />
+		<include refid="portalphonesListWhere" />
+		<include refid="portalphonesListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPortalphones" parameterType="Portalphones">
+		INSERT INTO portal_phones
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="did != null">
+					did,
+			</if>
+			<if test="uid != null">
+					uid,
+			</if>
+			<if test="name != null">
+					name,
+			</if>
+			<if test="phone != null">
+					phone,
+			</if>
+			<if test="description != null">
+					description,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="did != null">
+	 #{did},
+			</if>
+			<if test="uid != null">
+	 #{uid},
+			</if>
+			<if test="name != null">
+	 #{name},
+			</if>
+			<if test="phone != null">
+	 #{phone},
+			</if>
+			<if test="description != null">
+	 #{description},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

@@ -1,0 +1,57 @@
+.yellow {
+	border: 1px solid rgb(170, 170, 170); border-image: none; width: 150px; height: 150px;
+}
+.blue {
+	border: 1px solid rgb(170, 170, 170); border-image: none; background-color: rgb(166, 227, 252);
+}
+.green {
+	border: 1px solid rgb(170, 170, 170); border-image: none; background-color: rgb(165, 248, 139);
+}
+.popup_title {
+	background: rgb(232, 245, 254); padding: 4px;
+}
+#note_form {
+	padding: 4px;
+}
+#note_form p {
+	line-height: 24px;
+}
+.posttable td {
+	padding: 2px; line-height: 24px;
+}
+#color li {
+	width: 20px; height: 20px; margin-left: 6px; float: left; cursor: pointer;
+}
+#color li.cur {
+	border: 1px solid rgb(51, 102, 153); border-image: none;
+}
+.red {
+	background: rgb(255, 255, 204); color: rgb(102, 153, 51);
+}
+.login {
+	width: 352px; height: 230px;
+}
+.form-signin {
+	margin: 0px auto; padding: 15px; max-width: 330px;
+}
+.form-signin .form-signin-heading {
+	margin-bottom: 10px;
+}
+.form-signin .checkbox {
+	margin-bottom: 10px;
+}
+.form-signin .checkbox {
+	font-weight: normal;
+}
+.form-signin .form-control {
+	padding: 10px; height: auto; font-size: 16px; position: relative; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;
+}
+.form-signin .form-control:focus {
+	z-index: 2;
+}
+.form-signin input[type='text'] {
+	margin-bottom: 10px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px;
+}
+.form-signin input[type='password'] {
+	margin-bottom: 10px; border-top-left-radius: 0px; border-top-right-radius: 0px;
+}

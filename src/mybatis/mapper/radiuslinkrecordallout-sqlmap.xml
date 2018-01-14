@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.RadiuslinkrecordalloutDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="radiuslinkrecordallout" type="Radiuslinkrecordallout">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="creatDate" column="creatDate" />
+		<result property="url" column="url" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="radiuslinkrecordalloutSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,name,creatDate,url
+			</if>
+		
+		FROM radius_linkrecordallout
+	</sql>
+	<sql id="radiuslinkrecordalloutListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="name != null">
+			 and 
+			<if test="nameLike == 0">
+				name=#{name}
+			</if>
+			<if test="nameLike == 1">
+				name like CONCAT('%','${name}','%')
+			</if>
+			</if>
+		    <if test="creatDate != null">
+			 and 
+				creatDate=#{creatDate}
+			</if>
+		    <if test="url != null">
+			 and 
+			<if test="urlLike == 0">
+				url=#{url}
+			</if>
+			<if test="urlLike == 1">
+				url like CONCAT('%','${url}','%')
+			</if>
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="radiuslinkrecordalloutListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="radiuslinkrecordalloutListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getRadiuslinkrecordalloutByKey" resultMap="radiuslinkrecordallout" parameterType="hashMap">
+		SELECT id,name,creatDate,url FROM radius_linkrecordallout
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getRadiuslinkrecordalloutByKeys" resultMap="radiuslinkrecordallout"
+		parameterType="ArrayList">
+		SELECT id,name,creatDate,url FROM radius_linkrecordallout
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM radius_linkrecordallout
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Radiuslinkrecordallout">
+		DELETE FROM radius_linkrecordallout
+		<include refid="radiuslinkrecordalloutListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM radius_linkrecordallout
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+	
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteAll">
+		DELETE FROM radius_linkrecordallout
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updateRadiuslinkrecordalloutByKey" parameterType="Radiuslinkrecordallout">
+		UPDATE radius_linkrecordallout
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="name != null">
+			name = #{name},
+		</if>
+		<if test="creatDate != null">
+			creatDate = #{creatDate},
+		</if>
+		<if test="url != null">
+			url = #{url},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updateRadiuslinkrecordalloutByKeyAll" parameterType="Radiuslinkrecordallout">
+		UPDATE radius_linkrecordallout
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			name = #{name},
+			creatDate = #{creatDate},
+			url = #{url},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getRadiuslinkrecordalloutListWithPage" parameterType="RadiuslinkrecordalloutQuery"
+		resultMap="radiuslinkrecordallout">
+		<include refid="radiuslinkrecordalloutSelector" />
+		<include refid="radiuslinkrecordalloutListWhere" />
+		<include refid="radiuslinkrecordalloutListOrder" />
+		<include refid="radiuslinkrecordalloutListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getRadiuslinkrecordalloutListCount" parameterType="RadiuslinkrecordalloutQuery"
+		resultType="int">
+		SELECT count(1) FROM radius_linkrecordallout
+		<include refid="radiuslinkrecordalloutListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getRadiuslinkrecordalloutList" parameterType="RadiuslinkrecordalloutQuery"
+		resultMap="radiuslinkrecordallout">
+		<include refid="radiuslinkrecordalloutSelector" />
+		<include refid="radiuslinkrecordalloutListWhere" />
+		<include refid="radiuslinkrecordalloutListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getRadiuslinkrecordalloutListWithPageFields" parameterType="RadiuslinkrecordalloutQuery"
+		resultType="Radiuslinkrecordallout">
+		<include refid="radiuslinkrecordalloutSelector" />
+		<include refid="radiuslinkrecordalloutListWhere" />
+		<include refid="radiuslinkrecordalloutListOrder" />
+		<include refid="radiuslinkrecordalloutListLimit" />
+	</select>
+	<select id="$getRadiuslinkrecordalloutListFields" parameterType="RadiuslinkrecordalloutQuery"
+		resultType="Radiuslinkrecordallout">
+		<include refid="radiuslinkrecordalloutSelector" />
+		<include refid="radiuslinkrecordalloutListWhere" />
+		<include refid="radiuslinkrecordalloutListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addRadiuslinkrecordallout" parameterType="Radiuslinkrecordallout">
+		INSERT INTO radius_linkrecordallout
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="name != null">
+					name,
+			</if>
+			<if test="creatDate != null">
+					creatDate,
+			</if>
+			<if test="url != null">
+					url,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="name != null">
+	 #{name},
+			</if>
+			<if test="creatDate != null">
+	 #{creatDate},
+			</if>
+			<if test="url != null">
+	 #{url},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

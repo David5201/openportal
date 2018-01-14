@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PortaltimewebDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="portaltimeweb" type="Portaltimeweb">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="description" column="description" />
+		<result property="viewdate" column="viewdate" />
+		<result property="viewweekday" column="viewweekday" />
+		<result property="viewdateday" column="viewdateday" />
+		<result property="viewmonth" column="viewmonth" />
+		<result property="web" column="web" />
+		<result property="count" column="count" />
+		<result property="pos" column="pos" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="portaltimewebSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,name,description,viewdate,viewweekday,viewdateday,viewmonth,web,count,pos
+			</if>
+		
+		FROM portal_timeweb
+	</sql>
+	<sql id="portaltimewebListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="name != null">
+			 and 
+			<if test="nameLike == 0">
+				name=#{name}
+			</if>
+			<if test="nameLike == 1">
+				name like CONCAT('%','${name}','%')
+			</if>
+			</if>
+		    <if test="description != null">
+			 and 
+			<if test="descriptionLike == 0">
+				description=#{description}
+			</if>
+			<if test="descriptionLike == 1">
+				description like CONCAT('%','${description}','%')
+			</if>
+			</if>
+		    <if test="viewdate != null">
+			 and 
+				viewdate=#{viewdate}
+			</if>
+		    <if test="viewweekday != null">
+			 and 
+				viewweekday=#{viewweekday}
+			</if>
+		    <if test="viewdateday != null">
+			 and 
+				viewdateday=#{viewdateday}
+			</if>
+		    <if test="viewmonth != null">
+			 and 
+				viewmonth=#{viewmonth}
+			</if>
+		    <if test="web != null">
+			 and 
+				web=#{web}
+			</if>
+		    <if test="count != null">
+			 and 
+				count=#{count}
+			</if>
+		    <if test="pos != null">
+			 and 
+				pos=#{pos}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="portaltimewebListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="portaltimewebListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPortaltimewebByKey" resultMap="portaltimeweb" parameterType="hashMap">
+		SELECT id,name,description,viewdate,viewweekday,viewdateday,viewmonth,web,count,pos FROM portal_timeweb
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getPortaltimewebByKeys" resultMap="portaltimeweb"
+		parameterType="ArrayList">
+		SELECT id,name,description,viewdate,viewweekday,viewdateday,viewmonth,web,count,pos FROM portal_timeweb
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM portal_timeweb
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Portaltimeweb">
+		DELETE FROM portal_timeweb
+		<include refid="portaltimewebListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM portal_timeweb
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+	
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteAll">
+		DELETE FROM portal_timeweb
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePortaltimewebByKey" parameterType="Portaltimeweb">
+		UPDATE portal_timeweb
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="name != null">
+			name = #{name},
+		</if>
+		<if test="description != null">
+			description = #{description},
+		</if>
+		<if test="viewdate != null">
+			viewdate = #{viewdate},
+		</if>
+		<if test="viewweekday != null">
+			viewweekday = #{viewweekday},
+		</if>
+		<if test="viewdateday != null">
+			viewdateday = #{viewdateday},
+		</if>
+		<if test="viewmonth != null">
+			viewmonth = #{viewmonth},
+		</if>
+		<if test="web != null">
+			web = #{web},
+		</if>
+		<if test="count != null">
+			count = #{count},
+		</if>
+		<if test="pos != null">
+			pos = #{pos},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePortaltimewebByKeyAll" parameterType="Portaltimeweb">
+		UPDATE portal_timeweb
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			name = #{name},
+			description = #{description},
+			viewdate = #{viewdate},
+			viewweekday = #{viewweekday},
+			viewdateday = #{viewdateday},
+			viewmonth = #{viewmonth},
+			web = #{web},
+			count = #{count},
+			pos = #{pos},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getPortaltimewebListWithPage" parameterType="PortaltimewebQuery"
+		resultMap="portaltimeweb">
+		<include refid="portaltimewebSelector" />
+		<include refid="portaltimewebListWhere" />
+		<include refid="portaltimewebListOrder" />
+		<include refid="portaltimewebListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPortaltimewebListCount" parameterType="PortaltimewebQuery"
+		resultType="int">
+		SELECT count(1) FROM portal_timeweb
+		<include refid="portaltimewebListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPortaltimewebList" parameterType="PortaltimewebQuery"
+		resultMap="portaltimeweb">
+		<include refid="portaltimewebSelector" />
+		<include refid="portaltimewebListWhere" />
+		<include refid="portaltimewebListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPortaltimewebListWithPageFields" parameterType="PortaltimewebQuery"
+		resultType="Portaltimeweb">
+		<include refid="portaltimewebSelector" />
+		<include refid="portaltimewebListWhere" />
+		<include refid="portaltimewebListOrder" />
+		<include refid="portaltimewebListLimit" />
+	</select>
+	<select id="$getPortaltimewebListFields" parameterType="PortaltimewebQuery"
+		resultType="Portaltimeweb">
+		<include refid="portaltimewebSelector" />
+		<include refid="portaltimewebListWhere" />
+		<include refid="portaltimewebListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPortaltimeweb" parameterType="Portaltimeweb">
+		INSERT INTO portal_timeweb
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="name != null">
+					name,
+			</if>
+			<if test="description != null">
+					description,
+			</if>
+			<if test="viewdate != null">
+					viewdate,
+			</if>
+			<if test="viewweekday != null">
+					viewweekday,
+			</if>
+			<if test="viewdateday != null">
+					viewdateday,
+			</if>
+			<if test="viewmonth != null">
+					viewmonth,
+			</if>
+			<if test="web != null">
+					web,
+			</if>
+			<if test="count != null">
+					count,
+			</if>
+			<if test="pos != null">
+					pos,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="name != null">
+	 #{name},
+			</if>
+			<if test="description != null">
+	 #{description},
+			</if>
+			<if test="viewdate != null">
+	 #{viewdate},
+			</if>
+			<if test="viewweekday != null">
+	 #{viewweekday},
+			</if>
+			<if test="viewdateday != null">
+	 #{viewdateday},
+			</if>
+			<if test="viewmonth != null">
+	 #{viewmonth},
+			</if>
+			<if test="web != null">
+	 #{web},
+			</if>
+			<if test="count != null">
+	 #{count},
+			</if>
+			<if test="pos != null">
+	 #{pos},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

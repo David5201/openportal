@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PortalroleprivilegeDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="portalroleprivilege" type="Portalroleprivilege">
+		<result property="privilegeId" column="privilegeId" />
+		<result property="roleId" column="roleId" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="portalroleprivilegeSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			privilegeId,roleId
+			</if>
+		
+		FROM portal_role_privilege
+	</sql>
+	<sql id="portalroleprivilegeListWhere">
+		<where>
+		    <if test="privilegeId != null">
+			 and 
+				privilegeId=#{privilegeId}
+			</if>
+		    <if test="roleId != null">
+			 and 
+				roleId=#{roleId}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="portalroleprivilegeListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="portalroleprivilegeListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPortalroleprivilegeByKey" resultMap="portalroleprivilege" parameterType="hashMap">
+		SELECT privilegeId,roleId FROM portal_role_privilege
+		WHERE
+		privilegeId=#{id}
+	</select>
+	<select id="getPortalroleprivilegeByKeys" resultMap="portalroleprivilege"
+		parameterType="ArrayList">
+		SELECT privilegeId,roleId FROM portal_role_privilege
+		WHERE
+		privilegeId in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM portal_role_privilege
+		WHERE
+		privilegeId=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Portalroleprivilege">
+		DELETE FROM portal_role_privilege
+		<include refid="portalroleprivilegeListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM portal_role_privilege
+		WHERE
+		privilegeId in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePortalroleprivilegeByKey" parameterType="Portalroleprivilege">
+		UPDATE portal_role_privilege
+		<set>
+		<trim suffixOverrides=",">
+		<if test="privilegeId != null">
+			privilegeId = #{privilegeId},
+		</if>
+		<if test="roleId != null">
+			roleId = #{roleId},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		privilegeId=#{privilegeId}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePortalroleprivilegeByKeyAll" parameterType="Portalroleprivilege">
+		UPDATE portal_role_privilege
+		<set>
+		<trim suffixOverrides=",">
+			privilegeId = #{privilegeId},
+			roleId = #{roleId},
+		</trim>
+		</set>
+		WHERE
+		privilegeId=#{privilegeId}
+	</update>
+	<!-- 分页 -->
+	<select id="getPortalroleprivilegeListWithPage" parameterType="PortalroleprivilegeQuery"
+		resultMap="portalroleprivilege">
+		<include refid="portalroleprivilegeSelector" />
+		<include refid="portalroleprivilegeListWhere" />
+		<include refid="portalroleprivilegeListOrder" />
+		<include refid="portalroleprivilegeListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPortalroleprivilegeListCount" parameterType="PortalroleprivilegeQuery"
+		resultType="int">
+		SELECT count(1) FROM portal_role_privilege
+		<include refid="portalroleprivilegeListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPortalroleprivilegeList" parameterType="PortalroleprivilegeQuery"
+		resultMap="portalroleprivilege">
+		<include refid="portalroleprivilegeSelector" />
+		<include refid="portalroleprivilegeListWhere" />
+		<include refid="portalroleprivilegeListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPortalroleprivilegeListWithPageFields" parameterType="PortalroleprivilegeQuery"
+		resultType="Portalroleprivilege">
+		<include refid="portalroleprivilegeSelector" />
+		<include refid="portalroleprivilegeListWhere" />
+		<include refid="portalroleprivilegeListOrder" />
+		<include refid="portalroleprivilegeListLimit" />
+	</select>
+	<select id="$getPortalroleprivilegeListFields" parameterType="PortalroleprivilegeQuery"
+		resultType="Portalroleprivilege">
+		<include refid="portalroleprivilegeSelector" />
+		<include refid="portalroleprivilegeListWhere" />
+		<include refid="portalroleprivilegeListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPortalroleprivilege" parameterType="Portalroleprivilege">
+		INSERT INTO portal_role_privilege
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="privilegeId != null">
+					privilegeId,
+			</if>
+			<if test="roleId != null">
+					roleId,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="privilegeId != null">
+	 #{privilegeId},
+			</if>
+			<if test="roleId != null">
+	 #{roleId},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="privilegeId">
+			SELECT LAST_INSERT_ID() AS PRIVILEGEID
+		</selectKey>
+	</insert>
+</mapper>

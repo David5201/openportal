@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PortaluserDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="portaluser" type="Portaluser">
+		<result property="id" column="id" />
+		<result property="loginName" column="loginName" />
+		<result property="password" column="password" />
+		<result property="name" column="name" />
+		<result property="gender" column="gender" />
+		<result property="phoneNumber" column="phoneNumber" />
+		<result property="email" column="email" />
+		<result property="description" column="description" />
+		<result property="departmentId" column="departmentId" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="portaluserSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,loginName,password,name,gender,phoneNumber,email,description,departmentId
+			</if>
+		
+		FROM portal_user
+	</sql>
+	<sql id="portaluserListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="loginName != null">
+			 and 
+			<if test="loginNameLike == 0">
+				loginName=#{loginName}
+			</if>
+			<if test="loginNameLike == 1">
+				loginName like CONCAT('%','${loginName}','%')
+			</if>
+			</if>
+		    <if test="password != null">
+			 and 
+			<if test="passwordLike == 0">
+				password=#{password}
+			</if>
+			<if test="passwordLike == 1">
+				password like CONCAT('%','${password}','%')
+			</if>
+			</if>
+		    <if test="name != null">
+			 and 
+			<if test="nameLike == 0">
+				name=#{name}
+			</if>
+			<if test="nameLike == 1">
+				name like CONCAT('%','${name}','%')
+			</if>
+			</if>
+		    <if test="gender != null">
+			 and 
+			<if test="genderLike == 0">
+				gender=#{gender}
+			</if>
+			<if test="genderLike == 1">
+				gender like CONCAT('%','${gender}','%')
+			</if>
+			</if>
+		    <if test="phoneNumber != null">
+			 and 
+			<if test="phoneNumberLike == 0">
+				phoneNumber=#{phoneNumber}
+			</if>
+			<if test="phoneNumberLike == 1">
+				phoneNumber like CONCAT('%','${phoneNumber}','%')
+			</if>
+			</if>
+		    <if test="email != null">
+			 and 
+			<if test="emailLike == 0">
+				email=#{email}
+			</if>
+			<if test="emailLike == 1">
+				email like CONCAT('%','${email}','%')
+			</if>
+			</if>
+		    <if test="description != null">
+			 and 
+			<if test="descriptionLike == 0">
+				description=#{description}
+			</if>
+			<if test="descriptionLike == 1">
+				description like CONCAT('%','${description}','%')
+			</if>
+			</if>
+		    <if test="departmentId != null">
+			 and 
+				departmentId=#{departmentId}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="portaluserListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="portaluserListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPortaluserByKey" resultMap="portaluser" parameterType="hashMap">
+		SELECT id,loginName,password,name,gender,phoneNumber,email,description,departmentId FROM portal_user
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getPortaluserByKeys" resultMap="portaluser"
+		parameterType="ArrayList">
+		SELECT id,loginName,password,name,gender,phoneNumber,email,description,departmentId FROM portal_user
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM portal_user
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Portaluser">
+		DELETE FROM portal_user
+		<include refid="portaluserListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM portal_user
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePortaluserByKey" parameterType="Portaluser">
+		UPDATE portal_user
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="loginName != null">
+			loginName = #{loginName},
+		</if>
+		<if test="password != null">
+			password = #{password},
+		</if>
+		<if test="name != null">
+			name = #{name},
+		</if>
+		<if test="gender != null">
+			gender = #{gender},
+		</if>
+		<if test="phoneNumber != null">
+			phoneNumber = #{phoneNumber},
+		</if>
+		<if test="email != null">
+			email = #{email},
+		</if>
+		<if test="description != null">
+			description = #{description},
+		</if>
+		<if test="departmentId != null">
+			departmentId = #{departmentId},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePortaluserByKeyAll" parameterType="Portaluser">
+		UPDATE portal_user
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			loginName = #{loginName},
+			password = #{password},
+			name = #{name},
+			gender = #{gender},
+			phoneNumber = #{phoneNumber},
+			email = #{email},
+			description = #{description},
+			departmentId = #{departmentId},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getPortaluserListWithPage" parameterType="PortaluserQuery"
+		resultMap="portaluser">
+		<include refid="portaluserSelector" />
+		<include refid="portaluserListWhere" />
+		<include refid="portaluserListOrder" />
+		<include refid="portaluserListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPortaluserListCount" parameterType="PortaluserQuery"
+		resultType="int">
+		SELECT count(1) FROM portal_user
+		<include refid="portaluserListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPortaluserList" parameterType="PortaluserQuery"
+		resultMap="portaluser">
+		<include refid="portaluserSelector" />
+		<include refid="portaluserListWhere" />
+		<include refid="portaluserListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPortaluserListWithPageFields" parameterType="PortaluserQuery"
+		resultType="Portaluser">
+		<include refid="portaluserSelector" />
+		<include refid="portaluserListWhere" />
+		<include refid="portaluserListOrder" />
+		<include refid="portaluserListLimit" />
+	</select>
+	<select id="$getPortaluserListFields" parameterType="PortaluserQuery"
+		resultType="Portaluser">
+		<include refid="portaluserSelector" />
+		<include refid="portaluserListWhere" />
+		<include refid="portaluserListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPortaluser" parameterType="Portaluser">
+		INSERT INTO portal_user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="loginName != null">
+					loginName,
+			</if>
+			<if test="password != null">
+					password,
+			</if>
+			<if test="name != null">
+					name,
+			</if>
+			<if test="gender != null">
+					gender,
+			</if>
+			<if test="phoneNumber != null">
+					phoneNumber,
+			</if>
+			<if test="email != null">
+					email,
+			</if>
+			<if test="description != null">
+					description,
+			</if>
+			<if test="departmentId != null">
+					departmentId,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="loginName != null">
+	 #{loginName},
+			</if>
+			<if test="password != null">
+	 #{password},
+			</if>
+			<if test="name != null">
+	 #{name},
+			</if>
+			<if test="gender != null">
+	 #{gender},
+			</if>
+			<if test="phoneNumber != null">
+	 #{phoneNumber},
+			</if>
+			<if test="email != null">
+	 #{email},
+			</if>
+			<if test="description != null">
+	 #{description},
+			</if>
+			<if test="departmentId != null">
+	 #{departmentId},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

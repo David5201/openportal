@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd	
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+     http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+	<!-- 注解开发方式 -->
+	<mvc:annotation-driven />
+
+	<!-- springmvc 默认扫包顺序 @Controller @Service ..... 现在把它false -->
+	<context:component-scan base-package="com.leeson.core.controller,weixin.guanjia.core.controller"
+		use-default-filters="false">
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+
+
+	<!-- 使用spring mvc拦截器进行权限验证和IP锁定操作 -->
+	<!-- 匹配的是url路径， 如果不配置或/**,将拦截所有的Controller -->  
+	<mvc:interceptors>
+        <!-- IP锁定验证拦截器 -->  
+        <mvc:interceptor>
+        <!--
+			<mvc:mapping path="/**/ajax_*.action*"/>
+		-->  
+			<mvc:mapping path="/**/ajax_Login.action*"/>
+			<mvc:mapping path="/**/ajax_LoginOut.action*"/>
+			<mvc:mapping path="/**/ajax_guestAuth.action*"/>
+			<mvc:mapping path="/**/ajax_sms.action*"/>
+			<mvc:mapping path="/**/ajax_gzh.action*"/>
+			<mvc:mapping path="/**/ajax_weixin.action*"/>
+			
+			<bean class="com.leeson.common.interceptor.CheckIpLockInterceptor" />
+		</mvc:interceptor>
+		<!-- 权限验证拦截器 --> 
+		<mvc:interceptor>
+			<mvc:mapping path="/**/*.action*"/>
+			<bean class="com.leeson.common.interceptor.PermissionInterceptorAdapter" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+
+	<!-- 配置全局日期转换器 -->
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="webBindingInitializer">
+			<bean class="com.leeson.common.web.CustomDateEdtor" />
+		</property>
+	</bean>
+
+	<!-- jsp视图 -->
+	<bean id="jspViewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<!--避免IE执行AJAX时，返回JSON出现下载文件 <bean id="mappingJackson2HttpMessageConverter" 
+		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"> 
+		<property name="supportedMediaTypes"> <list> <value>text/json;charset=UTF-8</value> 
+		<value>application/json;charset=UTF-8</value> </list> </property> </bean> -->
+	<!-- 采用SpringMVC自带的JSON转换工具，支持@ResponseBody注解 <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"> 
+		<property name="messageConverters"> <list> <ref bean="mappingJackson2HttpMessageConverter" 
+		/> </list> </property> </bean> -->
+
+
+	<!-- 配置文件上传，如果没有使用文件上传可以不用配置，当然如果不配，那么配置文件中也不必引入上传组件包 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- 默认编码 -->
+		<!-- 文件大小最大值 -->
+		<property name="maxUploadSize" value="10485760000" />
+		<!-- 内存中的最大值 -->
+		<property name="maxInMemorySize" value="40960" />
+	</bean>
+
+	<mvc:default-servlet-handler />
+
+
+
+	<!-- shiro 开启注解方式 -->
+	<bean
+		class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager" />
+	</bean>
+
+	<!-- shiro AOP式方法级权限检查 -->
+	<bean
+		class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+		depends-on="lifecycleBeanPostProcessor">
+		<property name="proxyTargetClass" value="true" />
+	</bean>
+
+	<!-- 异常处理 -->
+
+	<bean id="exceptionResolver" class="com.leeson.common.resolver.MyExceptionResolver"></bean>
+
+</beans>

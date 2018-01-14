@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PortalroleDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="portalrole" type="Portalrole">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="description" column="description" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="portalroleSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,name,description
+			</if>
+		
+		FROM portal_role
+	</sql>
+	<sql id="portalroleListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="name != null">
+			 and 
+			<if test="nameLike == 0">
+				name=#{name}
+			</if>
+			<if test="nameLike == 1">
+				name like CONCAT('%','${name}','%')
+			</if>
+			</if>
+		    <if test="description != null">
+			 and 
+			<if test="descriptionLike == 0">
+				description=#{description}
+			</if>
+			<if test="descriptionLike == 1">
+				description like CONCAT('%','${description}','%')
+			</if>
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="portalroleListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="portalroleListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPortalroleByKey" resultMap="portalrole" parameterType="hashMap">
+		SELECT id,name,description FROM portal_role
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getPortalroleByKeys" resultMap="portalrole"
+		parameterType="ArrayList">
+		SELECT id,name,description FROM portal_role
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM portal_role
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Portalrole">
+		DELETE FROM portal_role
+		<include refid="portalroleListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM portal_role
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePortalroleByKey" parameterType="Portalrole">
+		UPDATE portal_role
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="name != null">
+			name = #{name},
+		</if>
+		<if test="description != null">
+			description = #{description},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePortalroleByKeyAll" parameterType="Portalrole">
+		UPDATE portal_role
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			name = #{name},
+			description = #{description},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getPortalroleListWithPage" parameterType="PortalroleQuery"
+		resultMap="portalrole">
+		<include refid="portalroleSelector" />
+		<include refid="portalroleListWhere" />
+		<include refid="portalroleListOrder" />
+		<include refid="portalroleListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPortalroleListCount" parameterType="PortalroleQuery"
+		resultType="int">
+		SELECT count(1) FROM portal_role
+		<include refid="portalroleListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPortalroleList" parameterType="PortalroleQuery"
+		resultMap="portalrole">
+		<include refid="portalroleSelector" />
+		<include refid="portalroleListWhere" />
+		<include refid="portalroleListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPortalroleListWithPageFields" parameterType="PortalroleQuery"
+		resultType="Portalrole">
+		<include refid="portalroleSelector" />
+		<include refid="portalroleListWhere" />
+		<include refid="portalroleListOrder" />
+		<include refid="portalroleListLimit" />
+	</select>
+	<select id="$getPortalroleListFields" parameterType="PortalroleQuery"
+		resultType="Portalrole">
+		<include refid="portalroleSelector" />
+		<include refid="portalroleListWhere" />
+		<include refid="portalroleListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPortalrole" parameterType="Portalrole">
+		INSERT INTO portal_role
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="name != null">
+					name,
+			</if>
+			<if test="description != null">
+					description,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="name != null">
+	 #{name},
+			</if>
+			<if test="description != null">
+	 #{description},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

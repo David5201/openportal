@@ -1,0 +1,301 @@
+﻿<HTML lang="utf-8" xmlns="http://www.w3.org/1999/xhtml">
+<HEAD><META content="IE=11.0000" http-equiv="X-UA-Compatible">
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<META http-equiv="X-UA-Compatible" content="IE=edge">
+<META name="viewport" id="viewport" content="width=480; initial-scale=0.65; maximum-scale=1.0; user-scalable=1;">
+<TITLE>登录页面</TITLE>
+<script src="dist/encode.js"></script>
+<script src="dist/utils.js"></script>
+<LINK href="dist/bootstrap.css" rel="stylesheet">
+<SCRIPT src="dist/jquery-1.10.2.js" type="text/javascript"></SCRIPT>
+<SCRIPT src="dist/bootstrap.js" type="text/javascript"></SCRIPT>
+<SCRIPT src="dist/jquery-ui-1.10.4.custom.min.js" type="text/javascript"></SCRIPT>
+<LINK href="dist/styles.css" rel="stylesheet" type="text/css">
+<STYLE type="text/css">
+body {margin:0; padding:0; text-align:center; }
+html,body,div,span,h1,h2,h3,h4,h5,h6,p,pre,a,code,em,img,small,strong,sub,sup,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}
+ol,ul{list-style:none}
+table{border-collapse:collapse;border-spacing:0}
+#main{
+width: 480px;
+height: 710px;
+margin-right: auto;
+margin-left: auto;}
+.demo{position:relative; height:715px;}
+.note{ position:absolute;}
+</STYLE>
+<META name="GENERATOR" content="MSHTML 11.00.9600.18125">
+</HEAD> 
+<BODY>
+<DIV class="bodyStyle" id="main">
+<DIV class="demo">
+<DIV class="note ckeditor" style="left: 3px; top: 51px; z-index: 9;">
+<LINK href="dist/styles(1).css" rel="stylesheet" type="text/css">
+<DIV class="banner">
+<UL>
+  <LI style='background-image: url("logoimg/1.jpg");'>
+  <DIV class="inner">&nbsp;</DIV></LI>
+  <LI style='background-image: url("logoimg/2.jpg");'>
+  <DIV class="inner">&nbsp;</DIV></LI>
+  <LI style='background-image: url("logoimg/3.jpg");'>
+  <DIV class="inner">&nbsp;</DIV></LI>
+  <LI style='background-image: url("logoimg/4.jpg");'>
+  <DIV class="inner">&nbsp;</DIV></LI>
+</UL>
+<SCRIPT src="dist/jquery.event.move.js"></SCRIPT>
+<SCRIPT src="dist/jquery.event.swipe.js"></SCRIPT>
+<SCRIPT src="dist/unslider.min.js"></SCRIPT>
+<SCRIPT>
+							$('.banner').unslider({
+								speed : 500,
+								arrows : false,
+								fluid : false,
+								dots : true,
+								//keys: true,
+								delay : 2000
+							});
+					
+						//  Find any element starting with a # in the URL
+						//  And listen to any click events it fires
+							$('a[href^="#"]').click(function() {
+							//  Find the target element
+								var target = $($(this).attr('href'));
+
+							//  And get its position
+								var pos = target.offset(); // fallback to scrolling to top || {left: 0, top: 0};
+
+							//  jQuery will return false if there's no element
+							//  and your code will throw errors if it tries to do .offset().left;
+								if (pos) {
+								//  Scroll the page
+									$('html, body').animate({
+									scrollTop : pos.top,
+									scrollLeft : pos.left
+									}, 1000);
+								}
+
+							//  Don't let them visit the url, we'll scroll you there
+								return false;
+							});
+</SCRIPT>
+</DIV></DIV>
+<DIV class="note ckeditor" style="left: 3px; top: 3px; z-index: 9;"><P><IMG style="width: 150px; height: 44px;" alt="" src="dist/logo.gif"></P></DIV>
+<DIV class="note login" style="left: 65px; top: 370px; z-index: 8;">
+<STYLE>
+.f1 {font-family:微软雅黑; font-weight:500; font-size: 20px; line-height: 20px ; color:#000000; }
+.input-border{font-family:微软雅黑; font-weight:500; border:1px solid #7F9DB9;	width:250px; line-height:20px; font-size:16px; height:26px;}
+.input-pwd{font-family:微软雅黑; font-weight:500; border:1px solid #7F9DB9;	width:100px; line-height:20px; font-size:16px; height:26px;}
+.code { font-family:Arial; font-style:italic; color:#5188CB; border:0; padding:2px 3px; letter-spacing:3px; font-weight:bolder; font-size: 18px;}
+.login { background-repeat: no-repeat; float: left; width: 420px; height:280px;}
+.login .b_left {float: left;}
+.login .b_cernet {float: left;}
+.code { font-family:Arial; font-style:italic; color:#5188CB; border:0; padding:2px 3px; letter-spacing:3px; font-weight:bolder; cursor:pointer; font-size: 20px;}
+.unchanged { border:0;}
+.btnLogin  { BORDER: 1px #5bc0de solid; width:250px; height:60px; font-family: "Microsoft YaHei"; font-size:16px; background:#5bc0de; color:#fff; cursor:hand; line-height: 25px ;}
+.btnLogin1 { BORDER: 1px #BC6800 solid; width:135px; height:55px; font-family: "Microsoft YaHei"; font-size:16px; background:#F58601; color:#fff; cursor:hand; line-height: 25px ;}
+</STYLE>
+
+<SCRIPT type="text/javascript">
+function getAccount()
+{
+	var userphone= document.getElementById("userphone");
+	var userphones=userphone.value;
+	if (isNaN(userphones) ||userphones.length!=11){
+	    alert("请在账号栏输入手机号码获取短信密码！"); 
+		userphone.focus();
+		return false;	
+	}
+	if(!(/^13[0-9]{9}$|^15[0|1|2|3|5|6|7|8|9]\d{8}$|^14[0|1|2|3|5|6|7|8|9]\d{8}$|^17[0|1|2|3|5|6|7|8|9]\d{8}$|^18[0|1|2|3|4|5|6|7|8|9]\d{8}$/.test(userphones)))
+
+	{
+	    alert("请输入正确的手机号码！"); 
+		userphone.focus();
+		return false;	
+	}  
+	else
+   {
+	   getSMSCode();
+	   setdis();
+	}
+}
+
+// 获取短信验证码
+		function getSMSCode() {
+			var phone = $('#userphone').val();
+		 	var url="/ajax_smsAPI.action?phone="+phone;
+			 $.ajax({
+				 url: url,
+				 type: "GET",
+				 error: null,
+				 timeout: 5000,
+				 dataType: "json",
+				 cache: false,
+				 success:function(data){
+					 if(data.ret==0){
+						 $("#password").focus();
+						 var info=data.msg;
+						 if(info!=null&&info!=""){
+							 setTimeout(function(){
+								 alert(info);
+						      	},3000);
+							}
+						}else{
+							alert(data.msg);
+							$("#userphone").focus();
+						}
+				 }
+				
+				});
+		}
+		
+ var count ;
+ 
+ function setdis() {
+  count = 180;
+  countBtn();
+ }
+
+ function countBtn() {
+	  var btn = document.getElementById("btn");
+	  if (count > 0)
+	  {
+		   btn.disabled = true;
+		   btn.value = "请稍等"+count+"秒";
+		   count--;
+		   window.setTimeout(countBtn,1000);
+	  } else {
+	   	btn.value = "获取短信密码";
+	   	btn.disabled = false;
+	  }
+ }
+</SCRIPT>
+ 
+<SCRIPT type="text/javascript">
+	 function login()
+     {
+		var userphone= document.getElementById("userphone").value;
+		if(userphone==""){
+	    	alert("请输入账号！"); 
+		    $("#userphone").focus();
+			return false;	
+		}
+		
+        var password = document.getElementById("password").value;
+     	if(password==""){
+	 	   alert("请填写密码！");
+	 	   document.form1.strPassword.focus();
+		   return false;	
+	 	}
+       else
+       {
+		//document.form1.submit();
+		document.form1.MKKey.disabled=true;
+		smsLogin(userphone,password);
+       }
+     }
+
+    document.onkeydown=function(event){ 
+        e = event ? event :(window.event ? window.event : null); 
+        if(e.keyCode==13){ 
+            login();
+        } 
+    } 
+</SCRIPT>
+
+<SCRIPT type="text/javascript">
+function smsLogin(phone,yzm){
+	var str="/ajax_smsAuth.action?phone="+phone+"&yzm="+yzm+"&basip="+basip+"&ip="+ip+"&umac="+umac+"&apmac="+apmac+"&ssid="+ssid;
+	var data_str=encodeToUTF8(str);
+	$.ajax({
+		type: "GET",
+		url: data_str,
+		success: sms_fun,
+		error: null,
+		timeout: 5000,
+		dataType: "json",
+		cache: false,
+		complete : function(XMLHttpRequest,status){ //请求完成后最终执行参数
+　　　　		if(status=='timeout'){//超时,status还有success,error等值的情况
+					alert("认证超时！！");
+					$("#TT").removeAttr("disabled"); 
+　　　　		}
+　　		}
+	});
+	}
+
+	function sms_fun(msg){
+	$("#TT").removeAttr("disabled"); 
+	if(msg.ret==0){ 
+		var	weburl="ok.html?u="+msg.u+"&i="+msg.i+"&w="+msg.w+"&m="+msg.msg+"&l="+msg.l;
+		window.location.replace(weburl);
+	}
+	else if(msg.ret==10){
+		alert("参数获取失败，请重试！！");
+		var	weburl=def_url;
+		window.location.replace(weburl);
+	}else if(msg.ret==119){
+		alert(msg.msg);
+		var	weburl="ok.html";
+		window.location.replace(weburl);
+	}
+	else{
+		alert(msg.msg);
+	}
+	}
+</SCRIPT>
+
+<DIV class="login">
+<DIV class="b_left" style="width: 480px; height: 0px;"></DIV>
+<DIV class="b_cernet" style="width: 370px; height: 210px;">
+<TABLE width="120%" height="100%" class="f1" border="0" cellspacing="1" cellpadding="0">
+<FORM name="form1">
+<TBODY>
+  <TR>
+    <TD height="50" align="center" colspan="2">
+      <P align="center" style="color: rgb(0, 114, 200);">欢迎使用洋洋百货免费WI-FI
+    		 </P></TD></TR>
+  <TR>
+    <TD width="23%" height="66" align="right">手机号：</TD>
+    <TD width="76%" height="66" align="left"><INPUT name="username" class="input-border" id="userphone" style="height: 55px;" type="tel" maxlength="11">&nbsp; 
+    </TD></TR>
+  <TR>
+    <TD width="23%" height="66" align="right">密　码：</TD>
+    <TD width="35%" height="66" align="left"><INPUT name="password" class="input-pwd" id="password" style="height: 55px;" type="password">&nbsp; 
+      		<INPUT class="btnLogin1" id="btn" onclick="getAccount();" type="button" value="获取短信密码">
+      		 </TD></TR>
+  <TR>
+    <TD width="23%" height="45" align="right"></TD>
+    <TD width="76%" height="45" align="left"><INPUT name="MKKey" class="btnLogin" id="TT" onclick="login();" type="button" value="登　录">
+      		 </TD></TR>
+  <TR>
+    <TD height="60" colspan="2">
+      <P align="center"><INPUT name="C1" onclick="document.getElementById('TT').disabled=!this.checked" 
+      type="checkbox" checked="">		   遵守使用条款</P></TD></TR>
+</TBODY></FORM></TABLE>
+</DIV></DIV></DIV></DIV></DIV></BODY>
+<SCRIPT type="text/javascript">
+var r = window.location.search.substr(1);
+function autoAuth_fun(msg){
+if(msg.ret==0){
+	var	weburl="auto.html?usr="+msg.u+"&pwd="+msg.p+"&"+r;
+	window.location.replace(weburl);
+}
+}
+
+var str="/ajax_autoAuthSms.action?basip="+basip+"&ip="+ip+"&umac="+umac+"&apmac="+apmac+"&ssid="+ssid;
+var data_str=encodeToUTF8(str);
+$.ajax({
+	type: "GET",
+	url: data_str,
+	success: autoAuth_fun,
+	error: null,
+	timeout: 5000,
+	dataType: "json",
+	cache: false,
+	complete : function(XMLHttpRequest,status){ //请求完成后最终执行参数
+		if(status=='timeout'){//超时,status还有success,error等值的情况
+		}
+		}
+});
+</SCRIPT>
+</HTML>

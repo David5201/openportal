@@ -1,0 +1,45 @@
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+    <title>微信认证</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+	<script src="dist/js/jquery-1.11.1.min.js"></script>
+	<script src="dist/js/encode.js"></script>
+    <link rel="shortcut icon" href="favicon.ico">
+</head>
+<body>
+正在认证...
+</body>
+<script type="text/javascript">
+function weixinHtmlPCAuth_fun(msg){
+if(msg.ret==0){
+	var	weburl="ok.html?u="+msg.u+"&i="+msg.i+"&w="+msg.w;
+	window.location.replace(weburl);
+}
+}
+var r = window.location.search.substr(0);
+var str="/weixinHtmlPCAuth.action"+r;
+var data_str=encodeToUTF8(str);
+$.ajax({
+	type: "GET",
+	url: data_str,
+	success: weixinHtmlPCAuth_fun,
+	error: null,
+	timeout: 5000,
+	dataType: "json",
+	cache: false,
+	complete : function(XMLHttpRequest,status){ //请求完成后最终执行参数
+		if(status=='timeout'||status=='error'){//超时,status还有success,error等值的情况
+			window.location.reload();
+		}
+		},
+	error: function(XMLHttpRequest, status, errorThrown) { 
+		window.location.reload();
+		}
+});
+</script>
+</html>

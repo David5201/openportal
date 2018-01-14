@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PortalspeedDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="portalspeed" type="Portalspeed">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="up" column="up" />
+		<result property="down" column="down" />
+		<result property="mup" column="mup" />
+		<result property="mdown" column="mdown" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="portalspeedSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,name,up,down,mup,mdown
+			</if>
+		
+		FROM portal_speed
+	</sql>
+	<sql id="portalspeedListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="name != null">
+			 and 
+			<if test="nameLike == 0">
+				name=#{name}
+			</if>
+			<if test="nameLike == 1">
+				name like CONCAT('%','${name}','%')
+			</if>
+			</if>
+		    <if test="up != null">
+			 and 
+				up=#{up}
+			</if>
+		    <if test="down != null">
+			 and 
+				down=#{down}
+			</if>
+		    <if test="mup != null">
+			 and 
+				mup=#{mup}
+			</if>
+		    <if test="mdown != null">
+			 and 
+				mdown=#{mdown}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="portalspeedListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="portalspeedListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPortalspeedByKey" resultMap="portalspeed" parameterType="hashMap">
+		SELECT id,name,up,down,mup,mdown FROM portal_speed
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getPortalspeedByKeys" resultMap="portalspeed"
+		parameterType="ArrayList">
+		SELECT id,name,up,down,mup,mdown FROM portal_speed
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM portal_speed
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Portalspeed">
+		DELETE FROM portal_speed
+		<include refid="portalspeedListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM portal_speed
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePortalspeedByKey" parameterType="Portalspeed">
+		UPDATE portal_speed
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="name != null">
+			name = #{name},
+		</if>
+		<if test="up != null">
+			up = #{up},
+		</if>
+		<if test="down != null">
+			down = #{down},
+		</if>
+		<if test="mup != null">
+			mup = #{mup},
+		</if>
+		<if test="mdown != null">
+			mdown = #{mdown},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePortalspeedByKeyAll" parameterType="Portalspeed">
+		UPDATE portal_speed
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			name = #{name},
+			up = #{up},
+			down = #{down},
+			mup = #{mup},
+			mdown = #{mdown},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getPortalspeedListWithPage" parameterType="PortalspeedQuery"
+		resultMap="portalspeed">
+		<include refid="portalspeedSelector" />
+		<include refid="portalspeedListWhere" />
+		<include refid="portalspeedListOrder" />
+		<include refid="portalspeedListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPortalspeedListCount" parameterType="PortalspeedQuery"
+		resultType="int">
+		SELECT count(1) FROM portal_speed
+		<include refid="portalspeedListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPortalspeedList" parameterType="PortalspeedQuery"
+		resultMap="portalspeed">
+		<include refid="portalspeedSelector" />
+		<include refid="portalspeedListWhere" />
+		<include refid="portalspeedListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPortalspeedListWithPageFields" parameterType="PortalspeedQuery"
+		resultType="Portalspeed">
+		<include refid="portalspeedSelector" />
+		<include refid="portalspeedListWhere" />
+		<include refid="portalspeedListOrder" />
+		<include refid="portalspeedListLimit" />
+	</select>
+	<select id="$getPortalspeedListFields" parameterType="PortalspeedQuery"
+		resultType="Portalspeed">
+		<include refid="portalspeedSelector" />
+		<include refid="portalspeedListWhere" />
+		<include refid="portalspeedListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPortalspeed" parameterType="Portalspeed">
+		INSERT INTO portal_speed
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="name != null">
+					name,
+			</if>
+			<if test="up != null">
+					up,
+			</if>
+			<if test="down != null">
+					down,
+			</if>
+			<if test="mup != null">
+					mup,
+			</if>
+			<if test="mdown != null">
+					mdown,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="name != null">
+	 #{name},
+			</if>
+			<if test="up != null">
+	 #{up},
+			</if>
+			<if test="down != null">
+	 #{down},
+			</if>
+			<if test="mup != null">
+	 #{mup},
+			</if>
+			<if test="mdown != null">
+	 #{mdown},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

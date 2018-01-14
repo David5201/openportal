@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html class="portal-html">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<title>认证成功</title>
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="renderer" content="webkit">
+<link href="dist/css/portal_login.css" rel="stylesheet" type="text/css" />
+<script src="dist/js/jquery-1.11.1.min.js"></script>
+<script src="dist/js/script.js"></script>
+<script src="dist/js/site.js"></script>
+<script src="dist/js/auth.js"></script>
+<script src="dist/js/encode.js"></script>
+<script src="dist/js/utils.js"></script>
+</head>
+<body class="portal-body">
+<div class="portal-page-layout ">
+  <div class="portal-page-loading"></div>
+  <img name='logo' src="img/logo.png" class="portal-logo J-portal-logo" alt="OpenPortal" />
+  <div class="portal-banners">
+    <div id="sliderContainer">
+      <div id="prev" class="arrow"></div>
+      <div id="slider">
+        <div class="slide"> <img src="img/1.jpg"> </div>
+        <div class="slide"> <img src="img/2.jpg"> </div>
+        <div class="slide"> <img src="img/3.jpg"> </div>
+      </div>
+      <div id="pagination"></div>
+      <div id="next" class="arrow"></div>
+    </div>
+  </div>
+  <div class="portal-content-wrap J-portal-content-wrap ">
+    <div class="portal-content" id="userinfo">
+		<p class="attr" style="text-align:center">用户名:</p>
+		<p class="attr" style="text-align:center">IP:</p>
+		<button id="goURL" class="button button-primary button-block">继续之前的访问</button>
+		<button id="userCenter" class="button button-highlight button-block">用户中心</button>
+		<br>
+		<a href="javascript:;" id="LoginOut" class="portal-btn  portal-btn-o">下线</a>
+    </div>
+    <div class="portal-power J-portal-power">
+      <p>网络技术架构由 OpenPortal 提供</p>
+    </div>
+  </div>
+</div>
+</body>
+<script type="text/javascript">
+var	user=GetQueryUSER();
+user=decodeURI(user);
+var	ip=GetQueryString("i");
+if(user!=null&&user!=''&&ip!=null&&ip!=''){
+var trs = '<p class="attr" style="text-align:center">用户名:'+user+'</p><p class="attr" style="text-align:center">IP:'+ip+'</p><button id="goURL" class="button button-primary button-block">继续之前的访问</button><button id="userCenter" class="button button-highlight button-block">用户中心</button><br><a href="javascript:;" id="LoginOut" class="portal-btn  portal-btn-o">下线</a>';
+}else{
+var trs = '<p class="attr" style="text-align:center">您已经通过认证</p><p class="attr" style="text-align:center">如不能上网，请下线后重试！</p><button id="goURL" class="button button-primary button-block">继续之前的访问</button><button id="userCenter" class="button button-highlight button-block">用户中心</button><br><a href="javascript:;" id="LoginOut" class="portal-btn  portal-btn-o">下线</a>';
+}
+$("#userinfo").empty();
+$("#userinfo").append(trs);
+</script>
+</html>

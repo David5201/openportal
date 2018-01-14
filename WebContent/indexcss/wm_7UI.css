@@ -1,0 +1,45 @@
+/* CSS Document */
+
+html {overflow:-moz-scrollbars-vertical; scrollbar-face-color:#E8E8E8;scrollbar-shadow-color:#C1C1BB;scrollbar-highlight-color:#C1C1BB;scrollbar-3dlight-color:#EBEBE4;scrollbar-darkshadow-color:#EBEBE4;scrollbar-track-color:#F4F4F0;scrollbar-arrow-color:#CACAB7; }
+
+div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,blockquote,p,input{padding:0; margin:0;}   
+div,ul,li{list-style:none;}
+a{text-decoration: none; color:#fff;}
+a:hover { text-decoration: none; color:#ff0000;}
+h1,h2,h3,h4,h5,h6{font:12px normal; }
+.clear{margin:0px; padding:0px; clear:both;}
+TABLE {BORDER-COLLAPSE: collapse; border-spacing: 0;}
+
+img{border:0px;}
+
+body{font-size:12px; color:#fff; background:#fff url(../indeximages/lmbg_2.jpg) repeat-x left top; font-family:Microsoft YaHei,Verdana, Arial, Helvetica, sans-serif;  padding:0; margin:0; behavior:url("indeximages/csshover.htc");}
+
+td{font-size:12px; line-height:22px;}
+
+
+#wrapper{width:702px; overflow:hidden; margin:0 auto; background:url(../indeximages/dbg.jpg) dbg.jpg;}
+.logo{width:250px; height:96px; margin:30px auto 0; background:url(../indeximages/logo.png) no-repeat;}
+/*--------网站头部 --------------*/
+.header{width:702px; height:335px; margin:1px auto 0; background:url(../indeximages/bg_3.jpg) no-repeat;}
+.title{ font-size:32px; color:#fff; height:40px; padding-top:30px; width:702px; text-align:center;}
+
+
+/*--------首页栏目 --------------*/
+.column{ width:712px; height:253px;}
+.login{ margin-top:28px; margin-left:200px; width:322px; overflow:hidden;}
+.login_left{ float:left; width:235px;}
+.login_left label{ float:left; width:50px; text-align:right; padding:0 6px 0 0;}
+.login_left div {clear:both; padding:0 0 10px 0;}
+
+.text_1{ width:170px; _width:164px; height:22px; line-height:22px; border:1px #C9C9C9 solid; vertical-align:middle;}
+.login_right{float:right; width:66px;}
+.submit01{ width:66px; height:62px; background:url(../indeximages/wn_5.jpg) no-repeat; border:0;}
+.submitout{ width:66px; height:62px; background:url(../indeximages/out.jpg) no-repeat; border:0;}
+
+.ckp{ width:179px; padding-left:256px; margin-top:8px; overflow:hidden;}
+.submit_2{width:104px; height:21px; background:url(../indeximages/wn_9.jpg) no-repeat; border:0;}
+.bq{margin-top:28px; *margin-top:20px !important;*margin-top:20px;overflow:hidden; padding-top:16px; text-align:center; text-align:center; overflow:hidden;}
+
+
+/*--------页脚信息--------------*/
+.footer{ width:702px; height:68px; margin:0 auto;}

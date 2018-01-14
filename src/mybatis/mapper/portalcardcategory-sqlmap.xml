@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PortalcardcategoryDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="portalcardcategory" type="Portalcardcategory">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="description" column="description" />
+		<result property="time" column="time" />
+		<result property="state" column="state" />
+		<result property="money" column="money" />
+		<result property="speed" column="speed" />
+		<result property="maclimit" column="maclimit" />
+		<result property="maclimitcount" column="maclimitcount" />
+		<result property="autologin" column="autologin" />
+		<result property="ex1" column="ex1" />
+		<result property="ex2" column="ex2" />
+		<result property="ex3" column="ex3" />
+		<result property="ex4" column="ex4" />
+		<result property="ex5" column="ex5" />
+		<result property="ex6" column="ex6" />
+		<result property="ex7" column="ex7" />
+		<result property="ex8" column="ex8" />
+		<result property="ex9" column="ex9" />
+		<result property="ex10" column="ex10" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="portalcardcategorySelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,name,description,time,state,money,speed,maclimit,maclimitcount,autologin,ex1,ex2,ex3,ex4,ex5,ex6,ex7,ex8,ex9,ex10
+			</if>
+		
+		FROM portal_cardcategory
+	</sql>
+	<sql id="portalcardcategoryListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="name != null">
+			 and 
+			<if test="nameLike == 0">
+				name=#{name}
+			</if>
+			<if test="nameLike == 1">
+				name like CONCAT('%','${name}','%')
+			</if>
+			</if>
+		    <if test="description != null">
+			 and 
+			<if test="descriptionLike == 0">
+				description=#{description}
+			</if>
+			<if test="descriptionLike == 1">
+				description like CONCAT('%','${description}','%')
+			</if>
+			</if>
+		    <if test="time != null">
+			 and 
+				time=#{time}
+			</if>
+		    <if test="state != null">
+			 and 
+			<if test="stateLike == 0">
+				state=#{state}
+			</if>
+			<if test="stateLike == 1">
+				state like CONCAT('%','${state}','%')
+			</if>
+			</if>
+		    <if test="money != null">
+			 and 
+				money=#{money}
+			</if>
+		    <if test="speed != null">
+			 and 
+				speed=#{speed}
+			</if>
+		    <if test="maclimit != null">
+			 and 
+				maclimit=#{maclimit}
+			</if>
+		    <if test="maclimitcount != null">
+			 and 
+				maclimitcount=#{maclimitcount}
+			</if>
+		    <if test="autologin != null">
+			 and 
+				autologin=#{autologin}
+			</if>
+		    <if test="ex1 != null">
+			 and 
+			<if test="ex1Like == 0">
+				ex1=#{ex1}
+			</if>
+			<if test="ex1Like == 1">
+				ex1 like CONCAT('%','${ex1}','%')
+			</if>
+			</if>
+		    <if test="ex2 != null">
+			 and 
+			<if test="ex2Like == 0">
+				ex2=#{ex2}
+			</if>
+			<if test="ex2Like == 1">
+				ex2 like CONCAT('%','${ex2}','%')
+			</if>
+			</if>
+		    <if test="ex3 != null">
+			 and 
+			<if test="ex3Like == 0">
+				ex3=#{ex3}
+			</if>
+			<if test="ex3Like == 1">
+				ex3 like CONCAT('%','${ex3}','%')
+			</if>
+			</if>
+		    <if test="ex4 != null">
+			 and 
+			<if test="ex4Like == 0">
+				ex4=#{ex4}
+			</if>
+			<if test="ex4Like == 1">
+				ex4 like CONCAT('%','${ex4}','%')
+			</if>
+			</if>
+		    <if test="ex5 != null">
+			 and 
+			<if test="ex5Like == 0">
+				ex5=#{ex5}
+			</if>
+			<if test="ex5Like == 1">
+				ex5 like CONCAT('%','${ex5}','%')
+			</if>
+			</if>
+		    <if test="ex6 != null">
+			 and 
+			<if test="ex6Like == 0">
+				ex6=#{ex6}
+			</if>
+			<if test="ex6Like == 1">
+				ex6 like CONCAT('%','${ex6}','%')
+			</if>
+			</if>
+		    <if test="ex7 != null">
+			 and 
+			<if test="ex7Like == 0">
+				ex7=#{ex7}
+			</if>
+			<if test="ex7Like == 1">
+				ex7 like CONCAT('%','${ex7}','%')
+			</if>
+			</if>
+		    <if test="ex8 != null">
+			 and 
+			<if test="ex8Like == 0">
+				ex8=#{ex8}
+			</if>
+			<if test="ex8Like == 1">
+				ex8 like CONCAT('%','${ex8}','%')
+			</if>
+			</if>
+		    <if test="ex9 != null">
+			 and 
+			<if test="ex9Like == 0">
+				ex9=#{ex9}
+			</if>
+			<if test="ex9Like == 1">
+				ex9 like CONCAT('%','${ex9}','%')
+			</if>
+			</if>
+		    <if test="ex10 != null">
+			 and 
+			<if test="ex10Like == 0">
+				ex10=#{ex10}
+			</if>
+			<if test="ex10Like == 1">
+				ex10 like CONCAT('%','${ex10}','%')
+			</if>
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="portalcardcategoryListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="portalcardcategoryListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPortalcardcategoryByKey" resultMap="portalcardcategory" parameterType="hashMap">
+		SELECT id,name,description,time,state,money,speed,maclimit,maclimitcount,autologin,ex1,ex2,ex3,ex4,ex5,ex6,ex7,ex8,ex9,ex10 FROM portal_cardcategory
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getPortalcardcategoryByKeys" resultMap="portalcardcategory"
+		parameterType="ArrayList">
+		SELECT id,name,description,time,state,money,speed,maclimit,maclimitcount,autologin,ex1,ex2,ex3,ex4,ex5,ex6,ex7,ex8,ex9,ex10 FROM portal_cardcategory
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM portal_cardcategory
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Portalcardcategory">
+		DELETE FROM portal_cardcategory
+		<include refid="portalcardcategoryListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM portal_cardcategory
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+	
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteAll">
+		DELETE FROM portal_cardcategory
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePortalcardcategoryByKey" parameterType="Portalcardcategory">
+		UPDATE portal_cardcategory
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="name != null">
+			name = #{name},
+		</if>
+		<if test="description != null">
+			description = #{description},
+		</if>
+		<if test="time != null">
+			time = #{time},
+		</if>
+		<if test="state != null">
+			state = #{state},
+		</if>
+		<if test="money != null">
+			money = #{money},
+		</if>
+		<if test="speed != null">
+			speed = #{speed},
+		</if>
+		<if test="maclimit != null">
+			maclimit = #{maclimit},
+		</if>
+		<if test="maclimitcount != null">
+			maclimitcount = #{maclimitcount},
+		</if>
+		<if test="autologin != null">
+			autologin = #{autologin},
+		</if>
+		<if test="ex1 != null">
+			ex1 = #{ex1},
+		</if>
+		<if test="ex2 != null">
+			ex2 = #{ex2},
+		</if>
+		<if test="ex3 != null">
+			ex3 = #{ex3},
+		</if>
+		<if test="ex4 != null">
+			ex4 = #{ex4},
+		</if>
+		<if test="ex5 != null">
+			ex5 = #{ex5},
+		</if>
+		<if test="ex6 != null">
+			ex6 = #{ex6},
+		</if>
+		<if test="ex7 != null">
+			ex7 = #{ex7},
+		</if>
+		<if test="ex8 != null">
+			ex8 = #{ex8},
+		</if>
+		<if test="ex9 != null">
+			ex9 = #{ex9},
+		</if>
+		<if test="ex10 != null">
+			ex10 = #{ex10},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePortalcardcategoryByKeyAll" parameterType="Portalcardcategory">
+		UPDATE portal_cardcategory
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			name = #{name},
+			description = #{description},
+			time = #{time},
+			state = #{state},
+			money = #{money},
+			speed = #{speed},
+			maclimit = #{maclimit},
+			maclimitcount = #{maclimitcount},
+			autologin = #{autologin},
+			ex1 = #{ex1},
+			ex2 = #{ex2},
+			ex3 = #{ex3},
+			ex4 = #{ex4},
+			ex5 = #{ex5},
+			ex6 = #{ex6},
+			ex7 = #{ex7},
+			ex8 = #{ex8},
+			ex9 = #{ex9},
+			ex10 = #{ex10},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getPortalcardcategoryListWithPage" parameterType="PortalcardcategoryQuery"
+		resultMap="portalcardcategory">
+		<include refid="portalcardcategorySelector" />
+		<include refid="portalcardcategoryListWhere" />
+		<include refid="portalcardcategoryListOrder" />
+		<include refid="portalcardcategoryListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPortalcardcategoryListCount" parameterType="PortalcardcategoryQuery"
+		resultType="int">
+		SELECT count(1) FROM portal_cardcategory
+		<include refid="portalcardcategoryListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPortalcardcategoryList" parameterType="PortalcardcategoryQuery"
+		resultMap="portalcardcategory">
+		<include refid="portalcardcategorySelector" />
+		<include refid="portalcardcategoryListWhere" />
+		<include refid="portalcardcategoryListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPortalcardcategoryListWithPageFields" parameterType="PortalcardcategoryQuery"
+		resultType="Portalcardcategory">
+		<include refid="portalcardcategorySelector" />
+		<include refid="portalcardcategoryListWhere" />
+		<include refid="portalcardcategoryListOrder" />
+		<include refid="portalcardcategoryListLimit" />
+	</select>
+	<select id="$getPortalcardcategoryListFields" parameterType="PortalcardcategoryQuery"
+		resultType="Portalcardcategory">
+		<include refid="portalcardcategorySelector" />
+		<include refid="portalcardcategoryListWhere" />
+		<include refid="portalcardcategoryListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPortalcardcategory" parameterType="Portalcardcategory">
+		INSERT INTO portal_cardcategory
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="name != null">
+					name,
+			</if>
+			<if test="description != null">
+					description,
+			</if>
+			<if test="time != null">
+					time,
+			</if>
+			<if test="state != null">
+					state,
+			</if>
+			<if test="money != null">
+					money,
+			</if>
+			<if test="speed != null">
+					speed,
+			</if>
+			<if test="maclimit != null">
+					maclimit,
+			</if>
+			<if test="maclimitcount != null">
+					maclimitcount,
+			</if>
+			<if test="autologin != null">
+					autologin,
+			</if>
+			<if test="ex1 != null">
+					ex1,
+			</if>
+			<if test="ex2 != null">
+					ex2,
+			</if>
+			<if test="ex3 != null">
+					ex3,
+			</if>
+			<if test="ex4 != null">
+					ex4,
+			</if>
+			<if test="ex5 != null">
+					ex5,
+			</if>
+			<if test="ex6 != null">
+					ex6,
+			</if>
+			<if test="ex7 != null">
+					ex7,
+			</if>
+			<if test="ex8 != null">
+					ex8,
+			</if>
+			<if test="ex9 != null">
+					ex9,
+			</if>
+			<if test="ex10 != null">
+					ex10,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="name != null">
+	 #{name},
+			</if>
+			<if test="description != null">
+	 #{description},
+			</if>
+			<if test="time != null">
+	 #{time},
+			</if>
+			<if test="state != null">
+	 #{state},
+			</if>
+			<if test="money != null">
+	 #{money},
+			</if>
+			<if test="speed != null">
+	 #{speed},
+			</if>
+			<if test="maclimit != null">
+	 #{maclimit},
+			</if>
+			<if test="maclimitcount != null">
+	 #{maclimitcount},
+			</if>
+			<if test="autologin != null">
+	 #{autologin},
+			</if>
+			<if test="ex1 != null">
+	 #{ex1},
+			</if>
+			<if test="ex2 != null">
+	 #{ex2},
+			</if>
+			<if test="ex3 != null">
+	 #{ex3},
+			</if>
+			<if test="ex4 != null">
+	 #{ex4},
+			</if>
+			<if test="ex5 != null">
+	 #{ex5},
+			</if>
+			<if test="ex6 != null">
+	 #{ex6},
+			</if>
+			<if test="ex7 != null">
+	 #{ex7},
+			</if>
+			<if test="ex8 != null">
+	 #{ex8},
+			</if>
+			<if test="ex9 != null">
+	 #{ex9},
+			</if>
+			<if test="ex10 != null">
+	 #{ex10},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

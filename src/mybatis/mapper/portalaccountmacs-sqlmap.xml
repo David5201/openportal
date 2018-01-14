@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PortalaccountmacsDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="portalaccountmacs" type="Portalaccountmacs">
+		<result property="id" column="id" />
+		<result property="accountId" column="accountId" />
+		<result property="mac" column="mac" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="portalaccountmacsSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,accountId,mac
+			</if>
+		
+		FROM portal_accountmacs
+	</sql>
+	<sql id="portalaccountmacsListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="accountId != null">
+			 and 
+				accountId=#{accountId}
+			</if>
+		    <if test="mac != null">
+			 and 
+			<if test="macLike == 0">
+				mac=#{mac}
+			</if>
+			<if test="macLike == 1">
+				mac like CONCAT('%','${mac}','%')
+			</if>
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="portalaccountmacsListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="portalaccountmacsListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPortalaccountmacsByKey" resultMap="portalaccountmacs" parameterType="hashMap">
+		SELECT id,accountId,mac FROM portal_accountmacs
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getPortalaccountmacsByKeys" resultMap="portalaccountmacs"
+		parameterType="ArrayList">
+		SELECT id,accountId,mac FROM portal_accountmacs
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM portal_accountmacs
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Portalaccountmacs">
+		DELETE FROM portal_accountmacs
+		<include refid="portalaccountmacsListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM portal_accountmacs
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePortalaccountmacsByKey" parameterType="Portalaccountmacs">
+		UPDATE portal_accountmacs
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="accountId != null">
+			accountId = #{accountId},
+		</if>
+		<if test="mac != null">
+			mac = #{mac},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePortalaccountmacsByKeyAll" parameterType="Portalaccountmacs">
+		UPDATE portal_accountmacs
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			accountId = #{accountId},
+			mac = #{mac},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getPortalaccountmacsListWithPage" parameterType="PortalaccountmacsQuery"
+		resultMap="portalaccountmacs">
+		<include refid="portalaccountmacsSelector" />
+		<include refid="portalaccountmacsListWhere" />
+		<include refid="portalaccountmacsListOrder" />
+		<include refid="portalaccountmacsListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPortalaccountmacsListCount" parameterType="PortalaccountmacsQuery"
+		resultType="int">
+		SELECT count(1) FROM portal_accountmacs
+		<include refid="portalaccountmacsListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPortalaccountmacsList" parameterType="PortalaccountmacsQuery"
+		resultMap="portalaccountmacs">
+		<include refid="portalaccountmacsSelector" />
+		<include refid="portalaccountmacsListWhere" />
+		<include refid="portalaccountmacsListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPortalaccountmacsListWithPageFields" parameterType="PortalaccountmacsQuery"
+		resultType="Portalaccountmacs">
+		<include refid="portalaccountmacsSelector" />
+		<include refid="portalaccountmacsListWhere" />
+		<include refid="portalaccountmacsListOrder" />
+		<include refid="portalaccountmacsListLimit" />
+	</select>
+	<select id="$getPortalaccountmacsListFields" parameterType="PortalaccountmacsQuery"
+		resultType="Portalaccountmacs">
+		<include refid="portalaccountmacsSelector" />
+		<include refid="portalaccountmacsListWhere" />
+		<include refid="portalaccountmacsListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPortalaccountmacs" parameterType="Portalaccountmacs">
+		INSERT INTO portal_accountmacs
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="accountId != null">
+					accountId,
+			</if>
+			<if test="mac != null">
+					mac,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="accountId != null">
+	 #{accountId},
+			</if>
+			<if test="mac != null">
+	 #{mac},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>

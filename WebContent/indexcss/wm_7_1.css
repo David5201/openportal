@@ -1,0 +1,43 @@
+/* CSS Document */
+
+html {overflow:-moz-scrollbars-vertical; scrollbar-face-color:#E8E8E8;scrollbar-shadow-color:#C1C1BB;scrollbar-highlight-color:#C1C1BB;scrollbar-3dlight-color:#EBEBE4;scrollbar-darkshadow-color:#EBEBE4;scrollbar-track-color:#F4F4F0;scrollbar-arrow-color:#CACAB7; }
+
+div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,blockquote,p,input{padding:0; margin:0;}   
+div,ul,li{list-style:none;}
+a{text-decoration: none; color:#fff;}
+a:hover { text-decoration: none; color:#ff0000;}
+h1,h2,h3,h4,h5,h6{font:12px normal; }
+.clear{margin:0px; padding:0px; clear:both;}
+TABLE {BORDER-COLLAPSE: collapse; border-spacing: 0;}
+
+img{border:0px;}
+
+body{font-size:12px; color:#fff; background:#fff; font-family:Microsoft YaHei,Verdana, Arial, Helvetica, sans-serif;  padding:0; margin:0; behavior:url("indeximages/csshover.htc");}
+
+td{font-size:12px; line-height:22px;}
+
+
+#wrapper{width:320px; overflow:hidden; margin:0 auto;}
+/*--------网站头部 --------------*/
+.header{ width:320px; height:271px; background:url(../indeximages/bg.jpg) no-repeat;}
+.title{ font-size:24px; color:#fff; padding-top:14px; height:32px; line-height:32px; font-weight:bold; width:320px; text-align:center;}
+
+
+/*--------首页栏目 --------------*/
+.column{ width:320px; overflow:hidden;}
+.login{overflow:hidden; width:280px; padding:0 20px; margin-top:16px;}
+.login_left{float:left; width:214px;}
+.login_left label{ float:left; width:50px; text-align:right; padding:0 6px 0 0;}
+.login_left div {clear:both; padding:0 0 10px 0;}
+
+.text_1{ width:144px; height:24px; background:url(../indeximages/index_3.jpg) no-repeat; border:0; vertical-align:middle;}
+.login_right{float:right; width:66px;}
+.submit01{ width:66px; height:62px; background:url(../indeximages/index_5.jpg) no-repeat; border:0;}
+
+.ckp{ width:179px; padding-left:72px; margin-top:4px; overflow:hidden;}
+.submit_2{ width:104px; height:21px; background:url(../indeximages/index_9.jpg) no-repeat; border:0;}
+.bq{margin-top:5px; overflow:hidden; padding-top:16px; text-align:center; color:#fff; text-align:center; overflow:hidden;}
+
+
+/*--------页脚信息--------------*/
+.footer{ width:312px; height:56px; margin:10px auto 0; padding-left:3px;}

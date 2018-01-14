@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leeson.core.dao.PortalmessageDao">
+<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+	<resultMap id="portalmessage" type="Portalmessage">
+		<result property="id" column="id" />
+		<result property="title" column="title" />
+		<result property="description" column="description" />
+		<result property="date" column="date" />
+		<result property="state" column="state" />
+		<result property="fromid" column="fromid" />
+		<result property="toid" column="toid" />
+		<result property="ip" column="ip" />
+		<result property="toname" column="toname" />
+		<result property="fromname" column="fromname" />
+		<result property="delin" column="delin" />
+		<result property="delout" column="delout" />
+		<result property="fromPos" column="fromPos" />
+		<result property="toPos" column="toPos" />
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="portalmessageSelector">
+		SELECT
+			<if test="fields != null">
+${fields}			</if>
+			<if test="fields == null">
+			id,title,description,date,state,fromid,toid,ip,toname,fromname,delin,delout,fromPos,toPos
+			</if>
+		
+		FROM portal_message
+	</sql>
+	<sql id="portalmessageListWhere">
+		<where>
+		    <if test="id != null">
+			 and 
+				id=#{id}
+			</if>
+		    <if test="title != null">
+			 and 
+			<if test="titleLike == 0">
+				title=#{title}
+			</if>
+			<if test="titleLike == 1">
+				title like CONCAT('%','${title}','%')
+			</if>
+			</if>
+		    <if test="description != null">
+			 and 
+			<if test="descriptionLike == 0">
+				description=#{description}
+			</if>
+			<if test="descriptionLike == 1">
+				description like CONCAT('%','${description}','%')
+			</if>
+			</if>
+		    <if test="date != null">
+			 and 
+				date=#{date}
+			</if>
+		    <if test="state != null">
+			 and 
+			<if test="stateLike == 0">
+				state=#{state}
+			</if>
+			<if test="stateLike == 1">
+				state like CONCAT('%','${state}','%')
+			</if>
+			</if>
+		    <if test="fromid != null">
+			 and 
+			<if test="fromidLike == 0">
+				fromid=#{fromid}
+			</if>
+			<if test="fromidLike == 1">
+				fromid like CONCAT('%','${fromid}','%')
+			</if>
+			</if>
+		    <if test="toid != null">
+			 and 
+			<if test="toidLike == 0">
+				toid=#{toid}
+			</if>
+			<if test="toidLike == 1">
+				toid like CONCAT('%','${toid}','%')
+			</if>
+			</if>
+		    <if test="ip != null">
+			 and 
+			<if test="ipLike == 0">
+				ip=#{ip}
+			</if>
+			<if test="ipLike == 1">
+				ip like CONCAT('%','${ip}','%')
+			</if>
+			</if>
+		    <if test="toname != null">
+			 and 
+			<if test="tonameLike == 0">
+				toname=#{toname}
+			</if>
+			<if test="tonameLike == 1">
+				toname like CONCAT('%','${toname}','%')
+			</if>
+			</if>
+		    <if test="fromname != null">
+			 and 
+			<if test="fromnameLike == 0">
+				fromname=#{fromname}
+			</if>
+			<if test="fromnameLike == 1">
+				fromname like CONCAT('%','${fromname}','%')
+			</if>
+			</if>
+		    <if test="delin != null">
+			 and 
+			<if test="delinLike == 0">
+				delin=#{delin}
+			</if>
+			<if test="delinLike == 1">
+				delin like CONCAT('%','${delin}','%')
+			</if>
+			</if>
+		    <if test="delout != null">
+			 and 
+			<if test="deloutLike == 0">
+				delout=#{delout}
+			</if>
+			<if test="deloutLike == 1">
+				delout like CONCAT('%','${delout}','%')
+			</if>
+			</if>
+		    <if test="fromPos != null">
+			 and 
+			<if test="fromPosLike == 0">
+				fromPos=#{fromPos}
+			</if>
+			<if test="fromPosLike == 1">
+				fromPos like CONCAT('%','${fromPos}','%')
+			</if>
+			</if>
+		    <if test="toPos != null">
+			 and 
+			<if test="toPosLike == 0">
+				toPos=#{toPos}
+			</if>
+			<if test="toPosLike == 1">
+				toPos like CONCAT('%','${toPos}','%')
+			</if>
+			</if>
+		</where>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="portalmessageListOrder">
+		
+			<if test="orderFields != null and orderFields.size >0">
+			ORDER BY
+			<foreach collection="orderFields" separator="," item="orderField">
+				${orderField.fieldName} ${orderField.order}
+			</foreach>
+			</if>
+		
+	</sql>
+	
+	
+
+	<sql id="portalmessageListLimit">
+		<if test="startRow != null">
+			limit #{startRow},#{pageSize}
+		</if>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getPortalmessageByKey" resultMap="portalmessage" parameterType="hashMap">
+		SELECT id,title,description,date,state,fromid,toid,ip,toname,fromname,delin,delout,fromPos,toPos FROM portal_message
+		WHERE
+		id=#{id}
+	</select>
+	<select id="getPortalmessageByKeys" resultMap="portalmessage"
+		parameterType="ArrayList">
+		SELECT id,title,description,date,state,fromid,toid,ip,toname,fromname,delin,delout,fromPos,toPos FROM portal_message
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterType="hashMap">
+		DELETE FROM portal_message
+		WHERE
+		id=#{id}
+	</delete>
+	
+	<!-- 根据条件删除 -->
+	<delete id="deleteByQuery" parameterType="Portalmessage">
+		DELETE FROM portal_message
+		<include refid="portalmessageListWhere" />
+	</delete>
+
+	<!-- 根据主键批量删除 -->
+	<delete id="deleteByKeys">
+		DELETE FROM portal_message
+		WHERE
+		id in
+		<foreach collection="list" separator="," item="id" open="(" close=")">
+#{id}		</foreach>
+	</delete>
+
+	<!-- 根据主键更新非空字段 -->
+	<update id="updatePortalmessageByKey" parameterType="Portalmessage">
+		UPDATE portal_message
+		<set>
+		<trim suffixOverrides=",">
+		<if test="id != null">
+			id = #{id},
+		</if>
+		<if test="title != null">
+			title = #{title},
+		</if>
+		<if test="description != null">
+			description = #{description},
+		</if>
+		<if test="date != null">
+			date = #{date},
+		</if>
+		<if test="state != null">
+			state = #{state},
+		</if>
+		<if test="fromid != null">
+			fromid = #{fromid},
+		</if>
+		<if test="toid != null">
+			toid = #{toid},
+		</if>
+		<if test="ip != null">
+			ip = #{ip},
+		</if>
+		<if test="toname != null">
+			toname = #{toname},
+		</if>
+		<if test="fromname != null">
+			fromname = #{fromname},
+		</if>
+		<if test="delin != null">
+			delin = #{delin},
+		</if>
+		<if test="delout != null">
+			delout = #{delout},
+		</if>
+		<if test="fromPos != null">
+			fromPos = #{fromPos},
+		</if>
+		<if test="toPos != null">
+			toPos = #{toPos},
+		</if>
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 根据主键更新所有字段 -->
+	<update id="updatePortalmessageByKeyAll" parameterType="Portalmessage">
+		UPDATE portal_message
+		<set>
+		<trim suffixOverrides=",">
+			id = #{id},
+			title = #{title},
+			description = #{description},
+			date = #{date},
+			state = #{state},
+			fromid = #{fromid},
+			toid = #{toid},
+			ip = #{ip},
+			toname = #{toname},
+			fromname = #{fromname},
+			delin = #{delin},
+			delout = #{delout},
+			fromPos = #{fromPos},
+			toPos = #{toPos},
+		</trim>
+		</set>
+		WHERE
+		id=#{id}
+	</update>
+	<!-- 分页 -->
+	<select id="getPortalmessageListWithPage" parameterType="PortalmessageQuery"
+		resultMap="portalmessage">
+		<include refid="portalmessageSelector" />
+		<include refid="portalmessageListWhere" />
+		<include refid="portalmessageListOrder" />
+		<include refid="portalmessageListLimit" />
+	</select>
+	<!-- 数据总数 -->
+	<select id="getPortalmessageListCount" parameterType="PortalmessageQuery"
+		resultType="int">
+		SELECT count(1) FROM portal_message
+		<include refid="portalmessageListWhere" />
+	</select>
+	<!-- 数据集合 -->
+	<select id="getPortalmessageList" parameterType="PortalmessageQuery"
+		resultMap="portalmessage">
+		<include refid="portalmessageSelector" />
+		<include refid="portalmessageListWhere" />
+		<include refid="portalmessageListOrder" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getPortalmessageListWithPageFields" parameterType="PortalmessageQuery"
+		resultType="Portalmessage">
+		<include refid="portalmessageSelector" />
+		<include refid="portalmessageListWhere" />
+		<include refid="portalmessageListOrder" />
+		<include refid="portalmessageListLimit" />
+	</select>
+	<select id="$getPortalmessageListFields" parameterType="PortalmessageQuery"
+		resultType="Portalmessage">
+		<include refid="portalmessageSelector" />
+		<include refid="portalmessageListWhere" />
+		<include refid="portalmessageListOrder" />
+	</select>
+	<!-- 添加 -->
+	<insert id="addPortalmessage" parameterType="Portalmessage">
+		INSERT INTO portal_message
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+					id,
+			</if>
+			<if test="title != null">
+					title,
+			</if>
+			<if test="description != null">
+					description,
+			</if>
+			<if test="date != null">
+					date,
+			</if>
+			<if test="state != null">
+					state,
+			</if>
+			<if test="fromid != null">
+					fromid,
+			</if>
+			<if test="toid != null">
+					toid,
+			</if>
+			<if test="ip != null">
+					ip,
+			</if>
+			<if test="toname != null">
+					toname,
+			</if>
+			<if test="fromname != null">
+					fromname,
+			</if>
+			<if test="delin != null">
+					delin,
+			</if>
+			<if test="delout != null">
+					delout,
+			</if>
+			<if test="fromPos != null">
+					fromPos,
+			</if>
+			<if test="toPos != null">
+					toPos,
+			</if>
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+	 #{id},
+			</if>
+			<if test="title != null">
+	 #{title},
+			</if>
+			<if test="description != null">
+	 #{description},
+			</if>
+			<if test="date != null">
+	 #{date},
+			</if>
+			<if test="state != null">
+	 #{state},
+			</if>
+			<if test="fromid != null">
+	 #{fromid},
+			</if>
+			<if test="toid != null">
+	 #{toid},
+			</if>
+			<if test="ip != null">
+	 #{ip},
+			</if>
+			<if test="toname != null">
+	 #{toname},
+			</if>
+			<if test="fromname != null">
+	 #{fromname},
+			</if>
+			<if test="delin != null">
+	 #{delin},
+			</if>
+			<if test="delout != null">
+	 #{delout},
+			</if>
+			<if test="fromPos != null">
+	 #{fromPos},
+			</if>
+			<if test="toPos != null">
+	 #{toPos},
+			</if>
+		</trim>
+		<selectKey resultType="Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey>
+	</insert>
+</mapper>
