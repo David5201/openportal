@@ -1,103 +1,103 @@
-/*     */ package com.wxpay;
-/*     */ 
-/*     */ import com.wxpay.bean.WxPayResult;
-/*     */ import java.io.BufferedOutputStream;
-/*     */ import java.io.BufferedReader;
-/*     */ import java.io.PrintStream;
-/*     */ import java.io.StringReader;
-/*     */ import java.util.HashMap;
-/*     */ import java.util.List;
-/*     */ import java.util.Map;
-/*     */ import javax.servlet.http.HttpServletRequest;
-/*     */ import javax.servlet.http.HttpServletResponse;
-/*     */ import org.jdom.Document;
-/*     */ import org.jdom.Element;
-/*     */ import org.jdom.input.SAXBuilder;
-/*     */ import org.xml.sax.InputSource;
-/*     */ 
-/*     */ public class Notify
-/*     */ {
-/*     */   protected void notify(HttpServletRequest request, HttpServletResponse response)
-/*     */     throws Exception
-/*     */   {
-/*  26 */     System.out.print("微信支付回调数据开始");
-/*     */ 
-/*  30 */     String notityXml = "";
-/*  31 */     String resXml = "";
-/*     */     try
-/*     */     {
-/*     */       String inputLine;
-/*  34 */       while ((inputLine = request.getReader().readLine()) != null)
-/*     */       {
-/*  35 */         notityXml = notityXml + inputLine;
-/*     */       }
-/*  37 */       request.getReader().close();
-/*     */     } catch (Exception e) {
-/*  39 */       e.printStackTrace();
-/*     */     }
-/*     */ 
-/*  42 */     System.out.println("接收到的报文：" + notityXml);
-/*     */ 
-/*  44 */     Map m = parseXmlToList2(notityXml);
-/*  45 */     WxPayResult wpr = new WxPayResult();
-/*  46 */     wpr.setAppid(m.get("appid").toString());
-/*  47 */     wpr.setBankType(m.get("bank_type").toString());
-/*  48 */     wpr.setCashFee(m.get("cash_fee").toString());
-/*  49 */     wpr.setFeeType(m.get("fee_type").toString());
-/*  50 */     wpr.setIsSubscribe(m.get("is_subscribe").toString());
-/*  51 */     wpr.setMchId(m.get("mch_id").toString());
-/*  52 */     wpr.setNonceStr(m.get("nonce_str").toString());
-/*  53 */     wpr.setOpenid(m.get("openid").toString());
-/*  54 */     wpr.setOutTradeNo(m.get("out_trade_no").toString());
-/*  55 */     wpr.setResultCode(m.get("result_code").toString());
-/*  56 */     wpr.setReturnCode(m.get("return_code").toString());
-/*  57 */     wpr.setSign(m.get("sign").toString());
-/*  58 */     wpr.setTimeEnd(m.get("time_end").toString());
-/*  59 */     wpr.setTotalFee(m.get("total_fee").toString());
-/*  60 */     wpr.setTradeType(m.get("trade_type").toString());
-/*  61 */     wpr.setTransactionId(m.get("transaction_id").toString());
-/*     */ 
-/*  63 */     if ("SUCCESS".equals(wpr.getResultCode()))
-/*     */     {
-/*  65 */       resXml = "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml> ";
-/*     */     }
-/*     */     else {
-/*  68 */       resXml = "<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[报文为空]]></return_msg></xml> ";
-/*     */     }
-/*     */ 
-/*  72 */     System.out.println("微信支付回调数据结束");
-/*     */ 
-/*  74 */     BufferedOutputStream out = new BufferedOutputStream(
-/*  75 */       response.getOutputStream());
-/*  76 */     out.write(resXml.getBytes());
-/*  77 */     out.flush();
-/*  78 */     out.close();
-/*     */   }
-/*     */ 
-/*     */   public static Map parseXmlToList2(String xml)
-/*     */   {
-/*  92 */     Map retMap = new HashMap();
-/*     */     try {
-/*  94 */       StringReader read = new StringReader(xml);
-/*     */ 
-/*  96 */       InputSource source = new InputSource(read);
-/*     */ 
-/*  98 */       SAXBuilder sb = new SAXBuilder();
-/*     */ 
-/* 100 */       Document doc = sb.build(source);
-/* 101 */       Element root = doc.getRootElement();
-/* 102 */       List<Element> es = root.getChildren();
-/* 103 */       if ((es != null) && (es.size() != 0))
-/* 104 */         for (Element element : es)
-/* 105 */           retMap.put(element.getName(), element.getValue());
-/*     */     }
-/*     */     catch (Exception e)
-/*     */     {
-/* 109 */       e.printStackTrace();
-/*     */     }
-/* 111 */     return retMap;
-/*     */   }
-/*     */ }
+package com.wxpay;
+
+import com.wxpay.bean.WxPayResult;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.PrintStream;
+import java.io.StringReader;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.input.SAXBuilder;
+import org.xml.sax.InputSource;
+
+public class Notify
+{
+  protected void notify(HttpServletRequest request, HttpServletResponse response)
+    throws Exception
+  {
+    System.out.print("微信支付回调数据开始");
+
+    String notityXml = "";
+    String resXml = "";
+    try
+    {
+      String inputLine;
+      while ((inputLine = request.getReader().readLine()) != null)
+      {
+        notityXml = notityXml + inputLine;
+      }
+      request.getReader().close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    System.out.println("接收到的报文：" + notityXml);
+
+    Map m = parseXmlToList2(notityXml);
+    WxPayResult wpr = new WxPayResult();
+    wpr.setAppid(m.get("appid").toString());
+    wpr.setBankType(m.get("bank_type").toString());
+    wpr.setCashFee(m.get("cash_fee").toString());
+    wpr.setFeeType(m.get("fee_type").toString());
+    wpr.setIsSubscribe(m.get("is_subscribe").toString());
+    wpr.setMchId(m.get("mch_id").toString());
+    wpr.setNonceStr(m.get("nonce_str").toString());
+    wpr.setOpenid(m.get("openid").toString());
+    wpr.setOutTradeNo(m.get("out_trade_no").toString());
+    wpr.setResultCode(m.get("result_code").toString());
+    wpr.setReturnCode(m.get("return_code").toString());
+    wpr.setSign(m.get("sign").toString());
+    wpr.setTimeEnd(m.get("time_end").toString());
+    wpr.setTotalFee(m.get("total_fee").toString());
+    wpr.setTradeType(m.get("trade_type").toString());
+    wpr.setTransactionId(m.get("transaction_id").toString());
+
+    if ("SUCCESS".equals(wpr.getResultCode()))
+    {
+      resXml = "<xml><return_code><![CDATA[SUCCESS]]><eturn_msg></xml> ";
+    }
+    else {
+      resXml = "<xml><return_code><![CDATA[FAIL]]><eturn_msg></xml> ";
+    }
+
+    System.out.println("微信支付回调数据结束");
+
+    BufferedOutputStream out = new BufferedOutputStream(
+      response.getOutputStream());
+    out.write(resXml.getBytes());
+    out.flush();
+    out.close();
+  }
+
+  public static Map parseXmlToList2(String xml)
+  {
+    Map retMap = new HashMap();
+    try {
+      StringReader read = new StringReader(xml);
+
+      InputSource source = new InputSource(read);
+
+      SAXBuilder sb = new SAXBuilder();
+
+      Document doc = sb.build(source);
+      Element root = doc.getRootElement();
+      List<Element> es = root.getChildren();
+      if ((es != null) && (es.size() != 0))
+        for (Element element : es)
+          retMap.put(element.getName(), element.getValue());
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+    }
+    return retMap;
+  }
+}
 
 /* Location:           C:\Users\Thinkpad\Desktop\Tool\jd-gui\jd-gui\spring-ops-3.2.4.RELEASE.jar
  * Qualified Name:     com.wxpay.Notify

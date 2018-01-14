@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE configuration PUBLIC "-//my batis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!DOCTYPE configuration PUBLIC "-DTD Config 3.0mybatis.org/dtd/mybatis-3-config.dtd">
 
 <configuration>
 <!-- 参数设置 -->

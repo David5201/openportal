@@ -14,19 +14,19 @@ public class ${Entity} implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 <#list fields as field>
-	private <@fieldType type=field.fieldType/> <#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>;
+	private <@fieldType type=field.fieldTypeif></#list>;
 </#list>
 
 <#list fields as field>
-	public <@fieldType type=field.fieldType/> get<#list field.name?split('_') as n>${n?cap_first}</#list>() {
-		return <#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>;
+	public <@fieldType type=field.fieldTypelist>() {
+		return <#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list>;
 	}
-	public void set<#list field.name?split('_') as n>${n?cap_first}</#list>(<@fieldType type=field.fieldType/> <#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>) {
-		this.<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list> = <#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>;
+	public void set<#list field.name?split('_') as n>${n?cap_first}< <#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list>) {
+		this.<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list> = <#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list>;
 	}
 </#list>
 	public String toString() {
-		return "${Entity} [<#list fields as field><#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>=" + <#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list> + "<#if field_has_next>,</#if></#list>]";
+		return "${Entity} [<#list fields as field><#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list>=" + <#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list> + "<#if field_has_next>,<list>]";
 	}
 }
 <#macro fieldType type>

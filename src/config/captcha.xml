@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+<beans xmlns="http:chemawww.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http:chemawww.springframework.orgeans/spring-beans-3.0.xsd">
 <!--
 	<bean id="captchaService" class="com.octo.captcha.service.multitype.GenericManageableCaptchaService">
 		<constructor-arg index="0" ref="imageEngine"/>
@@ -56,9 +56,9 @@
 		<constructor-arg index="2">
 			<list>
 				<bean class="java.awt.Font">
-					<constructor-arg index="0"><value>Arial</value></constructor-arg>
-					<constructor-arg index="1"><value>0</value></constructor-arg>
-					<constructor-arg index="2"><value>32</value></constructor-arg>
+					<constructor-arg index="0"><value>Arial<onstructor-arg>
+					<constructor-arg index="1"><value>0<onstructor-arg>
+					<constructor-arg index="2"><value>32<onstructor-arg>
 				</bean>
 			</list>
 		</constructor-arg>
@@ -95,7 +95,7 @@
 		</constructor-arg>
 	</bean>	
 	<bean id="baffleDecorator" class="com.octo.captcha.component.image.textpaster.textdecorator.BaffleTextDecorator">
-		<constructor-arg type="java.lang.Integer" index="0"><value>1</value></constructor-arg>
+		<constructor-arg type="java.lang.Integer" index="0"><value>1<onstructor-arg>
 		<constructor-arg type="java.awt.Color" index="1"><ref bean="colorWrite"/></constructor-arg>
 	</bean>
 	<bean id="colorGen" class="com.octo.captcha.component.image.color.SingleColorGenerator">

@@ -1,1512 +1,1512 @@
-/*      */ package com.leeson.radius.core;
-/*      */ 
-/*      */ import com.leeson.core.bean.Portalbas;
-/*      */ import com.leeson.portal.core.model.Config;
-/*      */ import java.io.BufferedReader;
-/*      */ import java.io.InputStream;
-/*      */ import java.io.InputStreamReader;
-/*      */ import java.net.URL;
-/*      */ import java.security.MessageDigest;
-/*      */ import java.util.Map;
-/*      */ import java.util.Properties;
-/*      */ import java.util.Vector;
-/*      */ import org.apache.log4j.Logger;
-/*      */ 
-/*      */ public class Tool
-/*      */ {
-/*   18 */   private static Logger log = Logger.getLogger(Tool.class);
-/*      */ 
-/*   20 */   private static Config config = Config.getInstance();
-/*      */ 
-/*      */   public static void writeLog(String name, String content) {
-/*   23 */     Portalbas basConfig = (Portalbas)config.getConfigMap().get("");
-/*      */     try
-/*      */     {
-/*   28 */       if (basConfig.getIsdebug().equals("1"))
-/*   29 */         log.info("[" + name + "]" + content);
-/*      */     }
-/*      */     catch (Exception localException)
-/*      */     {
-/*      */     }
-/*      */   }
-/*      */ 
-/*      */   public static void writeErrorLog(String name, Exception content)
-/*      */   {
-/*   38 */     Portalbas basConfig = (Portalbas)config.getConfigMap().get("");
-/*      */     try
-/*      */     {
-/*   43 */       if (basConfig.getIsdebug().equals("1"))
-/*   44 */         log.error("[" + name + "]" + content);
-/*      */     }
-/*      */     catch (Exception localException)
-/*      */     {
-/*      */     }
-/*      */   }
-/*      */ 
-/*      */   public static String getAttributeIP(String ip)
-/*      */   {
-/*   54 */     byte[] UserIP = new byte[4];
-/*   55 */     String[] ips = ip.split("[.]");
-/*      */ 
-/*   57 */     for (int i = 0; i < 4; i++) {
-/*   58 */       int m = Integer.valueOf(ips[i]).intValue();
-/*   59 */       byte b = (byte)m;
-/*   60 */       UserIP[i] = b;
-/*      */     }
-/*   62 */     String info = ByteToHex(UserIP);
-/*      */ 
-/*   64 */     String ret = null;
-/*      */     try
-/*      */     {
-/*   67 */       String len = Integer.toHexString(6);
-/*   68 */       while (len.length() < 2)
-/*   69 */         len = "0" + len;
-/*   70 */       String types = Integer.toHexString(8);
-/*   71 */       while (types.length() < 2)
-/*   72 */         types = "0" + types;
-/*   73 */       ret = types + len + info;
-/*      */     } catch (Exception localException) {
-/*      */     }
-/*   76 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   public static String getAttributeNasIP(String ip) {
-/*   80 */     byte[] UserIP = new byte[4];
-/*   81 */     String[] ips = ip.split("[.]");
-/*      */ 
-/*   83 */     for (int i = 0; i < 4; i++) {
-/*   84 */       int m = Integer.valueOf(ips[i]).intValue();
-/*   85 */       byte b = (byte)m;
-/*   86 */       UserIP[i] = b;
-/*      */     }
-/*   88 */     String info = ByteToHex(UserIP);
-/*      */ 
-/*   90 */     String ret = null;
-/*      */     try
-/*      */     {
-/*   93 */       String len = Integer.toHexString(6);
-/*   94 */       while (len.length() < 2)
-/*   95 */         len = "0" + len;
-/*   96 */       String types = Integer.toHexString(4);
-/*   97 */       while (types.length() < 2)
-/*   98 */         types = "0" + types;
-/*   99 */       ret = types + len + info;
-/*      */     } catch (Exception localException) {
-/*      */     }
-/*  102 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   public static void openProxy(String proxyhost, String proxyport)
-/*      */   {
-/*      */     try {
-/*  108 */       System.setProperty("sun.net.client.defaultConnectTimeout", "3000");
-/*  109 */       System.setProperty("sun.net.client.defaultReadTimeout", "10000");
-/*  110 */       if ((proxyhost != null) && (proxyport != null)) {
-/*  111 */         Properties prop = System.getProperties();
-/*  112 */         prop.put("http.proxyHost", proxyhost);
-/*  113 */         prop.put("http.proxyPort", proxyport);
-/*      */       }
-/*      */     }
-/*      */     catch (Exception localException) {
-/*      */     }
-/*      */   }
-/*      */ 
-/*      */   public static String sendURL(String url) {
-/*  121 */     StringBuffer ret = new StringBuffer();
-/*  122 */     InputStream is = null;
-/*  123 */     InputStreamReader isr = null;
-/*  124 */     BufferedReader br = null;
-/*      */     try {
-/*  126 */       URL su = new URL(url);
-/*  127 */       is = su.openStream();
-/*  128 */       isr = new InputStreamReader(is);
-/*  129 */       br = new BufferedReader(isr);
-/*  130 */       for (String line = br.readLine(); line != null; line = br
-/*  131 */         .readLine())
-/*      */       {
-/*  132 */         ret.append(line + "\r\n");
-/*      */       }
-/*      */     } catch (Exception localException) {
-/*      */     }
-/*      */     try { if (br != null) {
-/*  137 */         br.close();
-/*  138 */         br = null;
-/*      */       }
-/*      */     } catch (Exception localException1) {
-/*      */     }
-/*      */     try {
-/*  143 */       if (isr != null) {
-/*  144 */         isr.close();
-/*  145 */         isr = null;
-/*      */       }
-/*      */     } catch (Exception localException2) {
-/*      */     }
-/*      */     try {
-/*  150 */       if (is != null) {
-/*  151 */         is.close();
-/*  152 */         is = null;
-/*      */       }
-/*      */     } catch (Exception localException3) {
-/*      */     }
-/*  156 */     return ret.toString();
-/*      */   }
-/*      */ 
-/*      */   public static String encodeMD5(String str)
-/*      */   {
-/*  161 */     String ret = "";
-/*      */     try {
-/*  163 */       MessageDigest md = MessageDigest.getInstance("MD5");
-/*  164 */       md.update(HexToByte(str));
-/*      */ 
-/*  166 */       ret = ByteToHex(md.digest());
-/*      */     } catch (Exception localException) {
-/*      */     }
-/*  169 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   public static String decodeMD5(String sharedSecret, String authenticator, String password)
-/*      */   {
-/*  175 */     String ret = "";
-/*      */     try {
-/*  177 */       byte[] pwd = HexToByte(password);
-/*  178 */       if ((pwd != null) && (pwd.length >= 16))
-/*      */       {
-/*  180 */         byte[] temp = HexToByte(encodeMD5(sharedSecret + authenticator));
-/*  181 */         for (int i = 0; i < 16; i++) {
-/*  182 */           pwd[i] = ((byte)(temp[i] ^ pwd[i]));
-/*      */         }
-/*  184 */         if (pwd.length > 16) {
-/*  185 */           for (int i = 16; i < pwd.length; i += 16) {
-/*  186 */             temp = HexToByte(encodeMD5(sharedSecret + 
-/*  187 */               ByteToHex(pwd, i - 16, 16)));
-/*  188 */             for (int j = 0; j < 16; j++) {
-/*  189 */               pwd[(i + j)] = ((byte)(temp[j] ^ pwd[(i + j)]));
-/*      */             }
-/*      */           }
-/*      */         }
-/*  193 */         int len = pwd.length;
-/*  194 */         while ((len > 0) && (pwd[(len - 1)] == 0))
-/*  195 */           len--;
-/*  196 */         ret = new String(pwd, 0, len);
-/*      */       }
-/*      */     } catch (Exception localException) {
-/*      */     }
-/*  200 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   public static String ByteToHex(byte[] buf) {
-/*  204 */     StringBuffer ret = new StringBuffer();
-/*  205 */     String result = null;
-/*      */     try {
-/*  207 */       for (int i = 0; i < buf.length; i++) {
-/*  208 */         String temp = Integer.toHexString(buf[i] & 0xFF);
-/*  209 */         while (temp.length() < 2)
-/*  210 */           temp = "0" + temp;
-/*  211 */         ret.append(temp);
-/*      */       }
-/*  213 */       result = ret.toString().toUpperCase();
-/*      */     } catch (Exception localException) {
-/*      */     }
-/*  216 */     return result;
-/*      */   }
-/*      */ 
-/*      */   public static String ByteToHex(byte[] buf, int begin, int end) {
-/*  220 */     StringBuffer ret = new StringBuffer();
-/*  221 */     String result = null;
-/*      */     try {
-/*  223 */       for (int i = begin; i < end; i++) {
-/*  224 */         String temp = Integer.toHexString(buf[i] & 0xFF);
-/*  225 */         while (temp.length() < 2)
-/*  226 */           temp = "0" + temp;
-/*  227 */         ret.append(temp);
-/*      */       }
-/*  229 */       result = ret.toString().toUpperCase();
-/*      */     } catch (Exception localException) {
-/*      */     }
-/*  232 */     return result;
-/*      */   }
-/*      */ 
-/*      */   public static byte[] HexToByte(String value) {
-/*  236 */     byte[] ret = null;
-/*      */     try {
-/*  238 */       int len = value.length() / 2;
-/*  239 */       ret = new byte[len];
-/*  240 */       for (int i = 0; i < len; i++)
-/*  241 */         ret[i] = ((byte)Integer.parseInt(
-/*  242 */           value.substring(i * 2, i * 2 + 2), 16));
-/*      */     }
-/*      */     catch (Exception localException) {
-/*      */     }
-/*  246 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   public static long ByteToLong(byte[] value) {
-/*  250 */     long ret = 0L;
-/*      */     try {
-/*  252 */       for (int i = 0; i < value.length; i++)
-/*  253 */         ret = ret << 8 | value[i] & 0xFF;
-/*      */     }
-/*      */     catch (Exception localException) {
-/*      */     }
-/*  257 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   public static int ByteToInt(byte[] value) {
-/*  261 */     int ret = value[0] & 0xFF;
-/*  262 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   public static String ByteToIP(byte[] value) {
-/*  266 */     String ret = null;
-/*      */     try {
-/*  268 */       if ((value != null) && (value.length >= 4))
-/*      */       {
-/*  274 */         ret = (value[0] & 0xFF) + '.' + (
-/*  275 */           value[1] & 0xFF) + '.' + (
-/*  276 */           value[2] & 0xFF) + '.' + (
-/*  277 */           value[3] & 0xFF)+"";
-/*      */       }
-/*      */     } catch (Exception localException) {
-/*      */     }
-/*  281 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   public static String[][] getAttributes(String attributes)
-/*      */   {
-/*  286 */     String[][] ret = null;
-/*  287 */     Vector list = null;
-/*      */     try {
-/*  289 */       list = new Vector();
-/*  290 */       while (attributes.length() >= 4) {
-/*  291 */         int len = 4;
-/*      */         try {
-/*  293 */           len = Integer.parseInt(attributes.substring(2, 4), 16) * 2;
-/*  294 */           if (len >= 4)
-/*  295 */             list.add(attributes.substring(0, len));
-/*      */           else
-/*  297 */             len = 4;
-/*      */         }
-/*      */         catch (Exception localException) {
-/*      */         }
-/*  301 */         attributes = attributes.substring(len);
-/*      */       }
-/*      */     } catch (Exception localException1) {
-/*      */     }
-/*      */     try {
-/*  306 */       if ((list != null) && (list.size() > 0)) {
-/*  307 */         int len = list.size();
-/*  308 */         ret = new String[len][2];
-/*  309 */         for (int i = 0; i < len; i++)
-/*      */           try {
-/*  311 */             String temp = (String)list.get(i);
-/*  312 */             ret[i][0] = temp.substring(0, 2);
-/*  313 */             ret[i][1] = temp.substring(4);
-/*      */           }
-/*      */           catch (Exception localException2) {
-/*      */           }
-/*  317 */         list.clear();
-/*      */       }
-/*      */     } catch (Exception localException3) {
-/*      */     }
-/*  321 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   public static String getAttributeValue(String ip, int type, String value)
-/*      */   {
-/*  330 */     String ret = null;
-/*  331 */     String name = null;
-/*      */     try {
-/*  333 */       switch (type)
-/*      */       {
-/*      */       case 1:
-/*  336 */         name = "User-Name";
-/*  337 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  339 */         break;
-/*      */       case 2:
-/*  342 */         name = "User-Password";
-/*  343 */         ret = value;
-/*      */ 
-/*  345 */         break;
-/*      */       case 3:
-/*  348 */         name = "Chap-Password";
-/*  349 */         ret = value;
-/*      */ 
-/*  351 */         break;
-/*      */       case 4:
-/*  354 */         name = "Nas-IP-Address";
-/*  355 */         ret = ByteToIP(HexToByte(value));
-/*      */ 
-/*  357 */         break;
-/*      */       case 5:
-/*  360 */         name = "Nas-Port";
-/*  361 */         ret = Long.toString(ByteToLong(HexToByte(value)));
-/*      */ 
-/*  363 */         break;
-/*      */       case 6:
-/*  366 */         name = "Service-Type";
-/*  367 */         ret = getServiceType((int)ByteToLong(HexToByte(value)));
-/*      */ 
-/*  369 */         break;
-/*      */       case 7:
-/*  372 */         name = "Framed-Protocol";
-/*  373 */         ret = getFramedProtocol((int)ByteToLong(HexToByte(value)));
-/*      */ 
-/*  375 */         break;
-/*      */       case 8:
-/*  378 */         name = "Framed-IP-Address";
-/*  379 */         ret = ByteToIP(HexToByte(value));
-/*      */ 
-/*  381 */         break;
-/*      */       case 9:
-/*  384 */         name = "Framed-IP-Netmask";
-/*  385 */         ret = ByteToIP(HexToByte(value));
-/*      */ 
-/*  387 */         break;
-/*      */       case 10:
-/*  390 */         name = "Framed-Routing";
-/*  391 */         ret = getFramedRouting((int)ByteToLong(HexToByte(value)));
-/*      */ 
-/*  393 */         break;
-/*      */       case 11:
-/*  396 */         name = "Filter-Id";
-/*  397 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  399 */         break;
-/*      */       case 12:
-/*  402 */         name = "Framed-MTU";
-/*  403 */         ret = Long.toString(ByteToLong(HexToByte(value)));
-/*      */ 
-/*  405 */         break;
-/*      */       case 13:
-/*  408 */         name = "Framed-Compression";
-/*  409 */         ret = getFramedCompression((int)ByteToLong(HexToByte(value)));
-/*      */ 
-/*  411 */         break;
-/*      */       case 14:
-/*  414 */         name = "Login-IP-Host";
-/*  415 */         ret = ByteToIP(HexToByte(value));
-/*      */ 
-/*  417 */         break;
-/*      */       case 15:
-/*  420 */         name = "Login-Service";
-/*  421 */         ret = getLoginService((int)ByteToLong(HexToByte(value)));
-/*      */ 
-/*  423 */         break;
-/*      */       case 16:
-/*  426 */         name = "Login-TCP-Port";
-/*  427 */         ret = Long.toString(ByteToLong(HexToByte(value)));
-/*      */ 
-/*  429 */         break;
-/*      */       case 18:
-/*  432 */         name = "Reply-Message";
-/*  433 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  435 */         break;
-/*      */       case 19:
-/*  438 */         name = "Callback-Number";
-/*  439 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  441 */         break;
-/*      */       case 20:
-/*  444 */         name = "Callback-Id";
-/*  445 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  447 */         break;
-/*      */       case 22:
-/*  450 */         name = "Framed-Route";
-/*  451 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  453 */         break;
-/*      */       case 23:
-/*  456 */         name = "Framed-IPX-Network";
-/*  457 */         ret = ByteToIP(HexToByte(value));
-/*      */ 
-/*  459 */         break;
-/*      */       case 24:
-/*  462 */         name = "State";
-/*  463 */         ret = value;
-/*      */ 
-/*  465 */         break;
-/*      */       case 25:
-/*  468 */         name = "Class";
-/*  469 */         ret = value;
-/*      */ 
-/*  471 */         break;
-/*      */       case 26:
-/*  474 */         name = "Vendor-Specific";
-/*  475 */         ret = value;
-/*      */ 
-/*  477 */         break;
-/*      */       case 27:
-/*  480 */         name = "Session-Timeout";
-/*  481 */         ret = Long.toString(ByteToLong(HexToByte(value)));
-/*      */ 
-/*  483 */         break;
-/*      */       case 28:
-/*  486 */         name = "Idle-Timeout";
-/*  487 */         ret = Long.toString(ByteToLong(HexToByte(value)));
-/*      */ 
-/*  489 */         break;
-/*      */       case 29:
-/*  492 */         name = "Termination-Action";
-/*  493 */         ret = getTerminationAction((int)ByteToLong(HexToByte(value)));
-/*      */ 
-/*  495 */         break;
-/*      */       case 30:
-/*  498 */         name = "Called-Station-Id";
-/*  499 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  501 */         break;
-/*      */       case 31:
-/*  504 */         name = "Calling-Station-Id";
-/*  505 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  507 */         break;
-/*      */       case 32:
-/*  510 */         name = "Nas-Identifier";
-/*  511 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  513 */         break;
-/*      */       case 33:
-/*  516 */         name = "Proxy-State";
-/*  517 */         ret = value;
-/*      */ 
-/*  519 */         break;
-/*      */       case 34:
-/*  522 */         name = "Login-LAT-Service";
-/*  523 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  525 */         break;
-/*      */       case 35:
-/*  528 */         name = "Login-LAT-Node";
-/*  529 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  531 */         break;
-/*      */       case 36:
-/*  534 */         name = "Login-LAT-Group";
-/*  535 */         ret = value;
-/*      */ 
-/*  537 */         break;
-/*      */       case 37:
-/*  540 */         name = "Framed-AppleTalk-Link";
-/*  541 */         ret = Long.toString(ByteToLong(HexToByte(value)));
-/*      */ 
-/*  543 */         break;
-/*      */       case 38:
-/*  546 */         name = "Framed-AppleTalk-Network";
-/*  547 */         ret = Long.toString(ByteToLong(HexToByte(value)));
-/*      */ 
-/*  549 */         break;
-/*      */       case 39:
-/*  552 */         name = "Framed-AppleTalk-Zone";
-/*  553 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  555 */         break;
-/*      */       case 40:
-/*  558 */         name = "Acct-Status-Type";
-/*  559 */         ret = getAcctStatusType((int)ByteToLong(HexToByte(value)));
-/*      */ 
-/*  561 */         break;
-/*      */       case 41:
-/*  564 */         name = "Acct-Delay-Time";
-/*  565 */         ret = Long.toString(ByteToLong(HexToByte(value)));
-/*      */ 
-/*  567 */         break;
-/*      */       case 42:
-/*  570 */         name = "Acct-Input-Octets";
-/*  571 */         ret = Long.toString(ByteToLong(HexToByte(value)));
-/*      */ 
-/*  573 */         break;
-/*      */       case 43:
-/*  576 */         name = "Acct-Output-Octets";
-/*  577 */         ret = Long.toString(ByteToLong(HexToByte(value)));
-/*      */ 
-/*  579 */         break;
-/*      */       case 44:
-/*  582 */         name = "Acct-Session-Id";
-/*  583 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  585 */         break;
-/*      */       case 45:
-/*  588 */         name = "Acct-Authentic";
-/*  589 */         ret = getAcctAuthentic((int)ByteToLong(HexToByte(value)));
-/*      */ 
-/*  591 */         break;
-/*      */       case 46:
-/*  594 */         name = "Acct-Session-Time";
-/*  595 */         ret = Long.toString(ByteToLong(HexToByte(value)));
-/*      */ 
-/*  597 */         break;
-/*      */       case 47:
-/*  600 */         name = "Acct-Input-Packets";
-/*  601 */         ret = Long.toString(ByteToLong(HexToByte(value)));
-/*      */ 
-/*  603 */         break;
-/*      */       case 48:
-/*  606 */         name = "Acct-Output-Packets";
-/*  607 */         ret = Long.toString(ByteToLong(HexToByte(value)));
-/*      */ 
-/*  609 */         break;
-/*      */       case 49:
-/*  612 */         name = "Acct-Terminate-Cause";
-/*  613 */         ret = getAcctTerminateCause((int)ByteToLong(HexToByte(value)));
-/*      */ 
-/*  615 */         break;
-/*      */       case 50:
-/*  618 */         name = "Acct-Multi-Session-Id";
-/*  619 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  621 */         break;
-/*      */       case 51:
-/*  624 */         name = "Acct-Link-Count";
-/*  625 */         ret = Long.toString(ByteToLong(HexToByte(value)));
-/*      */ 
-/*  627 */         break;
-/*      */       case 52:
-/*  630 */         name = "Acct-Input-Gigawords";
-/*  631 */         ret = Long.toString(ByteToLong(HexToByte(value)));
-/*      */ 
-/*  633 */         break;
-/*      */       case 53:
-/*  636 */         name = "Acct-Output-Gigawords";
-/*  637 */         ret = Long.toString(ByteToLong(HexToByte(value)));
-/*      */ 
-/*  639 */         break;
-/*      */       case 55:
-/*  642 */         name = "Event-Timestamp";
-/*  643 */         ret = Long.toString(ByteToLong(HexToByte(value)));
-/*      */ 
-/*  645 */         break;
-/*      */       case 60:
-/*  648 */         name = "CHAP-Challenge";
-/*  649 */         ret = value;
-/*      */ 
-/*  651 */         break;
-/*      */       case 61:
-/*  654 */         name = "NAS-Port-Type";
-/*  655 */         ret = getNASPortType((int)ByteToLong(HexToByte(value)));
-/*      */ 
-/*  657 */         break;
-/*      */       case 62:
-/*  660 */         name = "Port-Limit";
-/*  661 */         ret = Long.toString(ByteToLong(HexToByte(value)));
-/*      */ 
-/*  663 */         break;
-/*      */       case 63:
-/*  666 */         name = "Login-LAT-Port";
-/*  667 */         ret = Long.toString(ByteToLong(HexToByte(value)));
-/*      */ 
-/*  669 */         break;
-/*      */       case 68:
-/*  672 */         name = "Acct-Tunnel-Connection";
-/*  673 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  675 */         break;
-/*      */       case 70:
-/*  678 */         name = "ARAP-Password";
-/*  679 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  681 */         break;
-/*      */       case 71:
-/*  684 */         name = "ARAP-Features";
-/*  685 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  687 */         break;
-/*      */       case 72:
-/*  690 */         name = "ARAP-Zone-Access";
-/*  691 */         ret = Long.toString(ByteToLong(HexToByte(value)));
-/*      */ 
-/*  693 */         break;
-/*      */       case 73:
-/*  696 */         name = "ARAP-Security";
-/*  697 */         ret = Long.toString(ByteToLong(HexToByte(value)));
-/*      */ 
-/*  699 */         break;
-/*      */       case 74:
-/*  702 */         name = "ARAP-Security-Data";
-/*  703 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  705 */         break;
-/*      */       case 75:
-/*  708 */         name = "Password-Retry";
-/*  709 */         ret = Long.toString(ByteToLong(HexToByte(value)));
-/*      */ 
-/*  711 */         break;
-/*      */       case 76:
-/*  714 */         name = "Prompt";
-/*  715 */         ret = getPrompt((int)ByteToLong(HexToByte(value)));
-/*      */ 
-/*  717 */         break;
-/*      */       case 77:
-/*  720 */         name = "Connect-Info";
-/*  721 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  723 */         break;
-/*      */       case 78:
-/*  726 */         name = "Configuration-Token";
-/*  727 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  729 */         break;
-/*      */       case 79:
-/*  732 */         name = "EAP-Message";
-/*  733 */         ret = value;
-/*      */ 
-/*  735 */         break;
-/*      */       case 80:
-/*  738 */         name = "Message-Authenticator";
-/*  739 */         ret = value;
-/*      */ 
-/*  741 */         break;
-/*      */       case 84:
-/*  744 */         name = "ARAP-Challenge-Response";
-/*  745 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  747 */         break;
-/*      */       case 85:
-/*  750 */         name = "Acct-Interim-Interval";
-/*  751 */         ret = Long.toString(ByteToLong(HexToByte(value)));
-/*      */ 
-/*  753 */         break;
-/*      */       case 87:
-/*  756 */         name = "NAS-Port-Id";
-/*  757 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  759 */         break;
-/*      */       case 88:
-/*  762 */         name = "Framed-Pool";
-/*  763 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  765 */         break;
-/*      */       case 95:
-/*  768 */         name = "NAS-IPv6-Address";
-/*  769 */         ret = value;
-/*      */ 
-/*  771 */         break;
-/*      */       case 96:
-/*  774 */         name = "Framed-Interface-Id";
-/*  775 */         ret = value;
-/*      */ 
-/*  777 */         break;
-/*      */       case 97:
-/*  780 */         name = "Framed-IPv6-Prefix";
-/*  781 */         ret = value;
-/*      */ 
-/*  783 */         break;
-/*      */       case 98:
-/*  786 */         name = "Login-IPv6-Host";
-/*  787 */         ret = value;
-/*      */ 
-/*  789 */         break;
-/*      */       case 99:
-/*  792 */         name = "Framed-IPv6-Route";
-/*  793 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  795 */         break;
-/*      */       case 100:
-/*  798 */         name = "Framed-IPv6-Pool";
-/*  799 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  801 */         break;
-/*      */       case 206:
-/*  804 */         name = "Digest-Response";
-/*  805 */         ret = new String(HexToByte(value));
-/*      */ 
-/*  807 */         break;
-/*      */       case 207:
-/*  810 */         name = "Digest-Attributes";
-/*  811 */         ret = value;
-/*      */ 
-/*  813 */         break;
-/*      */       default:
-/*  815 */         name = "";
-/*  816 */         ret = value;
-/*      */       }
-/*      */     }
-/*      */     catch (Exception localException)
-/*      */     {
-/*      */     }
-/*  822 */     if (ret == null)
-/*  823 */       ret = value;
-/*  824 */     writeLog(ip, ">> " + name + "(" + type + ")=" + ret);
-/*  825 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   private static String getServiceType(int value) {
-/*  829 */     String ret = null;
-/*      */     try {
-/*  831 */       switch (value)
-/*      */       {
-/*      */       case 1:
-/*  834 */         ret = "Login-User";
-/*      */ 
-/*  836 */         break;
-/*      */       case 2:
-/*  839 */         ret = "Framed-User";
-/*      */ 
-/*  841 */         break;
-/*      */       case 3:
-/*  844 */         ret = "Callback-Login-User";
-/*      */ 
-/*  846 */         break;
-/*      */       case 4:
-/*  849 */         ret = "Callback-Framed-User";
-/*      */ 
-/*  851 */         break;
-/*      */       case 5:
-/*  854 */         ret = "Outbound-User";
-/*      */ 
-/*  856 */         break;
-/*      */       case 6:
-/*  859 */         ret = "Administrative-User";
-/*      */ 
-/*  861 */         break;
-/*      */       case 7:
-/*  864 */         ret = "NAS-Prompt-User";
-/*      */ 
-/*  866 */         break;
-/*      */       case 8:
-/*  869 */         ret = "Authenticate-Only";
-/*      */ 
-/*  871 */         break;
-/*      */       case 9:
-/*  874 */         ret = "Callback-NAS-Prompt";
-/*      */ 
-/*  876 */         break;
-/*      */       case 10:
-/*  879 */         ret = "Call-Check";
-/*      */ 
-/*  881 */         break;
-/*      */       case 11:
-/*  884 */         ret = "Callback-Administrative";
-/*      */ 
-/*  886 */         break;
-/*      */       case 12:
-/*  889 */         ret = "Voice";
-/*      */ 
-/*  891 */         break;
-/*      */       case 13:
-/*  894 */         ret = "Fax";
-/*      */ 
-/*  896 */         break;
-/*      */       case 14:
-/*  899 */         ret = "Modem-Relay";
-/*      */ 
-/*  901 */         break;
-/*      */       case 15:
-/*  904 */         ret = "IAPP-Register";
-/*      */ 
-/*  906 */         break;
-/*      */       case 16:
-/*  909 */         ret = "IAPP-AP-Check";
-/*      */ 
-/*  911 */         break;
-/*      */       default:
-/*  913 */         ret = "";
-/*      */       }
-/*      */ 
-/*  917 */       ret = ret + "(" + value + ")";
-/*      */     } catch (Exception localException) {
-/*      */     }
-/*  920 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   private static String getFramedProtocol(int value) {
-/*  924 */     String ret = null;
-/*      */     try {
-/*  926 */       switch (value)
-/*      */       {
-/*      */       case 1:
-/*  929 */         ret = "PPP";
-/*      */ 
-/*  931 */         break;
-/*      */       case 2:
-/*  934 */         ret = "SLIP";
-/*      */ 
-/*  936 */         break;
-/*      */       case 3:
-/*  939 */         ret = "ARAP";
-/*      */ 
-/*  941 */         break;
-/*      */       case 4:
-/*  944 */         ret = "Gandalf-SLML";
-/*      */ 
-/*  946 */         break;
-/*      */       case 5:
-/*  949 */         ret = "Xylogics-IPX-SLIP";
-/*      */ 
-/*  951 */         break;
-/*      */       case 6:
-/*  954 */         ret = "X.75-Synchronous";
-/*      */ 
-/*  956 */         break;
-/*      */       case 7:
-/*  959 */         ret = "GPRS-PDP-Context";
-/*      */ 
-/*  961 */         break;
-/*      */       default:
-/*  963 */         ret = "";
-/*      */       }
-/*      */ 
-/*  967 */       ret = ret + "(" + value + ")";
-/*      */     } catch (Exception localException) {
-/*      */     }
-/*  970 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   private static String getFramedRouting(int value) {
-/*  974 */     String ret = null;
-/*      */     try {
-/*  976 */       switch (value)
-/*      */       {
-/*      */       case 0:
-/*  979 */         ret = "None";
-/*      */ 
-/*  981 */         break;
-/*      */       case 1:
-/*  984 */         ret = "Broadcast";
-/*      */ 
-/*  986 */         break;
-/*      */       case 2:
-/*  989 */         ret = "Listen";
-/*      */ 
-/*  991 */         break;
-/*      */       case 3:
-/*  994 */         ret = "Broadcast-Listen";
-/*      */ 
-/*  996 */         break;
-/*      */       default:
-/*  998 */         ret = "";
-/*      */       }
-/*      */ 
-/* 1002 */       ret = ret + "(" + value + ")";
-/*      */     } catch (Exception localException) {
-/*      */     }
-/* 1005 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   private static String getFramedCompression(int value) {
-/* 1009 */     String ret = null;
-/*      */     try {
-/* 1011 */       switch (value)
-/*      */       {
-/*      */       case 0:
-/* 1014 */         ret = "None";
-/*      */ 
-/* 1016 */         break;
-/*      */       case 1:
-/* 1019 */         ret = "Van-Jacobson-TCP-IP";
-/*      */ 
-/* 1021 */         break;
-/*      */       case 2:
-/* 1024 */         ret = "IPX-Header-Compression";
-/*      */ 
-/* 1026 */         break;
-/*      */       case 3:
-/* 1029 */         ret = "Stac-LZS";
-/*      */ 
-/* 1031 */         break;
-/*      */       default:
-/* 1033 */         ret = "";
-/*      */       }
-/*      */ 
-/* 1037 */       ret = ret + "(" + value + ")";
-/*      */     } catch (Exception localException) {
-/*      */     }
-/* 1040 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   private static String getLoginService(int value) {
-/* 1044 */     String ret = null;
-/*      */     try {
-/* 1046 */       switch (value)
-/*      */       {
-/*      */       case 0:
-/* 1049 */         ret = "Telnet";
-/*      */ 
-/* 1051 */         break;
-/*      */       case 1:
-/* 1054 */         ret = "Rlogin";
-/*      */ 
-/* 1056 */         break;
-/*      */       case 2:
-/* 1059 */         ret = "TCP-Clear";
-/*      */ 
-/* 1061 */         break;
-/*      */       case 3:
-/* 1064 */         ret = "PortMaster";
-/*      */ 
-/* 1066 */         break;
-/*      */       case 4:
-/* 1069 */         ret = "LAT";
-/*      */ 
-/* 1071 */         break;
-/*      */       case 5:
-/* 1074 */         ret = "X25-PAD";
-/*      */ 
-/* 1076 */         break;
-/*      */       case 6:
-/* 1079 */         ret = "X25-T3POS";
-/*      */ 
-/* 1081 */         break;
-/*      */       case 7:
-/* 1084 */         ret = "TCP-Clear-Quiet";
-/*      */ 
-/* 1086 */         break;
-/*      */       default:
-/* 1088 */         ret = "";
-/*      */       }
-/*      */ 
-/* 1092 */       ret = ret + "(" + value + ")";
-/*      */     } catch (Exception localException) {
-/*      */     }
-/* 1095 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   private static String getAcctStatusType(int value) {
-/* 1099 */     String ret = null;
-/*      */     try {
-/* 1101 */       switch (value)
-/*      */       {
-/*      */       case 1:
-/* 1104 */         ret = "Start";
-/*      */ 
-/* 1106 */         break;
-/*      */       case 2:
-/* 1109 */         ret = "Stop";
-/*      */ 
-/* 1111 */         break;
-/*      */       case 3:
-/* 1114 */         ret = "Interim-Update";
-/*      */ 
-/* 1116 */         break;
-/*      */       case 4:
-/* 1119 */         ret = "Alive";
-/*      */ 
-/* 1121 */         break;
-/*      */       case 7:
-/* 1124 */         ret = "Accounting-On";
-/*      */ 
-/* 1126 */         break;
-/*      */       case 8:
-/* 1129 */         ret = "Accounting-Off";
-/*      */ 
-/* 1131 */         break;
-/*      */       case 9:
-/* 1134 */         ret = "Tunnel-Start";
-/*      */ 
-/* 1136 */         break;
-/*      */       case 10:
-/* 1139 */         ret = "Tunnel-Stop";
-/*      */ 
-/* 1141 */         break;
-/*      */       case 11:
-/* 1144 */         ret = "Tunnel-Reject";
-/*      */ 
-/* 1146 */         break;
-/*      */       case 12:
-/* 1149 */         ret = "Tunnel-Link-Start";
-/*      */ 
-/* 1151 */         break;
-/*      */       case 13:
-/* 1154 */         ret = "Tunnel-Link-Stop";
-/*      */ 
-/* 1156 */         break;
-/*      */       case 14:
-/* 1159 */         ret = "Tunnel-Link-Reject";
-/*      */ 
-/* 1161 */         break;
-/*      */       case 15:
-/* 1164 */         ret = "Failed";
-/*      */ 
-/* 1166 */         break;
-/*      */       case 5:
-/*      */       case 6:
-/*      */       default:
-/* 1168 */         ret = "";
-/*      */       }
-/*      */ 
-/* 1172 */       ret = ret + "(" + value + ")";
-/*      */     } catch (Exception localException) {
-/*      */     }
-/* 1175 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   private static String getAcctAuthentic(int value) {
-/* 1179 */     String ret = null;
-/*      */     try {
-/* 1181 */       switch (value)
-/*      */       {
-/*      */       case 1:
-/* 1184 */         ret = "RADIUS";
-/*      */ 
-/* 1186 */         break;
-/*      */       case 2:
-/* 1189 */         ret = "Local";
-/*      */ 
-/* 1191 */         break;
-/*      */       case 3:
-/* 1194 */         ret = "Remote";
-/*      */ 
-/* 1196 */         break;
-/*      */       case 4:
-/* 1199 */         ret = "Diameter";
-/*      */ 
-/* 1201 */         break;
-/*      */       default:
-/* 1203 */         ret = "";
-/*      */       }
-/*      */ 
-/* 1207 */       ret = ret + "(" + value + ")";
-/*      */     } catch (Exception localException) {
-/*      */     }
-/* 1210 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   private static String getTerminationAction(int value) {
-/* 1214 */     String ret = null;
-/*      */     try {
-/* 1216 */       switch (value)
-/*      */       {
-/*      */       case 0:
-/* 1219 */         ret = "Default";
-/*      */ 
-/* 1221 */         break;
-/*      */       case 1:
-/* 1224 */         ret = "RADIUS-Request";
-/*      */ 
-/* 1226 */         break;
-/*      */       default:
-/* 1228 */         ret = "";
-/*      */       }
-/*      */ 
-/* 1232 */       ret = ret + "(" + value + ")";
-/*      */     } catch (Exception localException) {
-/*      */     }
-/* 1235 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   private static String getNASPortType(int value) {
-/* 1239 */     String ret = null;
-/*      */     try {
-/* 1241 */       switch (value)
-/*      */       {
-/*      */       case 0:
-/* 1244 */         ret = "Async";
-/*      */ 
-/* 1246 */         break;
-/*      */       case 1:
-/* 1249 */         ret = "Sync";
-/*      */ 
-/* 1251 */         break;
-/*      */       case 2:
-/* 1254 */         ret = "ISDN";
-/*      */ 
-/* 1256 */         break;
-/*      */       case 3:
-/* 1259 */         ret = "ISDN-V120";
-/*      */ 
-/* 1261 */         break;
-/*      */       case 4:
-/* 1264 */         ret = "ISDN-V110";
-/*      */ 
-/* 1266 */         break;
-/*      */       case 5:
-/* 1269 */         ret = "Virtual";
-/*      */ 
-/* 1271 */         break;
-/*      */       case 6:
-/* 1274 */         ret = "PIAFS";
-/*      */ 
-/* 1276 */         break;
-/*      */       case 7:
-/* 1279 */         ret = "HDLC-Clear-Channel";
-/*      */ 
-/* 1281 */         break;
-/*      */       case 8:
-/* 1284 */         ret = "X.25";
-/*      */ 
-/* 1286 */         break;
-/*      */       case 9:
-/* 1289 */         ret = "X.75";
-/*      */ 
-/* 1291 */         break;
-/*      */       case 10:
-/* 1294 */         ret = "G.3-Fax";
-/*      */ 
-/* 1296 */         break;
-/*      */       case 11:
-/* 1299 */         ret = "SDSL";
-/*      */ 
-/* 1301 */         break;
-/*      */       case 12:
-/* 1304 */         ret = "ADSL-CAP";
-/*      */ 
-/* 1306 */         break;
-/*      */       case 13:
-/* 1309 */         ret = "ADSL-DMT";
-/*      */ 
-/* 1311 */         break;
-/*      */       case 14:
-/* 1314 */         ret = "IDSL";
-/*      */ 
-/* 1316 */         break;
-/*      */       case 15:
-/* 1319 */         ret = "Ethernet";
-/*      */ 
-/* 1321 */         break;
-/*      */       case 16:
-/* 1324 */         ret = "xDSL";
-/*      */ 
-/* 1326 */         break;
-/*      */       case 17:
-/* 1329 */         ret = "Cable";
-/*      */ 
-/* 1331 */         break;
-/*      */       case 18:
-/* 1334 */         ret = "Wireless-Other";
-/*      */ 
-/* 1336 */         break;
-/*      */       case 19:
-/* 1339 */         ret = "Wireless-802.11";
-/*      */ 
-/* 1341 */         break;
-/*      */       case 20:
-/* 1344 */         ret = "Token-Ring";
-/*      */ 
-/* 1346 */         break;
-/*      */       case 21:
-/* 1349 */         ret = "FDDI";
-/*      */ 
-/* 1351 */         break;
-/*      */       case 22:
-/* 1354 */         ret = "Wireless-CDMA2000";
-/*      */ 
-/* 1356 */         break;
-/*      */       case 23:
-/* 1359 */         ret = "Wireless-UMTS";
-/*      */ 
-/* 1361 */         break;
-/*      */       case 24:
-/* 1364 */         ret = "Wireless-1X-EV";
-/*      */ 
-/* 1366 */         break;
-/*      */       case 25:
-/* 1369 */         ret = "IAPP";
-/*      */ 
-/* 1371 */         break;
-/*      */       default:
-/* 1373 */         ret = "";
-/*      */       }
-/*      */ 
-/* 1377 */       ret = ret + "(" + value + ")";
-/*      */     } catch (Exception localException) {
-/*      */     }
-/* 1380 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   private static String getAcctTerminateCause(int value) {
-/* 1384 */     String ret = null;
-/*      */     try {
-/* 1386 */       switch (value)
-/*      */       {
-/*      */       case 1:
-/* 1389 */         ret = "User-Request";
-/*      */ 
-/* 1391 */         break;
-/*      */       case 2:
-/* 1394 */         ret = "Lost-Carrier";
-/*      */ 
-/* 1396 */         break;
-/*      */       case 3:
-/* 1399 */         ret = "Lost-Service";
-/*      */ 
-/* 1401 */         break;
-/*      */       case 4:
-/* 1404 */         ret = "Idle-Timeout";
-/*      */ 
-/* 1406 */         break;
-/*      */       case 5:
-/* 1409 */         ret = "Session-Timeout";
-/*      */ 
-/* 1411 */         break;
-/*      */       case 6:
-/* 1414 */         ret = "Admin-Reset";
-/*      */ 
-/* 1416 */         break;
-/*      */       case 7:
-/* 1419 */         ret = "Admin-Reboot";
-/*      */ 
-/* 1421 */         break;
-/*      */       case 8:
-/* 1424 */         ret = "Port-Error";
-/*      */ 
-/* 1426 */         break;
-/*      */       case 9:
-/* 1429 */         ret = "NAS-Error";
-/*      */ 
-/* 1431 */         break;
-/*      */       case 10:
-/* 1434 */         ret = "NAS-Request";
-/*      */ 
-/* 1436 */         break;
-/*      */       case 11:
-/* 1439 */         ret = "NAS-Reboot";
-/*      */ 
-/* 1441 */         break;
-/*      */       case 12:
-/* 1444 */         ret = "Port-Unneeded";
-/*      */ 
-/* 1446 */         break;
-/*      */       case 13:
-/* 1449 */         ret = "Port-Preempted";
-/*      */ 
-/* 1451 */         break;
-/*      */       case 14:
-/* 1454 */         ret = "Port-Suspended";
-/*      */ 
-/* 1456 */         break;
-/*      */       case 15:
-/* 1459 */         ret = "Service-Unavailable";
-/*      */ 
-/* 1461 */         break;
-/*      */       case 16:
-/* 1464 */         ret = "Callback";
-/*      */ 
-/* 1466 */         break;
-/*      */       case 17:
-/* 1469 */         ret = "User-Error";
-/*      */ 
-/* 1471 */         break;
-/*      */       case 18:
-/* 1474 */         ret = "Host-Request";
-/*      */ 
-/* 1476 */         break;
-/*      */       case 19:
-/* 1479 */         ret = "Supplicant-Restart";
-/*      */ 
-/* 1481 */         break;
-/*      */       case 20:
-/* 1484 */         ret = "Reauthentication-Failure";
-/*      */ 
-/* 1486 */         break;
-/*      */       case 21:
-/* 1489 */         ret = "Port-Reinit";
-/*      */ 
-/* 1491 */         break;
-/*      */       case 22:
-/* 1494 */         ret = "Port-Disabled";
-/*      */ 
-/* 1496 */         break;
-/*      */       default:
-/* 1498 */         ret = "";
-/*      */       }
-/*      */ 
-/* 1502 */       ret = ret + "(" + value + ")";
-/*      */     } catch (Exception localException) {
-/*      */     }
-/* 1505 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   private static String getPrompt(int value) {
-/* 1509 */     String ret = null;
-/*      */     try {
-/* 1511 */       switch (value)
-/*      */       {
-/*      */       case 0:
-/* 1514 */         ret = "No-Echo";
-/*      */ 
-/* 1516 */         break;
-/*      */       case 1:
-/* 1519 */         ret = "Echo";
-/*      */ 
-/* 1521 */         break;
-/*      */       default:
-/* 1523 */         ret = "";
-/*      */       }
-/*      */ 
-/* 1527 */       ret = ret + "(" + value + ")";
-/*      */     } catch (Exception localException) {
-/*      */     }
-/* 1530 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   public static String getAttributeString(int type, String value) {
-/* 1534 */     String ret = null;
-/*      */     try {
-/* 1536 */       String info = ByteToHex(value.getBytes());
-/* 1537 */       String len = Integer.toHexString(2 + info.length() / 2);
-/* 1538 */       while (len.length() < 2)
-/* 1539 */         len = "0" + len;
-/* 1540 */       String types = Integer.toHexString(type);
-/* 1541 */       while (types.length() < 2)
-/* 1542 */         types = "0" + types;
-/* 1543 */       ret = types + len + info;
-/*      */     } catch (Exception localException) {
-/*      */     }
-/* 1546 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   public static int getAttributeStringLen(String value) {
-/* 1550 */     int len = 0;
-/*      */     try {
-/* 1552 */       String info = ByteToHex(value.getBytes());
-/* 1553 */       len = 2 + info.length() / 2;
-/*      */     } catch (Exception localException) {
-/*      */     }
-/* 1556 */     return len;
-/*      */   }
-/*      */ 
-/*      */   public static String getAttributeVendor(int type, int value, int valueLen)
-/*      */   {
-/* 1563 */     String ret = null;
-/*      */     try
-/*      */     {
-/* 1566 */       byte[] b = new byte[4];
-/* 1567 */       for (int i = 0; i < 4; i++) {
-/* 1568 */         int offset = (b.length - 1 - i) * 8;
-/* 1569 */         b[i] = ((byte)(value >>> offset & 0xFF));
-/*      */       }
-/* 1571 */       String info = ByteToHex(b);
-/* 1572 */       String len = Integer.toHexString(6 + valueLen);
-/* 1573 */       while (len.length() < 2)
-/* 1574 */         len = "0" + len;
-/* 1575 */       String types = Integer.toHexString(type);
-/* 1576 */       while (types.length() < 2)
-/* 1577 */         types = "0" + types;
-/* 1578 */       ret = types + len + info;
-/*      */     }
-/*      */     catch (Exception localException)
-/*      */     {
-/*      */     }
-/* 1583 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   public static String getAttributeVendor(int type, int value) {
-/* 1587 */     String ret = null;
-/*      */     try
-/*      */     {
-/* 1590 */       byte[] b = new byte[4];
-/* 1591 */       for (int i = 0; i < 4; i++) {
-/* 1592 */         int offset = (b.length - 1 - i) * 8;
-/* 1593 */         b[i] = ((byte)(value >>> offset & 0xFF));
-/*      */       }
-/* 1595 */       String info = ByteToHex(b);
-/* 1596 */       String len = Integer.toHexString(12);
-/* 1597 */       while (len.length() < 2)
-/* 1598 */         len = "0" + len;
-/* 1599 */       String types = Integer.toHexString(type);
-/* 1600 */       while (types.length() < 2)
-/* 1601 */         types = "0" + types;
-/* 1602 */       ret = types + len + info;
-/*      */     }
-/*      */     catch (Exception localException)
-/*      */     {
-/*      */     }
-/* 1607 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   public static String getAttributeSpeed(int type, int value) {
-/* 1611 */     String ret = null;
-/*      */     try
-/*      */     {
-/* 1614 */       byte[] b = new byte[4];
-/* 1615 */       for (int i = 0; i < 4; i++) {
-/* 1616 */         int offset = (b.length - 1 - i) * 8;
-/* 1617 */         b[i] = ((byte)(value >>> offset & 0xFF));
-/*      */       }
-/* 1619 */       String info = ByteToHex(b);
-/* 1620 */       String len = Integer.toHexString(6);
-/* 1621 */       while (len.length() < 2)
-/* 1622 */         len = "0" + len;
-/* 1623 */       String types = Integer.toHexString(type);
-/* 1624 */       while (types.length() < 2)
-/* 1625 */         types = "0" + types;
-/* 1626 */       ret = types + len + info;
-/*      */     }
-/*      */     catch (Exception localException)
-/*      */     {
-/*      */     }
-/* 1631 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   public static String getAttributeInt(int type, int value)
-/*      */   {
-/* 1637 */     String ret = null;
-/*      */     try
-/*      */     {
-/* 1640 */       byte[] b = new byte[4];
-/* 1641 */       for (int i = 0; i < 4; i++) {
-/* 1642 */         int offset = (b.length - 1 - i) * 8;
-/* 1643 */         b[i] = ((byte)(value >>> offset & 0xFF));
-/*      */       }
-/* 1645 */       String info = ByteToHex(b);
-/* 1646 */       String len = Integer.toHexString(6);
-/* 1647 */       while (len.length() < 2)
-/* 1648 */         len = "0" + len;
-/* 1649 */       String types = Integer.toHexString(type);
-/* 1650 */       while (types.length() < 2)
-/* 1651 */         types = "0" + types;
-/* 1652 */       ret = types + len + info;
-/*      */     }
-/*      */     catch (Exception localException)
-/*      */     {
-/*      */     }
-/* 1657 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   public static byte[] getOutData(String name, String sharedSecret, String ip, int port, int code, int identifier, String authenticator, String attributes)
-/*      */   {
-/* 1663 */     byte[] ret = null;
-/*      */     try {
-/* 1665 */       int length = 20 + attributes.length() / 2;
-/* 1666 */       String str = Integer.toHexString(code);
-/* 1667 */       while (str.length() < 2)
-/* 1668 */         str = "0" + str;
-/* 1669 */       String temp = Integer.toHexString(identifier);
-/* 1670 */       while (temp.length() < 2)
-/* 1671 */         temp = "0" + temp;
-/* 1672 */       str = str + temp;
-/* 1673 */       temp = Integer.toHexString(length);
-/* 1674 */       while (temp.length() < 4)
-/* 1675 */         temp = "0" + temp;
-/* 1676 */       str = str + temp;
-/* 1677 */       authenticator = encodeMD5(str + authenticator + attributes + 
-/* 1678 */         sharedSecret);
-/* 1679 */       str = str + authenticator;
-/* 1680 */       str = str + attributes;
-/* 1681 */       ret = HexToByte(str);
-/* 1682 */       writeLog(name, "ip=" + ip + ",port=" + port + ",code=" + code + 
-/* 1683 */         ",identifier=" + identifier + ",length=" + length + 
-/* 1684 */         ",authenticator=" + authenticator + ",attributes=" + 
-/* 1685 */         attributes);
-/*      */     } catch (Exception localException) {
-/*      */     }
-/* 1688 */     return ret;
-/*      */   }
-/*      */ 
-/*      */   public static String sendServer(String ip, String url, String str) {
-/* 1692 */     String ret = null;
-/*      */     try {
-/* 1694 */       str = url + "?" + str;
-/* 1695 */       String result = sendURL(str);
-/* 1696 */       writeLog(ip, str);
-/* 1697 */       int i = result.indexOf("<result>");
-/* 1698 */       if (i >= 0) {
-/* 1699 */         i += 8;
-/* 1700 */         int j = result.indexOf("</result>", i);
-/* 1701 */         if (j > i) {
-/* 1702 */           ret = result.substring(i, j).trim();
-/*      */         }
-/*      */ 
-/*      */       }
-/*      */ 
-/* 1712 */       writeLog(ip, "result=" + ret);
-/*      */     } catch (Exception localException) {
-/*      */     }
-/* 1715 */     return ret;
-/*      */   }
-/*      */ }
+package com.leeson.radius.core;
+
+import com.leeson.core.bean.Portalbas;
+import com.leeson.portal.core.model.Config;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.security.MessageDigest;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Vector;
+import org.apache.log4j.Logger;
+
+public class Tool
+{
+  private static Logger log = Logger.getLogger(Tool.class);
+
+  private static Config config = Config.getInstance();
+
+  public static void writeLog(String name, String content) {
+    Portalbas basConfig = (Portalbas)config.getConfigMap().get("");
+    try
+    {
+      if (basConfig.getIsdebug().equals("1"))
+        log.info("[" + name + "]" + content);
+    }
+    catch (Exception localException)
+    {
+    }
+  }
+
+  public static void writeErrorLog(String name, Exception content)
+  {
+    Portalbas basConfig = (Portalbas)config.getConfigMap().get("");
+    try
+    {
+      if (basConfig.getIsdebug().equals("1"))
+        log.error("[" + name + "]" + content);
+    }
+    catch (Exception localException)
+    {
+    }
+  }
+
+  public static String getAttributeIP(String ip)
+  {
+    byte[] UserIP = new byte[4];
+    String[] ips = ip.split("[.]");
+
+    for (int i = 0; i < 4; i++) {
+      int m = Integer.valueOf(ips[i]).intValue();
+      byte b = (byte)m;
+      UserIP[i] = b;
+    }
+    String info = ByteToHex(UserIP);
+
+    String ret = null;
+    try
+    {
+      String len = Integer.toHexString(6);
+      while (len.length() < 2)
+        len = "0" + len;
+      String types = Integer.toHexString(8);
+      while (types.length() < 2)
+        types = "0" + types;
+      ret = types + len + info;
+    } catch (Exception localException) {
+    }
+    return ret;
+  }
+
+  public static String getAttributeNasIP(String ip) {
+    byte[] UserIP = new byte[4];
+    String[] ips = ip.split("[.]");
+
+    for (int i = 0; i < 4; i++) {
+      int m = Integer.valueOf(ips[i]).intValue();
+      byte b = (byte)m;
+      UserIP[i] = b;
+    }
+    String info = ByteToHex(UserIP);
+
+    String ret = null;
+    try
+    {
+      String len = Integer.toHexString(6);
+      while (len.length() < 2)
+        len = "0" + len;
+      String types = Integer.toHexString(4);
+      while (types.length() < 2)
+        types = "0" + types;
+      ret = types + len + info;
+    } catch (Exception localException) {
+    }
+    return ret;
+  }
+
+  public static void openProxy(String proxyhost, String proxyport)
+  {
+    try {
+      System.setProperty("sun.net.client.defaultConnectTimeout", "3000");
+      System.setProperty("sun.net.client.defaultReadTimeout", "10000");
+      if ((proxyhost != null) && (proxyport != null)) {
+        Properties prop = System.getProperties();
+        prop.put("http.proxyHost", proxyhost);
+        prop.put("http.proxyPort", proxyport);
+      }
+    }
+    catch (Exception localException) {
+    }
+  }
+
+  public static String sendURL(String url) {
+    StringBuffer ret = new StringBuffer();
+    InputStream is = null;
+    InputStreamReader isr = null;
+    BufferedReader br = null;
+    try {
+      URL su = new URL(url);
+      is = su.openStream();
+      isr = new InputStreamReader(is);
+      br = new BufferedReader(isr);
+      for (String line = br.readLine(); line != null; line = br
+        .readLine())
+      {
+        ret.append(line + "\r\n");
+      }
+    } catch (Exception localException) {
+    }
+    try { if (br != null) {
+        br.close();
+        br = null;
+      }
+    } catch (Exception localException1) {
+    }
+    try {
+      if (isr != null) {
+        isr.close();
+        isr = null;
+      }
+    } catch (Exception localException2) {
+    }
+    try {
+      if (is != null) {
+        is.close();
+        is = null;
+      }
+    } catch (Exception localException3) {
+    }
+    return ret.toString();
+  }
+
+  public static String encodeMD5(String str)
+  {
+    String ret = "";
+    try {
+      MessageDigest md = MessageDigest.getInstance("MD5");
+      md.update(HexToByte(str));
+
+      ret = ByteToHex(md.digest());
+    } catch (Exception localException) {
+    }
+    return ret;
+  }
+
+  public static String decodeMD5(String sharedSecret, String authenticator, String password)
+  {
+    String ret = "";
+    try {
+      byte[] pwd = HexToByte(password);
+      if ((pwd != null) && (pwd.length >= 16))
+      {
+        byte[] temp = HexToByte(encodeMD5(sharedSecret + authenticator));
+        for (int i = 0; i < 16; i++) {
+          pwd[i] = ((byte)(temp[i] ^ pwd[i]));
+        }
+        if (pwd.length > 16) {
+          for (int i = 16; i < pwd.length; i += 16) {
+            temp = HexToByte(encodeMD5(sharedSecret + 
+              ByteToHex(pwd, i - 16, 16)));
+            for (int j = 0; j < 16; j++) {
+              pwd[(i + j)] = ((byte)(temp[j] ^ pwd[(i + j)]));
+            }
+          }
+        }
+        int len = pwd.length;
+        while ((len > 0) && (pwd[(len - 1)] == 0))
+          len--;
+        ret = new String(pwd, 0, len);
+      }
+    } catch (Exception localException) {
+    }
+    return ret;
+  }
+
+  public static String ByteToHex(byte[] buf) {
+    StringBuffer ret = new StringBuffer();
+    String result = null;
+    try {
+      for (int i = 0; i < buf.length; i++) {
+        String temp = Integer.toHexString(buf[i] & 0xFF);
+        while (temp.length() < 2)
+          temp = "0" + temp;
+        ret.append(temp);
+      }
+      result = ret.toString().toUpperCase();
+    } catch (Exception localException) {
+    }
+    return result;
+  }
+
+  public static String ByteToHex(byte[] buf, int begin, int end) {
+    StringBuffer ret = new StringBuffer();
+    String result = null;
+    try {
+      for (int i = begin; i < end; i++) {
+        String temp = Integer.toHexString(buf[i] & 0xFF);
+        while (temp.length() < 2)
+          temp = "0" + temp;
+        ret.append(temp);
+      }
+      result = ret.toString().toUpperCase();
+    } catch (Exception localException) {
+    }
+    return result;
+  }
+
+  public static byte[] HexToByte(String value) {
+    byte[] ret = null;
+    try {
+      int len = value.length() / 2;
+      ret = new byte[len];
+      for (int i = 0; i < len; i++)
+        ret[i] = ((byte)Integer.parseInt(
+          value.substring(i * 2, i * 2 + 2), 16));
+    }
+    catch (Exception localException) {
+    }
+    return ret;
+  }
+
+  public static long ByteToLong(byte[] value) {
+    long ret = 0L;
+    try {
+      for (int i = 0; i < value.length; i++)
+        ret = ret << 8 | value[i] & 0xFF;
+    }
+    catch (Exception localException) {
+    }
+    return ret;
+  }
+
+  public static int ByteToInt(byte[] value) {
+    int ret = value[0] & 0xFF;
+    return ret;
+  }
+
+  public static String ByteToIP(byte[] value) {
+    String ret = null;
+    try {
+      if ((value != null) && (value.length >= 4))
+      {
+        ret = (value[0] & 0xFF) + '.' + (
+          value[1] & 0xFF) + '.' + (
+          value[2] & 0xFF) + '.' + (
+          value[3] & 0xFF)+"";
+      }
+    } catch (Exception localException) {
+    }
+    return ret;
+  }
+
+  public static String[][] getAttributes(String attributes)
+  {
+    String[][] ret = null;
+    Vector list = null;
+    try {
+      list = new Vector();
+      while (attributes.length() >= 4) {
+        int len = 4;
+        try {
+          len = Integer.parseInt(attributes.substring(2, 4), 16) * 2;
+          if (len >= 4)
+            list.add(attributes.substring(0, len));
+          else
+            len = 4;
+        }
+        catch (Exception localException) {
+        }
+        attributes = attributes.substring(len);
+      }
+    } catch (Exception localException1) {
+    }
+    try {
+      if ((list != null) && (list.size() > 0)) {
+        int len = list.size();
+        ret = new String[len][2];
+        for (int i = 0; i < len; i++)
+          try {
+            String temp = (String)list.get(i);
+            ret[i][0] = temp.substring(0, 2);
+            ret[i][1] = temp.substring(4);
+          }
+          catch (Exception localException2) {
+          }
+        list.clear();
+      }
+    } catch (Exception localException3) {
+    }
+    return ret;
+  }
+
+  public static String getAttributeValue(String ip, int type, String value)
+  {
+    String ret = null;
+    String name = null;
+    try {
+      switch (type)
+      {
+      case 1:
+        name = "User-Name";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 2:
+        name = "User-Password";
+        ret = value;
+
+        break;
+      case 3:
+        name = "Chap-Password";
+        ret = value;
+
+        break;
+      case 4:
+        name = "Nas-IP-Address";
+        ret = ByteToIP(HexToByte(value));
+
+        break;
+      case 5:
+        name = "Nas-Port";
+        ret = Long.toString(ByteToLong(HexToByte(value)));
+
+        break;
+      case 6:
+        name = "Service-Type";
+        ret = getServiceType((int)ByteToLong(HexToByte(value)));
+
+        break;
+      case 7:
+        name = "Framed-Protocol";
+        ret = getFramedProtocol((int)ByteToLong(HexToByte(value)));
+
+        break;
+      case 8:
+        name = "Framed-IP-Address";
+        ret = ByteToIP(HexToByte(value));
+
+        break;
+      case 9:
+        name = "Framed-IP-Netmask";
+        ret = ByteToIP(HexToByte(value));
+
+        break;
+      case 10:
+        name = "Framed-Routing";
+        ret = getFramedRouting((int)ByteToLong(HexToByte(value)));
+
+        break;
+      case 11:
+        name = "Filter-Id";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 12:
+        name = "Framed-MTU";
+        ret = Long.toString(ByteToLong(HexToByte(value)));
+
+        break;
+      case 13:
+        name = "Framed-Compression";
+        ret = getFramedCompression((int)ByteToLong(HexToByte(value)));
+
+        break;
+      case 14:
+        name = "Login-IP-Host";
+        ret = ByteToIP(HexToByte(value));
+
+        break;
+      case 15:
+        name = "Login-Service";
+        ret = getLoginService((int)ByteToLong(HexToByte(value)));
+
+        break;
+      case 16:
+        name = "Login-TCP-Port";
+        ret = Long.toString(ByteToLong(HexToByte(value)));
+
+        break;
+      case 18:
+        name = "Reply-Message";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 19:
+        name = "Callback-Number";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 20:
+        name = "Callback-Id";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 22:
+        name = "Framed-Route";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 23:
+        name = "Framed-IPX-Network";
+        ret = ByteToIP(HexToByte(value));
+
+        break;
+      case 24:
+        name = "State";
+        ret = value;
+
+        break;
+      case 25:
+        name = "Class";
+        ret = value;
+
+        break;
+      case 26:
+        name = "Vendor-Specific";
+        ret = value;
+
+        break;
+      case 27:
+        name = "Session-Timeout";
+        ret = Long.toString(ByteToLong(HexToByte(value)));
+
+        break;
+      case 28:
+        name = "Idle-Timeout";
+        ret = Long.toString(ByteToLong(HexToByte(value)));
+
+        break;
+      case 29:
+        name = "Termination-Action";
+        ret = getTerminationAction((int)ByteToLong(HexToByte(value)));
+
+        break;
+      case 30:
+        name = "Called-Station-Id";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 31:
+        name = "Calling-Station-Id";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 32:
+        name = "Nas-Identifier";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 33:
+        name = "Proxy-State";
+        ret = value;
+
+        break;
+      case 34:
+        name = "Login-LAT-Service";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 35:
+        name = "Login-LAT-Node";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 36:
+        name = "Login-LAT-Group";
+        ret = value;
+
+        break;
+      case 37:
+        name = "Framed-AppleTalk-Link";
+        ret = Long.toString(ByteToLong(HexToByte(value)));
+
+        break;
+      case 38:
+        name = "Framed-AppleTalk-Network";
+        ret = Long.toString(ByteToLong(HexToByte(value)));
+
+        break;
+      case 39:
+        name = "Framed-AppleTalk-Zone";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 40:
+        name = "Acct-Status-Type";
+        ret = getAcctStatusType((int)ByteToLong(HexToByte(value)));
+
+        break;
+      case 41:
+        name = "Acct-Delay-Time";
+        ret = Long.toString(ByteToLong(HexToByte(value)));
+
+        break;
+      case 42:
+        name = "Acct-Input-Octets";
+        ret = Long.toString(ByteToLong(HexToByte(value)));
+
+        break;
+      case 43:
+        name = "Acct-Output-Octets";
+        ret = Long.toString(ByteToLong(HexToByte(value)));
+
+        break;
+      case 44:
+        name = "Acct-Session-Id";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 45:
+        name = "Acct-Authentic";
+        ret = getAcctAuthentic((int)ByteToLong(HexToByte(value)));
+
+        break;
+      case 46:
+        name = "Acct-Session-Time";
+        ret = Long.toString(ByteToLong(HexToByte(value)));
+
+        break;
+      case 47:
+        name = "Acct-Input-Packets";
+        ret = Long.toString(ByteToLong(HexToByte(value)));
+
+        break;
+      case 48:
+        name = "Acct-Output-Packets";
+        ret = Long.toString(ByteToLong(HexToByte(value)));
+
+        break;
+      case 49:
+        name = "Acct-Terminate-Cause";
+        ret = getAcctTerminateCause((int)ByteToLong(HexToByte(value)));
+
+        break;
+      case 50:
+        name = "Acct-Multi-Session-Id";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 51:
+        name = "Acct-Link-Count";
+        ret = Long.toString(ByteToLong(HexToByte(value)));
+
+        break;
+      case 52:
+        name = "Acct-Input-Gigawords";
+        ret = Long.toString(ByteToLong(HexToByte(value)));
+
+        break;
+      case 53:
+        name = "Acct-Output-Gigawords";
+        ret = Long.toString(ByteToLong(HexToByte(value)));
+
+        break;
+      case 55:
+        name = "Event-Timestamp";
+        ret = Long.toString(ByteToLong(HexToByte(value)));
+
+        break;
+      case 60:
+        name = "CHAP-Challenge";
+        ret = value;
+
+        break;
+      case 61:
+        name = "NAS-Port-Type";
+        ret = getNASPortType((int)ByteToLong(HexToByte(value)));
+
+        break;
+      case 62:
+        name = "Port-Limit";
+        ret = Long.toString(ByteToLong(HexToByte(value)));
+
+        break;
+      case 63:
+        name = "Login-LAT-Port";
+        ret = Long.toString(ByteToLong(HexToByte(value)));
+
+        break;
+      case 68:
+        name = "Acct-Tunnel-Connection";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 70:
+        name = "ARAP-Password";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 71:
+        name = "ARAP-Features";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 72:
+        name = "ARAP-Zone-Access";
+        ret = Long.toString(ByteToLong(HexToByte(value)));
+
+        break;
+      case 73:
+        name = "ARAP-Security";
+        ret = Long.toString(ByteToLong(HexToByte(value)));
+
+        break;
+      case 74:
+        name = "ARAP-Security-Data";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 75:
+        name = "Password-Retry";
+        ret = Long.toString(ByteToLong(HexToByte(value)));
+
+        break;
+      case 76:
+        name = "Prompt";
+        ret = getPrompt((int)ByteToLong(HexToByte(value)));
+
+        break;
+      case 77:
+        name = "Connect-Info";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 78:
+        name = "Configuration-Token";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 79:
+        name = "EAP-Message";
+        ret = value;
+
+        break;
+      case 80:
+        name = "Message-Authenticator";
+        ret = value;
+
+        break;
+      case 84:
+        name = "ARAP-Challenge-Response";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 85:
+        name = "Acct-Interim-Interval";
+        ret = Long.toString(ByteToLong(HexToByte(value)));
+
+        break;
+      case 87:
+        name = "NAS-Port-Id";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 88:
+        name = "Framed-Pool";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 95:
+        name = "NAS-IPv6-Address";
+        ret = value;
+
+        break;
+      case 96:
+        name = "Framed-Interface-Id";
+        ret = value;
+
+        break;
+      case 97:
+        name = "Framed-IPv6-Prefix";
+        ret = value;
+
+        break;
+      case 98:
+        name = "Login-IPv6-Host";
+        ret = value;
+
+        break;
+      case 99:
+        name = "Framed-IPv6-Route";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 100:
+        name = "Framed-IPv6-Pool";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 206:
+        name = "Digest-Response";
+        ret = new String(HexToByte(value));
+
+        break;
+      case 207:
+        name = "Digest-Attributes";
+        ret = value;
+
+        break;
+      default:
+        name = "";
+        ret = value;
+      }
+    }
+    catch (Exception localException)
+    {
+    }
+    if (ret == null)
+      ret = value;
+    writeLog(ip, ">> " + name + "(" + type + ")=" + ret);
+    return ret;
+  }
+
+  private static String getServiceType(int value) {
+    String ret = null;
+    try {
+      switch (value)
+      {
+      case 1:
+        ret = "Login-User";
+
+        break;
+      case 2:
+        ret = "Framed-User";
+
+        break;
+      case 3:
+        ret = "Callback-Login-User";
+
+        break;
+      case 4:
+        ret = "Callback-Framed-User";
+
+        break;
+      case 5:
+        ret = "Outbound-User";
+
+        break;
+      case 6:
+        ret = "Administrative-User";
+
+        break;
+      case 7:
+        ret = "NAS-Prompt-User";
+
+        break;
+      case 8:
+        ret = "Authenticate-Only";
+
+        break;
+      case 9:
+        ret = "Callback-NAS-Prompt";
+
+        break;
+      case 10:
+        ret = "Call-Check";
+
+        break;
+      case 11:
+        ret = "Callback-Administrative";
+
+        break;
+      case 12:
+        ret = "Voice";
+
+        break;
+      case 13:
+        ret = "Fax";
+
+        break;
+      case 14:
+        ret = "Modem-Relay";
+
+        break;
+      case 15:
+        ret = "IAPP-Register";
+
+        break;
+      case 16:
+        ret = "IAPP-AP-Check";
+
+        break;
+      default:
+        ret = "";
+      }
+
+      ret = ret + "(" + value + ")";
+    } catch (Exception localException) {
+    }
+    return ret;
+  }
+
+  private static String getFramedProtocol(int value) {
+    String ret = null;
+    try {
+      switch (value)
+      {
+      case 1:
+        ret = "PPP";
+
+        break;
+      case 2:
+        ret = "SLIP";
+
+        break;
+      case 3:
+        ret = "ARAP";
+
+        break;
+      case 4:
+        ret = "Gandalf-SLML";
+
+        break;
+      case 5:
+        ret = "Xylogics-IPX-SLIP";
+
+        break;
+      case 6:
+        ret = "X.75-Synchronous";
+
+        break;
+      case 7:
+        ret = "GPRS-PDP-Context";
+
+        break;
+      default:
+        ret = "";
+      }
+
+      ret = ret + "(" + value + ")";
+    } catch (Exception localException) {
+    }
+    return ret;
+  }
+
+  private static String getFramedRouting(int value) {
+    String ret = null;
+    try {
+      switch (value)
+      {
+      case 0:
+        ret = "None";
+
+        break;
+      case 1:
+        ret = "Broadcast";
+
+        break;
+      case 2:
+        ret = "Listen";
+
+        break;
+      case 3:
+        ret = "Broadcast-Listen";
+
+        break;
+      default:
+        ret = "";
+      }
+
+      ret = ret + "(" + value + ")";
+    } catch (Exception localException) {
+    }
+    return ret;
+  }
+
+  private static String getFramedCompression(int value) {
+    String ret = null;
+    try {
+      switch (value)
+      {
+      case 0:
+        ret = "None";
+
+        break;
+      case 1:
+        ret = "Van-Jacobson-TCP-IP";
+
+        break;
+      case 2:
+        ret = "IPX-Header-Compression";
+
+        break;
+      case 3:
+        ret = "Stac-LZS";
+
+        break;
+      default:
+        ret = "";
+      }
+
+      ret = ret + "(" + value + ")";
+    } catch (Exception localException) {
+    }
+    return ret;
+  }
+
+  private static String getLoginService(int value) {
+    String ret = null;
+    try {
+      switch (value)
+      {
+      case 0:
+        ret = "Telnet";
+
+        break;
+      case 1:
+        ret = "Rlogin";
+
+        break;
+      case 2:
+        ret = "TCP-Clear";
+
+        break;
+      case 3:
+        ret = "PortMaster";
+
+        break;
+      case 4:
+        ret = "LAT";
+
+        break;
+      case 5:
+        ret = "X25-PAD";
+
+        break;
+      case 6:
+        ret = "X25-T3POS";
+
+        break;
+      case 7:
+        ret = "TCP-Clear-Quiet";
+
+        break;
+      default:
+        ret = "";
+      }
+
+      ret = ret + "(" + value + ")";
+    } catch (Exception localException) {
+    }
+    return ret;
+  }
+
+  private static String getAcctStatusType(int value) {
+    String ret = null;
+    try {
+      switch (value)
+      {
+      case 1:
+        ret = "Start";
+
+        break;
+      case 2:
+        ret = "Stop";
+
+        break;
+      case 3:
+        ret = "Interim-Update";
+
+        break;
+      case 4:
+        ret = "Alive";
+
+        break;
+      case 7:
+        ret = "Accounting-On";
+
+        break;
+      case 8:
+        ret = "Accounting-Off";
+
+        break;
+      case 9:
+        ret = "Tunnel-Start";
+
+        break;
+      case 10:
+        ret = "Tunnel-Stop";
+
+        break;
+      case 11:
+        ret = "Tunnel-Reject";
+
+        break;
+      case 12:
+        ret = "Tunnel-Link-Start";
+
+        break;
+      case 13:
+        ret = "Tunnel-Link-Stop";
+
+        break;
+      case 14:
+        ret = "Tunnel-Link-Reject";
+
+        break;
+      case 15:
+        ret = "Failed";
+
+        break;
+      case 5:
+      case 6:
+      default:
+        ret = "";
+      }
+
+      ret = ret + "(" + value + ")";
+    } catch (Exception localException) {
+    }
+    return ret;
+  }
+
+  private static String getAcctAuthentic(int value) {
+    String ret = null;
+    try {
+      switch (value)
+      {
+      case 1:
+        ret = "RADIUS";
+
+        break;
+      case 2:
+        ret = "Local";
+
+        break;
+      case 3:
+        ret = "Remote";
+
+        break;
+      case 4:
+        ret = "Diameter";
+
+        break;
+      default:
+        ret = "";
+      }
+
+      ret = ret + "(" + value + ")";
+    } catch (Exception localException) {
+    }
+    return ret;
+  }
+
+  private static String getTerminationAction(int value) {
+    String ret = null;
+    try {
+      switch (value)
+      {
+      case 0:
+        ret = "Default";
+
+        break;
+      case 1:
+        ret = "RADIUS-Request";
+
+        break;
+      default:
+        ret = "";
+      }
+
+      ret = ret + "(" + value + ")";
+    } catch (Exception localException) {
+    }
+    return ret;
+  }
+
+  private static String getNASPortType(int value) {
+    String ret = null;
+    try {
+      switch (value)
+      {
+      case 0:
+        ret = "Async";
+
+        break;
+      case 1:
+        ret = "Sync";
+
+        break;
+      case 2:
+        ret = "ISDN";
+
+        break;
+      case 3:
+        ret = "ISDN-V120";
+
+        break;
+      case 4:
+        ret = "ISDN-V110";
+
+        break;
+      case 5:
+        ret = "Virtual";
+
+        break;
+      case 6:
+        ret = "PIAFS";
+
+        break;
+      case 7:
+        ret = "HDLC-Clear-Channel";
+
+        break;
+      case 8:
+        ret = "X.25";
+
+        break;
+      case 9:
+        ret = "X.75";
+
+        break;
+      case 10:
+        ret = "G.3-Fax";
+
+        break;
+      case 11:
+        ret = "SDSL";
+
+        break;
+      case 12:
+        ret = "ADSL-CAP";
+
+        break;
+      case 13:
+        ret = "ADSL-DMT";
+
+        break;
+      case 14:
+        ret = "IDSL";
+
+        break;
+      case 15:
+        ret = "Ethernet";
+
+        break;
+      case 16:
+        ret = "xDSL";
+
+        break;
+      case 17:
+        ret = "Cable";
+
+        break;
+      case 18:
+        ret = "Wireless-Other";
+
+        break;
+      case 19:
+        ret = "Wireless-802.11";
+
+        break;
+      case 20:
+        ret = "Token-Ring";
+
+        break;
+      case 21:
+        ret = "FDDI";
+
+        break;
+      case 22:
+        ret = "Wireless-CDMA2000";
+
+        break;
+      case 23:
+        ret = "Wireless-UMTS";
+
+        break;
+      case 24:
+        ret = "Wireless-1X-EV";
+
+        break;
+      case 25:
+        ret = "IAPP";
+
+        break;
+      default:
+        ret = "";
+      }
+
+      ret = ret + "(" + value + ")";
+    } catch (Exception localException) {
+    }
+    return ret;
+  }
+
+  private static String getAcctTerminateCause(int value) {
+    String ret = null;
+    try {
+      switch (value)
+      {
+      case 1:
+        ret = "User-Request";
+
+        break;
+      case 2:
+        ret = "Lost-Carrier";
+
+        break;
+      case 3:
+        ret = "Lost-Service";
+
+        break;
+      case 4:
+        ret = "Idle-Timeout";
+
+        break;
+      case 5:
+        ret = "Session-Timeout";
+
+        break;
+      case 6:
+        ret = "Admin-Reset";
+
+        break;
+      case 7:
+        ret = "Admin-Reboot";
+
+        break;
+      case 8:
+        ret = "Port-Error";
+
+        break;
+      case 9:
+        ret = "NAS-Error";
+
+        break;
+      case 10:
+        ret = "NAS-Request";
+
+        break;
+      case 11:
+        ret = "NAS-Reboot";
+
+        break;
+      case 12:
+        ret = "Port-Unneeded";
+
+        break;
+      case 13:
+        ret = "Port-Preempted";
+
+        break;
+      case 14:
+        ret = "Port-Suspended";
+
+        break;
+      case 15:
+        ret = "Service-Unavailable";
+
+        break;
+      case 16:
+        ret = "Callback";
+
+        break;
+      case 17:
+        ret = "User-Error";
+
+        break;
+      case 18:
+        ret = "Host-Request";
+
+        break;
+      case 19:
+        ret = "Supplicant-Restart";
+
+        break;
+      case 20:
+        ret = "Reauthentication-Failure";
+
+        break;
+      case 21:
+        ret = "Port-Reinit";
+
+        break;
+      case 22:
+        ret = "Port-Disabled";
+
+        break;
+      default:
+        ret = "";
+      }
+
+      ret = ret + "(" + value + ")";
+    } catch (Exception localException) {
+    }
+    return ret;
+  }
+
+  private static String getPrompt(int value) {
+    String ret = null;
+    try {
+      switch (value)
+      {
+      case 0:
+        ret = "No-Echo";
+
+        break;
+      case 1:
+        ret = "Echo";
+
+        break;
+      default:
+        ret = "";
+      }
+
+      ret = ret + "(" + value + ")";
+    } catch (Exception localException) {
+    }
+    return ret;
+  }
+
+  public static String getAttributeString(int type, String value) {
+    String ret = null;
+    try {
+      String info = ByteToHex(value.getBytes());
+      String len = Integer.toHexString(2 + info.length() / 2);
+      while (len.length() < 2)
+        len = "0" + len;
+      String types = Integer.toHexString(type);
+      while (types.length() < 2)
+        types = "0" + types;
+      ret = types + len + info;
+    } catch (Exception localException) {
+    }
+    return ret;
+  }
+
+  public static int getAttributeStringLen(String value) {
+    int len = 0;
+    try {
+      String info = ByteToHex(value.getBytes());
+      len = 2 + info.length() / 2;
+    } catch (Exception localException) {
+    }
+    return len;
+  }
+
+  public static String getAttributeVendor(int type, int value, int valueLen)
+  {
+    String ret = null;
+    try
+    {
+      byte[] b = new byte[4];
+      for (int i = 0; i < 4; i++) {
+        int offset = (b.length - 1 - i) * 8;
+        b[i] = ((byte)(value >>> offset & 0xFF));
+      }
+      String info = ByteToHex(b);
+      String len = Integer.toHexString(6 + valueLen);
+      while (len.length() < 2)
+        len = "0" + len;
+      String types = Integer.toHexString(type);
+      while (types.length() < 2)
+        types = "0" + types;
+      ret = types + len + info;
+    }
+    catch (Exception localException)
+    {
+    }
+    return ret;
+  }
+
+  public static String getAttributeVendor(int type, int value) {
+    String ret = null;
+    try
+    {
+      byte[] b = new byte[4];
+      for (int i = 0; i < 4; i++) {
+        int offset = (b.length - 1 - i) * 8;
+        b[i] = ((byte)(value >>> offset & 0xFF));
+      }
+      String info = ByteToHex(b);
+      String len = Integer.toHexString(12);
+      while (len.length() < 2)
+        len = "0" + len;
+      String types = Integer.toHexString(type);
+      while (types.length() < 2)
+        types = "0" + types;
+      ret = types + len + info;
+    }
+    catch (Exception localException)
+    {
+    }
+    return ret;
+  }
+
+  public static String getAttributeSpeed(int type, int value) {
+    String ret = null;
+    try
+    {
+      byte[] b = new byte[4];
+      for (int i = 0; i < 4; i++) {
+        int offset = (b.length - 1 - i) * 8;
+        b[i] = ((byte)(value >>> offset & 0xFF));
+      }
+      String info = ByteToHex(b);
+      String len = Integer.toHexString(6);
+      while (len.length() < 2)
+        len = "0" + len;
+      String types = Integer.toHexString(type);
+      while (types.length() < 2)
+        types = "0" + types;
+      ret = types + len + info;
+    }
+    catch (Exception localException)
+    {
+    }
+    return ret;
+  }
+
+  public static String getAttributeInt(int type, int value)
+  {
+    String ret = null;
+    try
+    {
+      byte[] b = new byte[4];
+      for (int i = 0; i < 4; i++) {
+        int offset = (b.length - 1 - i) * 8;
+        b[i] = ((byte)(value >>> offset & 0xFF));
+      }
+      String info = ByteToHex(b);
+      String len = Integer.toHexString(6);
+      while (len.length() < 2)
+        len = "0" + len;
+      String types = Integer.toHexString(type);
+      while (types.length() < 2)
+        types = "0" + types;
+      ret = types + len + info;
+    }
+    catch (Exception localException)
+    {
+    }
+    return ret;
+  }
+
+  public static byte[] getOutData(String name, String sharedSecret, String ip, int port, int code, int identifier, String authenticator, String attributes)
+  {
+    byte[] ret = null;
+    try {
+      int length = 20 + attributes.length() / 2;
+      String str = Integer.toHexString(code);
+      while (str.length() < 2)
+        str = "0" + str;
+      String temp = Integer.toHexString(identifier);
+      while (temp.length() < 2)
+        temp = "0" + temp;
+      str = str + temp;
+      temp = Integer.toHexString(length);
+      while (temp.length() < 4)
+        temp = "0" + temp;
+      str = str + temp;
+      authenticator = encodeMD5(str + authenticator + attributes + 
+        sharedSecret);
+      str = str + authenticator;
+      str = str + attributes;
+      ret = HexToByte(str);
+      writeLog(name, "ip=" + ip + ",port=" + port + ",code=" + code + 
+        ",identifier=" + identifier + ",length=" + length + 
+        ",authenticator=" + authenticator + ",attributes=" + 
+        attributes);
+    } catch (Exception localException) {
+    }
+    return ret;
+  }
+
+  public static String sendServer(String ip, String url, String str) {
+    String ret = null;
+    try {
+      str = url + "?" + str;
+      String result = sendURL(str);
+      writeLog(ip, str);
+      int i = result.indexOf("<result>");
+      if (i >= 0) {
+        i += 8;
+        int j = result.indexOf("</result>", i);
+        if (j > i) {
+          ret = result.substring(i, j).trim();
+        }
+
+      }
+
+      writeLog(ip, "result=" + ret);
+    } catch (Exception localException) {
+    }
+    return ret;
+  }
+}
 
 /* Location:           C:\Users\Thinkpad\Desktop\Tool\jd-gui\jd-gui\spring-ops-3.2.4.RELEASE.jar
  * Qualified Name:     com.leeson.radius.core.Tool

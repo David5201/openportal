@@ -38,7 +38,7 @@ public class ${Entity}Controller {
 	private ${Entity}Service ${entity}Service;
 
 	//分页列表页面
-	@RequestMapping(value = "/${entity}/list.action")
+	@RequestMapping(value = "ist.action")
 	public String page(${Entity}Query query,HttpServletRequest request,HttpServletResponse response, ModelMap model) {
 		Pagination pagination = ${entity}Service.get${Entity}ListWithPage(query);
 		model.addAttribute("pagination",pagination);
@@ -47,23 +47,23 @@ public class ${Entity}Controller {
 	}
 	
 	//请求添加页面
-	@RequestMapping(value = "/${entity}/add.action")
+	@RequestMapping(value = "dd.action")
 	public String add(ModelMap model){
 		
 		return "${entity}/save";
 	}
 	
 	//添加到数据库
-	@RequestMapping(value = "/${entity}/add.action" ,method =RequestMethod.POST)
+	@RequestMapping(value = "dd.action" ,method =RequestMethod.POST)
 	public String add(${Entity} e){
 		
 		${entity}Service.add${Entity}(e);
 		
-		return "redirect:/${entity}/list.action";
+		return "redirect:ist.action";
 	}
 	
 	 //请求编辑页面
-	@RequestMapping(value="/${entity}/edit.action")
+	@RequestMapping(value="dit.action")
 	public String edit(@RequestParam <@fieldType type=fields[0].fieldType/> id, ModelMap model){
 		${Entity} e = ${entity}Service.get${Entity}ByKey(id);
 		model.addAttribute("entity", e);
@@ -71,36 +71,36 @@ public class ${Entity}Controller {
 	}
 	
 	 //修改到数据库
-	@RequestMapping(value="/${entity}/edit.action" ,method =RequestMethod.POST)
+	@RequestMapping(value="dit.action" ,method =RequestMethod.POST)
 	public String edit(${Entity} e){
 		${entity}Service.update${Entity}ByKey(e);
-		return "redirect:/${entity}/list.action";
+		return "redirect:ist.action";
 	}
 	
 	
 	
 	//单个删除
-	@RequestMapping(value="/${entity}/delete.action")
+	@RequestMapping(value="elete.action")
 	public String delete(@RequestParam <@fieldType type=fields[0].fieldType/> id){
 		${entity}Service.deleteByKey(id);
-		return "redirect:/${entity}/list.action";
+		return "redirect:ist.action";
 	}
 	
 	//删除多个
-	@RequestMapping(value = "/${entity}/deletes.action" ,method =RequestMethod.POST)
+	@RequestMapping(value = "eletes.action" ,method =RequestMethod.POST)
 	public String deletes(@RequestParam <@fieldType type=fields[0].fieldType/>[] ids){
 		//TODO 删除
 		List<Long> list = Arrays.asList(ids);
 		${entity}Service.deleteByKeys(list);
 		
-		return "redirect:/${entity}/list.action";
+		return "redirect:ist.action";
 	}
 	
 	//删除全部
-	@RequestMapping(value = "/${entity}/deletes.action" ,method = RequestMethod.GET)
+	@RequestMapping(value = "eletes.action" ,method = RequestMethod.GET)
 	public String deletes() {
 		${entity}Service.deleteAll();
-		return "redirect:/${entity}/list.action";
+		return "redirect:ist.action";
 	}
 	
 }

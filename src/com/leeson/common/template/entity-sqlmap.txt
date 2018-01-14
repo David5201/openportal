@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>  
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-DTD Mapper 3.0mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="${dao_p}.${Entity}Dao">
 <cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
 	<resultMap id="${entity}" type="${Entity}">
 	<#list fields as field>
-		<result property="<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>" column="${field.name}" />
+		<result property="<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list>" column="${field.name}" />
 	</#list>
 	</resultMap>
 	<!-- Select SQL -->
@@ -15,7 +15,7 @@
 				<@SEl 'fields'/>
 			</if>
 			<if test="fields == null">
-			<#list fields as field><#if field_has_next>${field.name},<#else>${field.name}</#if></#list>
+			<#list fields as field><#if field_has_next>${field.name},<#else>${field.name}<list>
 			</if>
 		
 		FROM ${table}
@@ -23,16 +23,16 @@
 	<sql id="${entity}ListWhere">
 		<where>
 		<#list fields as field>
-		    <if test="<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list> != null">
+		    <if test="<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list> != null">
 			 and 
 			<#if field.fieldType?contains("bigint") || field.fieldType?contains("int") || field.fieldType?contains("datetime") || field.fieldType?contains("binary") || field.fieldType?contains("blob") || field.fieldType?contains("float") || field.fieldType?contains("double")>
-				${field.name}=${r'#{'}<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>}
+				${field.name}=${r'#{'}<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list>}
 			<#else>
-			<if test="<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>Like == 0">
-				${field.name}=${r'#{'}<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>}
+			<if test="<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list>Like == 0">
+				${field.name}=${r'#{'}<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list>}
 			</if>
-			<if test="<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>Like == 1">
-				${field.name} like CONCAT('%','${r'${'}<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>}','%')
+			<if test="<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list>Like == 1">
+				${field.name} like CONCAT('%','${r'${'}<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list>}','%')
 			</if>
 			</#if>
 			</if>
@@ -46,7 +46,7 @@
 			<if test="orderFields != null and orderFields.size >0">
 			ORDER BY
 			<foreach collection="orderFields" separator="," item="orderField">
-				<@SEl 'orderField.fieldName'/> <@SEl 'orderField.order'/>
+				<@SEl 'orderField.fieldName'
 			</foreach>
 			</if>
 		
@@ -56,19 +56,19 @@
 
 	<sql id="${entity}ListLimit">
 		<if test="startRow != null">
-			limit <@JEl 'startRow'/>,<@JEl 'pageSize'/>
+			limit <@JEl 'startRow'
 		</if>
 	</sql>
 
 	<!-- 根据主键查询 -->
 	<select id="get${Entity}ByKey" resultMap="${entity}" parameterType="hashMap">
-		SELECT <#list fields as field><#if field_has_next>${field.name},<#else>${field.name}</#if></#list> FROM ${table}
+		SELECT <#list fields as field><#if field_has_next>${field.name},<#else>${field.name}<list> FROM ${table}
 		WHERE
 		${fields[0].name}=<@JEl 'id'/>
 	</select>
 	<select id="get${Entity}ByKeys" resultMap="${entity}"
 		parameterType="ArrayList">
-		SELECT <#list fields as field><#if field_has_next>${field.name},<#else>${field.name}</#if></#list> FROM ${table}
+		SELECT <#list fields as field><#if field_has_next>${field.name},<#else>${field.name}<list> FROM ${table}
 		WHERE
 		${fields[0].name} in
 		<foreach collection="list" separator="," item="id" open="(" close=")">
@@ -110,14 +110,14 @@
 		<set>
 		<trim suffixOverrides=",">
 		<#list fields as field>
-		<if test="<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list> != null">
-			${field.name} = ${r'#{'}<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>},
+		<if test="<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list> != null">
+			${field.name} = ${r'#{'}<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list>},
 		</if>
 		</#list>
 		</trim>
 		</set>
 		WHERE
-		${fields[0].name}=${r'#{'}<#list fields[0].name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>}
+		${fields[0].name}=${r'#{'}<#list fields[0].name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list>}
 	</update>
 	<!-- 根据主键更新所有字段 -->
 	<update id="update${Entity}ByKeyAll" parameterType="${Entity}">
@@ -125,12 +125,12 @@
 		<set>
 		<trim suffixOverrides=",">
 		<#list fields as field>
-			${field.name} = ${r'#{'}<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>},
+			${field.name} = ${r'#{'}<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list>},
 		</#list>
 		</trim>
 		</set>
 		WHERE
-		${fields[0].name}=${r'#{'}<#list fields[0].name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>}
+		${fields[0].name}=${r'#{'}<#list fields[0].name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list>}
 	</update>
 	<!-- 分页 -->
 	<select id="get${Entity}ListWithPage" parameterType="${Entity}Query"
@@ -173,7 +173,7 @@
 		INSERT INTO ${table}
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 		<#list fields as field>
-			<if test="<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list> != null">
+			<if test="<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list> != null">
 					${field.name},
 			</if>
 		</#list>
@@ -181,12 +181,12 @@
 		VALUES
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 		<#list fields as field>
-			<if test="<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list> != null">
-	 ${r'#{'}<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>},
+			<if test="<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list> != null">
+	 ${r'#{'}<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list>},
 			</if>
 		</#list>
 		</trim>
-		<selectKey resultType="<@fieldType type=fields[0].fieldType/>" keyProperty="<#list fields[0].name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>">
+		<selectKey resultType="<@fieldType type=fields[0].fieldTypeif></#list>">
 			SELECT LAST_INSERT_ID() AS ${fields[0].name?upper_case}
 		</selectKey>
 	</insert>

@@ -11,7 +11,7 @@ public abstract class Constants
   public static final String JSESSION_URL = "jsessionid";
   public static final String POST = "POST";
   public static final String GET = "GET";
-  public static final String IMAGE_URL = "http://localhost/image-web/";
+  public static final String IMAGE_URL = "http:mage-web/";
 }
 
 /* Location:           C:\Users\Thinkpad\Desktop\Tool\jd-gui\jd-gui\spring-ops-3.2.4.RELEASE.jar

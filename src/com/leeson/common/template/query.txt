@@ -12,18 +12,18 @@ public class ${Entity}Query extends BaseQuery {
 	 * ============
 	 **/
 <#list fields as field>
-	private <@fieldType type=field.fieldType/> <#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>;
-	public <@fieldType type=field.fieldType/> get<#list field.name?split('_') as n>${n?cap_first}</#list>() {
-		return <#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>;
+	private <@fieldType type=field.fieldTypeif></#list>;
+	public <@fieldType type=field.fieldTypelist>() {
+		return <#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list>;
 	}
-	public ${Entity}Query set<#list field.name?split('_') as n>${n?cap_first}</#list>(<@fieldType type=field.fieldType/> <#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>) {
-		this.<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list> = <#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>;
+	public ${Entity}Query set<#list field.name?split('_') as n>${n?cap_first}< <#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list>) {
+		this.<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list> = <#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list>;
 		return this;
 	}
 	<@fieldLike type=field.fieldType>
-	private boolean <#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>Like;
+	private boolean <#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list>Like;
 	public ${Entity}Query set<#list field.name?split('_') as n>${n?cap_first}</#list>Like(boolean isLike) {
-		this.<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>Like = isLike;
+		this.<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list>Like = isLike;
 		return this;
 	}
 	</@fieldLike>
@@ -84,7 +84,7 @@ public class ${Entity}Query extends BaseQuery {
 		if (fieldMap == null) {
 			fieldMap = new HashMap<String, String>();
 			<#list fields as field>
-			fieldMap.put("<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}</#if></#list>", "${field.name}");
+			fieldMap.put("<#list field.name?split('_') as n><#if n_index ==0>${n}<#else>${n?cap_first}<list>", "${field.name}");
 			</#list>
 		}
 		return fieldMap;

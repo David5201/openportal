@@ -41,7 +41,7 @@ public class ${Entity}ServiceImpl implements ${Entity}Service {
 			log.error("dao add${Entity} error.:" + e.getMessage(), e);
 			throw new RuntimeException(); 
 		}
-		//return <#if fields[0].fieldType?contains("bigint")>0L<#elseif fields[0].fieldType?contains("int")>0<#else>null</#if>;
+		if>;
 	}
 
 	/**

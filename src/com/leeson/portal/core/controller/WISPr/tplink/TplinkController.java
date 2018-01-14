@@ -1,335 +1,335 @@
-/*     */ package com.leeson.portal.core.controller.WISPr.tplink;
-/*     */ 
-/*     */ import com.leeson.common.utils.stringUtils;
-/*     */ import com.leeson.core.bean.Advadv;
-/*     */ import com.leeson.core.bean.Portalbas;
-/*     */ import com.leeson.core.bean.Portalweb;
-/*     */ import com.leeson.core.service.AdvadvService;
-/*     */ import com.leeson.core.service.PortalwebService;
-/*     */ import com.leeson.core.utils.Kick;
-/*     */ import com.leeson.portal.core.controller.WISPr.utils.Tools;
-/*     */ import com.leeson.portal.core.model.Config;
-/*     */ import com.leeson.portal.core.model.OnlineMap;
-/*     */ import com.leeson.portal.core.model.ipMap;
-/*     */ import com.leeson.portal.core.service.utils.PortalUtil;
-/*     */ import com.leeson.portal.core.utils.GetNgnixRemotIP;
-/*     */ import com.leeson.portal.core.utils.SpringContextHelper;
-/*     */ import java.io.IOException;
-/*     */ import java.net.URLDecoder;
-/*     */ import java.util.Date;
-/*     */ import java.util.Map;
-/*     */ import javax.servlet.RequestDispatcher;
-/*     */ import javax.servlet.ServletException;
-/*     */ import javax.servlet.http.Cookie;
-/*     */ import javax.servlet.http.HttpServlet;
-/*     */ import javax.servlet.http.HttpServletRequest;
-/*     */ import javax.servlet.http.HttpServletResponse;
-/*     */ import javax.servlet.http.HttpSession;
-/*     */ import org.apache.commons.lang.StringEscapeUtils;
-/*     */ 
-/*     */ public class TplinkController extends HttpServlet
-/*     */ {
-/*     */   private static final long serialVersionUID = -1966047929923869408L;
-/*  41 */   private static OnlineMap onlineMap = OnlineMap.getInstance();
-/*     */ 
-/*  43 */   private static Config config = Config.getInstance();
-/*     */ 
-/*  45 */   private static AdvadvService advadvService = (AdvadvService)
-/*  46 */     SpringContextHelper.getBean("advadvServiceImpl");
-/*     */ 
-/*  47 */   private static PortalwebService webService = (PortalwebService)
-/*  48 */     SpringContextHelper.getBean("portalwebServiceImpl");
-/*     */ 
-/*     */   protected void doGet(HttpServletRequest request, HttpServletResponse response)
-/*     */     throws ServletException, IOException
-/*     */   {
-/*  53 */     response.setContentType("text/html;charset=utf-8");
-/*  54 */     request.setCharacterEncoding("utf-8");
-/*     */ 
-/*  56 */     HttpSession session = request.getSession();
-/*     */ 
-/*  58 */     String apmac = (String)session.getAttribute("apmac");
-/*  59 */     String ikmac = (String)session.getAttribute("ikmac");
-/*  60 */     String ssid = "";
-/*  61 */     String ikweb = "";
-/*     */ 
-/*  64 */     Cookie[] cookies = request.getCookies();
-/*  65 */     String cip = "";
-/*  66 */     String cbasip = "";
-/*  67 */     String cmac = "";
-/*  68 */     if (cookies != null) {
-/*  69 */       for (int i = 0; i < cookies.length; i++) {
-/*  70 */         if (cookies[i].getName().equals("ip"))
-/*  71 */           cip = cookies[i].getValue();
-/*  72 */         if (cookies[i].getName().equals("basip"))
-/*  73 */           cbasip = cookies[i].getValue();
-/*  74 */         if (cookies[i].getName().equals("mac")) {
-/*  75 */           cmac = cookies[i].getValue();
-/*     */         }
-/*     */       }
-/*     */     }
-/*     */ 
-/*  80 */     String ip = (String)session.getAttribute("ip");
-/*  81 */     String basip = (String)session.getAttribute("basip");
-/*     */ 
-/*  85 */     String pip = request.getParameter("staIp");
-/*  86 */     String pmac = request.getParameter("staMac");
-/*  87 */     String papmac = request.getParameter("apMac");
-/*  88 */     String papip = request.getParameter("apIp");
-/*  89 */     String pvlan = request.getParameter("vlan");
-/*     */ 
-/*  91 */     String url = request.getParameter("url");
-/*  92 */     String gw_address = request.getParameter("gw_address");
-/*  93 */     String gw_port = request.getParameter("gw_port");
-/*  94 */     String gw_id = request.getParameter("gw_id");
-/*     */ 
-/*  96 */     boolean isAC = true;
-/*  97 */     if (stringUtils.isNotEmpty(gw_address)) {
-/*  98 */       isAC = false;
-/*  99 */       pip = request.getParameter("ip");
-/* 100 */       pmac = request.getParameter("mac");
-/*     */     }
-/*     */ 
-/* 103 */     if (stringUtils.isNotBlank(papmac)) {
-/* 104 */       apmac = papmac;
-/*     */     }
-/*     */ 
-/* 108 */     if (isAC) {
-/* 109 */       if ((stringUtils.isBlank(pip)) || (stringUtils.isBlank(pmac)) || (stringUtils.isBlank(papmac)) || (stringUtils.isBlank(papip)) || (stringUtils.isBlank(pvlan))) {
-/* 110 */         request.getRequestDispatcher("/error.html").forward(request, 
-/* 111 */           response);
-/*     */       }
-/*     */ 
-/*     */     }
-/* 115 */     else if ((stringUtils.isBlank(pip)) || (stringUtils.isBlank(pmac)) || (stringUtils.isBlank(url)) || (stringUtils.isBlank(gw_address)) || (stringUtils.isBlank(gw_id)) || (stringUtils.isBlank(gw_port))) {
-/* 116 */       request.getRequestDispatcher("/error.html").forward(request, 
-/* 117 */         response);
-/* 118 */       return;
-/*     */     }
-/*     */ 
-/* 123 */     session.setAttribute("apip", papip);
-/* 124 */     session.setAttribute("vlan", pvlan);
-/* 125 */     session.setAttribute("ip", ip);
-/*     */ 
-/* 128 */     Portalbas basConfig = (Portalbas)config.getConfigMap().get("");
-/*     */ 
-/* 131 */     if (stringUtils.isBlank(basip)) {
-/* 132 */       basip = cbasip;
-/*     */     }
-/* 134 */     if (stringUtils.isBlank(basip)) {
-/* 135 */       basip = basConfig.getBasIp();
-/*     */     }
-/*     */ 
-/* 138 */     Portalbas basConfigFind = (Portalbas)config.getConfigMap().get(basip);
-/* 139 */     if ((basConfigFind != null) && 
-/* 140 */       (stringUtils.isNotBlank(basConfigFind.getBasIp()))) {
-/* 141 */       basConfig = basConfigFind;
-/*     */     }
-/*     */ 
-/* 144 */     basip = basConfig.getBasIp();
-/*     */ 
-/* 146 */     if (!basConfig.getBas().equals("8")) {
-/* 147 */       request.getRequestDispatcher("/error.html").forward(request, 
-/* 148 */         response);
-/* 149 */       return;
-/*     */     }
-/*     */ 
-/* 152 */     if (stringUtils.isNotBlank(pip)) {
-/* 153 */       ip = pip;
-/*     */     }
-/* 155 */     if (stringUtils.isBlank(ip)) {
-/* 156 */       ip = cip;
-/*     */     }
-/* 158 */     if (stringUtils.isBlank(ip)) {
-/* 159 */       if ("0".equals(basConfig.getIsOut())) {
-/* 160 */         ip = GetNgnixRemotIP.getRemoteAddrIp(request);
-/*     */       } else {
-/* 162 */         request.getRequestDispatcher("/error.html").forward(request, 
-/* 163 */           response);
-/* 164 */         return;
-/*     */       }
-/*     */     }
-/*     */ 
-/* 168 */     if (stringUtils.isNotBlank(pmac)) {
-/* 169 */       ikmac = pmac;
-/*     */     }
-/* 171 */     if (stringUtils.isBlank(ikmac)) {
-/* 172 */       ikmac = cmac;
-/*     */     }
-/*     */ 
-/* 175 */     if (stringUtils.isNotBlank(ikmac)) {
-/* 176 */       ikmac = PortalUtil.MacFormat(ikmac);
-/* 177 */       Cookie cookieMac = new Cookie("mac", ikmac);
-/* 178 */       cookieMac.setMaxAge(86400);
-/* 179 */       response.addCookie(cookieMac);
-/* 180 */       session.setAttribute("ikmac", ikmac);
-/*     */     }
-/*     */ 
-/* 183 */     if (stringUtils.isNotBlank(pmac)) {
-/* 184 */       session.setAttribute("pmac", pmac);
-/*     */     }
-/*     */ 
-/* 187 */     if (stringUtils.isNotBlank(apmac)) {
-/* 188 */       session.setAttribute("apmac", apmac);
-/*     */     }
-/*     */ 
-/* 191 */     if (stringUtils.isNotBlank(ssid)) {
-/* 192 */       ssid = URLDecoder.decode(ssid);
-/* 193 */       ssid = StringEscapeUtils.unescapeHtml(ssid);
-/* 194 */       session.setAttribute("ssid", ssid);
-/*     */     }
-/* 196 */     if (stringUtils.isNotBlank(ikweb)) {
-/* 197 */       ikweb = URLDecoder.decode(ikweb);
-/* 198 */       ikweb = StringEscapeUtils.unescapeHtml(ikweb);
-/* 199 */       if (!ikweb.startsWith("http")) {
-/* 200 */         ikweb = "http://" + ikweb;
-/*     */       }
-/*     */     }
-/*     */ 
-/* 204 */     String webMod = Tools.getWebMod(ssid, apmac, ip, basConfig.getWeb());
-/* 205 */     session.setAttribute("web", webMod);
-/*     */ 
-/* 207 */     String userAgent = request.getHeader("user-agent");
-/* 208 */     boolean isComputer = false;
-/* 209 */     String agent = "";
-/* 210 */     if (stringUtils.isNotBlank(userAgent)) {
-/* 211 */       if (userAgent.contains("Windows")) {
-/* 212 */         isComputer = true;
-/* 213 */         agent = "Windows";
-/* 214 */       } else if (userAgent.contains("Macintosh")) {
-/* 215 */         isComputer = true;
-/* 216 */         agent = "MacOS";
-/*     */       }
-/* 218 */       else if (userAgent.contains("Linux")) {
-/* 219 */         isComputer = false;
-/* 220 */         agent = "Android";
-/* 221 */       } else if (userAgent.contains("Android")) {
-/* 222 */         isComputer = false;
-/* 223 */         agent = "Android";
-/* 224 */       } else if (userAgent.contains("iPhone")) {
-/* 225 */         isComputer = false;
-/* 226 */         agent = "IOS";
-/* 227 */       } else if (userAgent.contains("iPad")) {
-/* 228 */         isComputer = false;
-/* 229 */         agent = "IOS";
-/* 230 */       } else if (userAgent.contains("iPod")) {
-/* 231 */         isComputer = false;
-/* 232 */         agent = "IOS";
-/*     */       }
-/*     */     }
-/*     */ 
-/* 236 */     session.setAttribute("agent", agent);
-/* 237 */     if (!"1".equals(basConfig.getIsComputer()))
-/*     */     {
-/* 240 */       if (isComputer) {
-/* 241 */         session.setAttribute("web", "");
-/* 242 */         request.setAttribute("msg", "当前系统设置不允许电脑认证！！");
-/* 243 */         request.getRequestDispatcher("/" + webMod + "/OL.jsp").forward(request, 
-/* 244 */           response);
-/* 245 */         return;
-/*     */       }
-/*     */     }
-/*     */ 
-/* 249 */     boolean isLogin = onlineMap.getOnlineUserMap().containsKey(
-/* 250 */       ip + ":" + basip);
-/* 251 */     if (isLogin) {
-/* 252 */       Kick.kickUserWISPrSyn(ip + ":" + basip, ikmac, "");
-/*     */     }
-/*     */ 
-/* 255 */     if (onlineMap.getOnlineUserMap().size() >= Integer.valueOf(((String[])com.leeson.portal.core.model.CoreConfigMap.getInstance().getCoreConfigMap().get("core"))[1]).intValue()) {
-/* 256 */       request.setAttribute("msg", "已超过允许最大用户数限制！！");
-/* 257 */       request.getRequestDispatcher("/" + webMod + "/OL.jsp").forward(request, response);
-/* 258 */       return;
-/*     */     }
-/*     */ 
-/* 261 */     session.setAttribute("ip", ip);
-/* 262 */     session.setAttribute("basip", basip);
-/* 263 */     session.setAttribute("ikweb", ikweb);
-/* 264 */     session.setAttribute("ssid", ssid);
-/*     */ 
-/* 266 */     String auth = basConfig.getAuthInterface();
-/* 267 */     auth = auth.replace("3", "");
-/* 268 */     session.setAttribute("auth", auth);
-/*     */ 
-/* 271 */     String callbackPath = request.getScheme() + "://" + 
-/* 272 */       request.getServerName() + ":" + request.getServerPort() + 
-/* 273 */       request.getContextPath() + "/AuthAPI";
-/* 274 */     session.setAttribute("callbackPath", callbackPath);
-/*     */ 
-/* 277 */     if (isAC) {
-/* 278 */       String loginUrl = "http://" + basip + ":8080/portal/auth";
-/* 279 */       session.setAttribute("loginUrl", loginUrl);
-/* 280 */       session.setAttribute("AC", "yes");
-/*     */     } else {
-/* 282 */       String loginUrl = "http://" + basip + ":8080/wifidog/logincheck/";
-/* 283 */       session.setAttribute("loginUrl", loginUrl);
-/* 284 */       session.setAttribute("AC", "no");
-/*     */ 
-/* 286 */       session.setAttribute("url", callbackPath);
-/* 287 */       session.setAttribute("gw_address", gw_address);
-/* 288 */       session.setAttribute("gw_id", gw_id);
-/* 289 */       session.setAttribute("gw_port", gw_port);
-/*     */     }
-/*     */ 
-/* 292 */     String logoutUrl = "http://" + basip + ":8080/portal/logout";
-/* 293 */     session.setAttribute("logoutUrl", logoutUrl);
-/*     */ 
-/* 296 */     if (Tools.autoLogin(basip, ip, ikmac, basConfig, session)) {
-/* 297 */       request.getRequestDispatcher("/APIGoAuthTplink.jsp").forward(request, 
-/* 298 */         response);
-/* 299 */       return;
-/*     */     }
-/*     */ 
-/* 304 */     Cookie cookieIP = new Cookie("ip", null);
-/* 305 */     cookieIP.setMaxAge(-1);
-/* 306 */     response.addCookie(cookieIP);
-/* 307 */     Cookie cookieBasIp = new Cookie("basip", null);
-/* 308 */     cookieBasIp.setMaxAge(-1);
-/* 309 */     response.addCookie(cookieBasIp);
-/* 310 */     Cookie cookiePwd = new Cookie("password", null);
-/* 311 */     cookiePwd.setMaxAge(-1);
-/* 312 */     response.addCookie(cookiePwd);
-/*     */ 
-/* 314 */     ipMap.getInstance().getIpmap().remove(ip);
-/*     */ 
-/* 316 */     session.setAttribute("api", "tplink");
-/*     */ 
-/* 318 */     if (Tools.Do()) {
-/*     */       try {
-/* 320 */         if (stringUtils.isNotBlank(webMod)) {
-/* 321 */           String ids = webMod.replace("/", "");
-/* 322 */           Long id = Long.valueOf(ids);
-/* 323 */           Portalweb web = webService.getPortalwebByKey(id);
-/* 324 */           Long advID = Long.valueOf(0L);
-/* 325 */           if (web != null) {
-/* 326 */             advID = web.getAdv();
-/* 327 */             Advadv adv = advadvService.getAdvadvByKey(advID);
-/* 328 */             if (adv != null) {
-/* 329 */               int state = adv.getState().intValue();
-/* 330 */               if (state == 1) {
-/* 331 */                 Date startDate = adv.getShowDate();
-/* 332 */                 Date endDate = adv.getEndDate();
-/* 333 */                 Date nowDate = new Date();
-/* 334 */                 if (((startDate == null) || 
-/* 335 */                   (nowDate.getTime() >= startDate.getTime())) && (
-/* 336 */                   (endDate == null) || 
-/* 337 */                   (endDate.getTime() >= nowDate.getTime()))) {
-/* 338 */                   request.getRequestDispatcher("/portal.action?id=" + advID + "&auth=1").forward(
-/* 339 */                     request, response);
-/*     */                 }
-/*     */               }
-/*     */             }
-/*     */           }
-/*     */         }
-/*     */       }
-/*     */       catch (Exception localException)
-/*     */       {
-/*     */       }
-/*     */     }
-/* 350 */     request.getRequestDispatcher("/" + webMod + "APIauth.jsp").forward(
-/* 351 */       request, response);
-/*     */   }
-/*     */ }
+package com.leeson.portal.core.controller.WISPr.tplink;
+
+import com.leeson.common.utils.stringUtils;
+import com.leeson.core.bean.Advadv;
+import com.leeson.core.bean.Portalbas;
+import com.leeson.core.bean.Portalweb;
+import com.leeson.core.service.AdvadvService;
+import com.leeson.core.service.PortalwebService;
+import com.leeson.core.utils.Kick;
+import com.leeson.portal.core.controller.WISPr.utils.Tools;
+import com.leeson.portal.core.model.Config;
+import com.leeson.portal.core.model.OnlineMap;
+import com.leeson.portal.core.model.ipMap;
+import com.leeson.portal.core.service.utils.PortalUtil;
+import com.leeson.portal.core.utils.GetNgnixRemotIP;
+import com.leeson.portal.core.utils.SpringContextHelper;
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.util.Date;
+import java.util.Map;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import org.apache.commons.lang.StringEscapeUtils;
+
+public class TplinkController extends HttpServlet
+{
+  private static final long serialVersionUID = -1966047929923869408L;
+  private static OnlineMap onlineMap = OnlineMap.getInstance();
+
+  private static Config config = Config.getInstance();
+
+  private static AdvadvService advadvService = (AdvadvService)
+    SpringContextHelper.getBean("advadvServiceImpl");
+
+  private static PortalwebService webService = (PortalwebService)
+    SpringContextHelper.getBean("portalwebServiceImpl");
+
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException
+  {
+    response.setContentType("text/html;charset=utf-8");
+    request.setCharacterEncoding("utf-8");
+
+    HttpSession session = request.getSession();
+
+    String apmac = (String)session.getAttribute("apmac");
+    String ikmac = (String)session.getAttribute("ikmac");
+    String ssid = "";
+    String ikweb = "";
+
+    Cookie[] cookies = request.getCookies();
+    String cip = "";
+    String cbasip = "";
+    String cmac = "";
+    if (cookies != null) {
+      for (int i = 0; i < cookies.length; i++) {
+        if (cookies[i].getName().equals("ip"))
+          cip = cookies[i].getValue();
+        if (cookies[i].getName().equals("basip"))
+          cbasip = cookies[i].getValue();
+        if (cookies[i].getName().equals("mac")) {
+          cmac = cookies[i].getValue();
+        }
+      }
+    }
+
+    String ip = (String)session.getAttribute("ip");
+    String basip = (String)session.getAttribute("basip");
+
+    String pip = request.getParameter("staIp");
+    String pmac = request.getParameter("staMac");
+    String papmac = request.getParameter("apMac");
+    String papip = request.getParameter("apIp");
+    String pvlan = request.getParameter("vlan");
+
+    String url = request.getParameter("url");
+    String gw_address = request.getParameter("gw_address");
+    String gw_port = request.getParameter("gw_port");
+    String gw_id = request.getParameter("gw_id");
+
+    boolean isAC = true;
+    if (stringUtils.isNotEmpty(gw_address)) {
+      isAC = false;
+      pip = request.getParameter("ip");
+      pmac = request.getParameter("mac");
+    }
+
+    if (stringUtils.isNotBlank(papmac)) {
+      apmac = papmac;
+    }
+
+    if (isAC) {
+      if ((stringUtils.isBlank(pip)) || (stringUtils.isBlank(pmac)) || (stringUtils.isBlank(papmac)) || (stringUtils.isBlank(papip)) || (stringUtils.isBlank(pvlan))) {
+        request.getRequestDispatcher("/error.html").forward(request, 
+          response);
+      }
+
+    }
+    else if ((stringUtils.isBlank(pip)) || (stringUtils.isBlank(pmac)) || (stringUtils.isBlank(url)) || (stringUtils.isBlank(gw_address)) || (stringUtils.isBlank(gw_id)) || (stringUtils.isBlank(gw_port))) {
+      request.getRequestDispatcher("/error.html").forward(request, 
+        response);
+      return;
+    }
+
+    session.setAttribute("apip", papip);
+    session.setAttribute("vlan", pvlan);
+    session.setAttribute("ip", ip);
+
+    Portalbas basConfig = (Portalbas)config.getConfigMap().get("");
+
+    if (stringUtils.isBlank(basip)) {
+      basip = cbasip;
+    }
+    if (stringUtils.isBlank(basip)) {
+      basip = basConfig.getBasIp();
+    }
+
+    Portalbas basConfigFind = (Portalbas)config.getConfigMap().get(basip);
+    if ((basConfigFind != null) && 
+      (stringUtils.isNotBlank(basConfigFind.getBasIp()))) {
+      basConfig = basConfigFind;
+    }
+
+    basip = basConfig.getBasIp();
+
+    if (!basConfig.getBas().equals("8")) {
+      request.getRequestDispatcher("/error.html").forward(request, 
+        response);
+      return;
+    }
+
+    if (stringUtils.isNotBlank(pip)) {
+      ip = pip;
+    }
+    if (stringUtils.isBlank(ip)) {
+      ip = cip;
+    }
+    if (stringUtils.isBlank(ip)) {
+      if ("0".equals(basConfig.getIsOut())) {
+        ip = GetNgnixRemotIP.getRemoteAddrIp(request);
+      } else {
+        request.getRequestDispatcher("/error.html").forward(request, 
+          response);
+        return;
+      }
+    }
+
+    if (stringUtils.isNotBlank(pmac)) {
+      ikmac = pmac;
+    }
+    if (stringUtils.isBlank(ikmac)) {
+      ikmac = cmac;
+    }
+
+    if (stringUtils.isNotBlank(ikmac)) {
+      ikmac = PortalUtil.MacFormat(ikmac);
+      Cookie cookieMac = new Cookie("mac", ikmac);
+      cookieMac.setMaxAge(86400);
+      response.addCookie(cookieMac);
+      session.setAttribute("ikmac", ikmac);
+    }
+
+    if (stringUtils.isNotBlank(pmac)) {
+      session.setAttribute("pmac", pmac);
+    }
+
+    if (stringUtils.isNotBlank(apmac)) {
+      session.setAttribute("apmac", apmac);
+    }
+
+    if (stringUtils.isNotBlank(ssid)) {
+      ssid = URLDecoder.decode(ssid);
+      ssid = StringEscapeUtils.unescapeHtml(ssid);
+      session.setAttribute("ssid", ssid);
+    }
+    if (stringUtils.isNotBlank(ikweb)) {
+      ikweb = URLDecoder.decode(ikweb);
+      ikweb = StringEscapeUtils.unescapeHtml(ikweb);
+      if (!ikweb.startsWith("http")) {
+        ikweb = "http://" + ikweb;
+      }
+    }
+
+    String webMod = Tools.getWebMod(ssid, apmac, ip, basConfig.getWeb());
+    session.setAttribute("web", webMod);
+
+    String userAgent = request.getHeader("user-agent");
+    boolean isComputer = false;
+    String agent = "";
+    if (stringUtils.isNotBlank(userAgent)) {
+      if (userAgent.contains("Windows")) {
+        isComputer = true;
+        agent = "Windows";
+      } else if (userAgent.contains("Macintosh")) {
+        isComputer = true;
+        agent = "MacOS";
+      }
+      else if (userAgent.contains("Linux")) {
+        isComputer = false;
+        agent = "Android";
+      } else if (userAgent.contains("Android")) {
+        isComputer = false;
+        agent = "Android";
+      } else if (userAgent.contains("iPhone")) {
+        isComputer = false;
+        agent = "IOS";
+      } else if (userAgent.contains("iPad")) {
+        isComputer = false;
+        agent = "IOS";
+      } else if (userAgent.contains("iPod")) {
+        isComputer = false;
+        agent = "IOS";
+      }
+    }
+
+    session.setAttribute("agent", agent);
+    if (!"1".equals(basConfig.getIsComputer()))
+    {
+      if (isComputer) {
+        session.setAttribute("web", "");
+        request.setAttribute("msg", "当前系统设置不允许电脑认证！！");
+        request.getRequestDispatcher("L.jsp").forward(request, 
+          response);
+        return;
+      }
+    }
+
+    boolean isLogin = onlineMap.getOnlineUserMap().containsKey(
+      ip + ":" + basip);
+    if (isLogin) {
+      Kick.kickUserWISPrSyn(ip + ":" + basip, ikmac, "");
+    }
+
+    if (onlineMap.getOnlineUserMap().size() >= Integer.valueOf(((String[])com.leeson.portal.core.model.CoreConfigMap.getInstance().getCoreConfigMap().get("core"))[1]).intValue()) {
+      request.setAttribute("msg", "已超过允许最大用户数限制！！");
+      request.getRequestDispatcher("L.jsp").forward(request, response);
+      return;
+    }
+
+    session.setAttribute("ip", ip);
+    session.setAttribute("basip", basip);
+    session.setAttribute("ikweb", ikweb);
+    session.setAttribute("ssid", ssid);
+
+    String auth = basConfig.getAuthInterface();
+    auth = auth.replace("3", "");
+    session.setAttribute("auth", auth);
+
+    String callbackPath = request.getScheme() + "://" + 
+      request.getServerName() + ":" + request.getServerPort() + 
+      request.getContextPath() + "/AuthAPI";
+    session.setAttribute("callbackPath", callbackPath);
+
+    if (isAC) {
+      String loginUrl = "http:ortal/auth";
+      session.setAttribute("loginUrl", loginUrl);
+      session.setAttribute("AC", "yes");
+    } else {
+    	String loginUrl = "http://" + basip + ":8080/wifidog/logincheck/";
+      session.setAttribute("loginUrl", loginUrl);
+      session.setAttribute("AC", "no");
+
+      session.setAttribute("url", callbackPath);
+      session.setAttribute("gw_address", gw_address);
+      session.setAttribute("gw_id", gw_id);
+      session.setAttribute("gw_port", gw_port);
+    }
+
+    String logoutUrl = "http:ortal/logout";
+    session.setAttribute("logoutUrl", logoutUrl);
+
+    if (Tools.autoLogin(basip, ip, ikmac, basConfig, session)) {
+      request.getRequestDispatcher("/APIGoAuthTplink.jsp").forward(request, 
+        response);
+      return;
+    }
+
+    Cookie cookieIP = new Cookie("ip", null);
+    cookieIP.setMaxAge(-1);
+    response.addCookie(cookieIP);
+    Cookie cookieBasIp = new Cookie("basip", null);
+    cookieBasIp.setMaxAge(-1);
+    response.addCookie(cookieBasIp);
+    Cookie cookiePwd = new Cookie("password", null);
+    cookiePwd.setMaxAge(-1);
+    response.addCookie(cookiePwd);
+
+    ipMap.getInstance().getIpmap().remove(ip);
+
+    session.setAttribute("api", "tplink");
+
+    if (Tools.Do()) {
+      try {
+        if (stringUtils.isNotBlank(webMod)) {
+          String ids = webMod.replace("/", "");
+          Long id = Long.valueOf(ids);
+          Portalweb web = webService.getPortalwebByKey(id);
+          Long advID = Long.valueOf(0L);
+          if (web != null) {
+            advID = web.getAdv();
+            Advadv adv = advadvService.getAdvadvByKey(advID);
+            if (adv != null) {
+              int state = adv.getState().intValue();
+              if (state == 1) {
+                Date startDate = adv.getShowDate();
+                Date endDate = adv.getEndDate();
+                Date nowDate = new Date();
+                if (((startDate == null) || 
+                  (nowDate.getTime() >= startDate.getTime())) && (
+                  (endDate == null) || 
+                  (endDate.getTime() >= nowDate.getTime()))) {
+                  request.getRequestDispatcher("/portal.action?id=" + advID + "&auth=1").forward(
+                    request, response);
+                }
+              }
+            }
+          }
+        }
+      }
+      catch (Exception localException)
+      {
+      }
+    }
+    request.getRequestDispatcher("/" + webMod + "APIauth.jsp").forward(
+      request, response);
+  }
+}
 
 /* Location:           C:\Users\Thinkpad\Desktop\Tool\jd-gui\jd-gui\spring-ops-3.2.4.RELEASE.jar
  * Qualified Name:     com.leeson.portal.core.controller.WISPr.tplink.TplinkController
