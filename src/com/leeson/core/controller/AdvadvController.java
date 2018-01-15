@@ -45,6 +45,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 @Controller
+@RequestMapping("/advadvController")
 public class AdvadvController {
 	private static Logger logger = Logger.getLogger(AdvadvController.class);
 

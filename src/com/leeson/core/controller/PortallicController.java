@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
+@RequestMapping("/portallicController")
 public class PortallicController
 {
   private static SimpleDateFormat fs = new SimpleDateFormat("yyyy-MM-dd");

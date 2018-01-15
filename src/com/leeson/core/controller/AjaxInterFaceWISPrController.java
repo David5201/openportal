@@ -54,6 +54,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
+@RequestMapping("/ajaxInterFaceWISPrController")
 public class AjaxInterFaceWISPrController
 {
 

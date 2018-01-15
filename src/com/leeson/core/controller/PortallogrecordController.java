@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
+@RequestMapping("/portallogrecordController")
 public class PortallogrecordController
 {
 
@@ -49,7 +50,7 @@ public class PortallogrecordController
   private static SimpleDateFormat inputformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
   private static DecimalFormat df = new DecimalFormat(".##");
 
-  @RequestMapping({"ist.action"})
+  @RequestMapping({"page.action"})
   public String page(PortallogrecordQuery query, ModelMap model)
   {
     query.setInfoLike(true);
@@ -87,7 +88,7 @@ public class PortallogrecordController
     return "redirect:ist.action";
   }
 
-  @RequestMapping({"ist.action"})
+  @RequestMapping({"pageonline.action"})
   public String pageOnline(String ipQ, String loginNameQ, String macQ, String typeQ, String apmacQ, String ssidQ, String agentQ, String basnameQ, String autoQ, String begintime, String endtime, Integer Page, ModelMap model)
     throws ParseException
   {

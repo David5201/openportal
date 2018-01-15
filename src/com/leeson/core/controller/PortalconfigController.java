@@ -20,6 +20,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@RequestMapping("/portalconfigController")
 public class PortalconfigController
 {
   private static com.leeson.portal.core.model.Config base_cfg = com.leeson.portal.core.model.Config.getInstance();

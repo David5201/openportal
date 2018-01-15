@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
+@RequestMapping("/portalupdateController")
 public class PortalupdateController
 {
   private static Config config = Config.getInstance();

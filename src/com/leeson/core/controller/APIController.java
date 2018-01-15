@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import sun.misc.BASE64Decoder;
 
 @Controller
+@RequestMapping("/aPIController")
 public class APIController
 {
 

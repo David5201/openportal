@@ -39,6 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 @Controller
+@RequestMapping("/advpicController")
 public class AdvpicController
 {
   private static Logger logger = Logger.getLogger(AdvpicController.class);

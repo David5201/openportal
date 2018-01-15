@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
+@RequestMapping("/portalweixinwifiController")
 public class PortalweixinwifiController
 {
   private static SimpleDateFormat fs = new SimpleDateFormat("yyyy-MM-dd");

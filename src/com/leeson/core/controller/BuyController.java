@@ -54,6 +54,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@RequestMapping("/buyController")
 public class BuyController
 {
 

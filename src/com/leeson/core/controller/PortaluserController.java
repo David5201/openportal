@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
+@RequestMapping("/portaluserController")
 public class PortaluserController
 {
   private static Logger logger = Logger.getLogger(PortaluserController.class);

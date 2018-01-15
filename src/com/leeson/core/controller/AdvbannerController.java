@@ -39,6 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 @Controller
+@RequestMapping("/aCller")
 public class AdvbannerController
 {
   private static Logger logger = Logger.getLogger(AdvbannerController.class);
@@ -202,7 +203,7 @@ public class AdvbannerController
     return "redirect:ist.action";
   }
 
-  @RequestMapping({"dit.action"})
+  @RequestMapping({"edit.action"})
   public String edit(@RequestParam Long id, ModelMap model, HttpServletRequest request)
   {
     Advbanner e = this.advbannerService.getAdvbannerByKey(id);
@@ -230,7 +231,7 @@ public class AdvbannerController
     return "advbanner/save";
   }
 
-  @RequestMapping(value={"dit.action"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+  @RequestMapping(value={"edit.action"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
   public String edit(Advbanner e, ModelMap model, HttpServletRequest request)
   {
     Advbanner b = this.advbannerService.getAdvbannerByKey(e.getId());
@@ -266,7 +267,7 @@ public class AdvbannerController
     return "redirect:ist.action";
   }
 
-  @RequestMapping({"elete.action"})
+  @RequestMapping({"delete.action"})
   public String delete(@RequestParam Long id, HttpServletRequest request)
   {
     Advbanner s = this.advbannerService.getAdvbannerByKey(id);
@@ -286,7 +287,7 @@ public class AdvbannerController
     return "redirect:ist.action";
   }
 
-  @RequestMapping(value={"eletes.action"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+  @RequestMapping(value={"deletes.action"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
   public String deletes(@RequestParam Long[] ids, HttpServletRequest request)
   {
     List<Long> list = Arrays.asList(ids);
