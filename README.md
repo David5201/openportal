@@ -7,3 +7,4 @@ http://localhost:8080/openportal/index.jsp
 
 
 修改portal_bas表里的isNtf字段，可以重设已登陆状态！
+同时com.leeson.portal.core.model.OnlineMap也会记录用户登陆状态。
