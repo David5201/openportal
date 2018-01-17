@@ -51,3 +51,8 @@ index.jsp:102 0 1 3 4 5 6 7
 18:21:52.202 Navigated to http://localhost:8080/OpenPortal/wxpc.jsp?appId=wx3e336d4576886268&extend=127.0.0.1:127.0.0.1&timestamp=1516184511637&sign=d0b0798a89bc09ef9d3563a947a7c697&shop_id=7452864&authUrl=http://localhost:8080/OpenPortal/weixinPCAuth.action&mac=&ssid=WXLeeSon5G&bssid=
 18:21:52.218 pcauth.js:853 genQrCode:http://mp.weixin.qq.com/mp/wifi?q=pc&appid=wx3e336d4576886268&shopid=7452864&ticket=65491651alq3h6k1mp6
 18:21:52.241 pcauth.js:795 makeCode:106
+
+
+-------portal相关的连接
+
+https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444894086
