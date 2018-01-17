@@ -42,3 +42,12 @@ Cookie:pgv_pvi=4703671296; RK=jDUamdjOHe; ptcz=b16bd3986c2663753f949ed48bfe5a51c
 Host:wifi.weixin.qq.com
 Referer:http://localhost:8080/OpenPortal/wxpc.jsp?appId=wx3e336d4576886268&extend=127.0.0.1:127.0.0.1&timestamp=1516183151926&sign=5288ae9631498debe8be02da3ef52a1c&shop_id=7452864&authUrl=http://localhost:8080/OpenPortal/weixinPCAuth.action&mac=&ssid=WXLeeSon5G&bssid=
 User-Agent:Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.31 Safari/537.36
+
+
+-----------------------------------
+index.jsp:102 0 1 3 4 5 6 7
+18:21:50.758 VM29 auth.js:335 weixinLogin
+18:21:51.985 VM29 auth.js:406 /OpenPortal/wxpc.jsp?appId=wx3e336d4576886268&extend=127.0.0.1:127.0.0.1&timestamp=1516184511637&sign=d0b0798a89bc09ef9d3563a947a7c697&shop_id=7452864&authUrl=http://localhost:8080/OpenPortal/weixinPCAuth.action&mac=&ssid=WXLeeSon5G&bssid=
+18:21:52.202 Navigated to http://localhost:8080/OpenPortal/wxpc.jsp?appId=wx3e336d4576886268&extend=127.0.0.1:127.0.0.1&timestamp=1516184511637&sign=d0b0798a89bc09ef9d3563a947a7c697&shop_id=7452864&authUrl=http://localhost:8080/OpenPortal/weixinPCAuth.action&mac=&ssid=WXLeeSon5G&bssid=
+18:21:52.218 pcauth.js:853 genQrCode:http://mp.weixin.qq.com/mp/wifi?q=pc&appid=wx3e336d4576886268&shopid=7452864&ticket=65491651alq3h6k1mp6
+18:21:52.241 pcauth.js:795 makeCode:106
