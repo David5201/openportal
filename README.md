@@ -56,3 +56,9 @@ index.jsp:102 0 1 3 4 5 6 7
 -------portal相关的连接
 
 https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444894086
+
+
+
+
+openporatl登陆页面
+http://120.79.45.9/portaluser/login.action
